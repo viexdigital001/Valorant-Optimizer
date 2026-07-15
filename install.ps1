@@ -1,4 +1,4 @@
-﻿# install.ps1
+# install.ps1
 # Script cài đặt và khởi chạy cho Valorant Optimize 1.0.0
 
 Write-Host "=========================================" -ForegroundColor Cyan
@@ -38,7 +38,15 @@ if ($PSVersionTable.PSVersion.Major -lt 5) {
 
 # 3. Xác định thư mục làm việc và Đồng bộ hóa mã nguồn từ GitHub
 $scriptDir = $PSScriptRoot
-if (-not $scriptDir -or -not (Test-Path (Join-Path $scriptDir "main.ps1"))) {
+$isValidLocalDir = $false
+
+if (-not [string]::IsNullOrWhiteSpace($scriptDir) -and ($scriptDir -match '^[a-zA-Z]:\\')) {
+    if (Test-Path (Join-Path $scriptDir "main.ps1" -ErrorAction SilentlyContinue)) {
+        $isValidLocalDir = $true
+    }
+}
+
+if (-not $isValidLocalDir) {
     $scriptDir = Join-Path $env:USERPROFILE "ValorantOptimize"
 }
 
