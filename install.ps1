@@ -119,7 +119,7 @@ if (-not (Test-Path $mainPath) -or ($PSScriptRoot -eq $null -or $PSScriptRoot -e
         Write-Host "[$idx/$($filesToDownload.Count)] Tải xuống: $relPath" -ForegroundColor Gray
         
         try {
-            Invoke-RestMethod -Uri $remoteUrl -OutFile $localPath -ErrorAction Stop
+            Invoke-WebRequest -Uri $remoteUrl -OutFile $localPath -ErrorAction Stop
         } catch {
             Write-Host "⚠️ LỖI khi tải file $relPath : $_" -ForegroundColor Red
             Write-Host "Ấn phím bất kỳ để thoát..." -ForegroundColor Gray
