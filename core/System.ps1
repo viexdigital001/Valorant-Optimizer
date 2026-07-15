@@ -1,4 +1,4 @@
-﻿# core/System.ps1
+# core/System.ps1
 # Động cơ phát hiện thông tin hệ thống cho Valorant Optimize 1.0.0
 
 function Get-SystemInfo {
@@ -220,7 +220,6 @@ function Get-SystemInfo {
 }
 
 # Export hàm
-Export-ModuleMember -Function Get-SystemInfo
 
 
 

@@ -1,4 +1,4 @@
-﻿# modules/Input.ps1
+# modules/Input.ps1
 # Module tối ưu hóa thời gian phản hồi đầu vào (Input Response) cho Valorant Optimize 1.0.0
 
 function Check-Input {
@@ -66,7 +66,6 @@ function WriteLog-Input {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Input, Apply-Input, Restore-Input, Verify-Input, WriteLog-Input
 
 
 

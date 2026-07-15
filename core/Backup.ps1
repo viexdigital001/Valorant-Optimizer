@@ -1,4 +1,4 @@
-﻿# core/Backup.ps1
+# core/Backup.ps1
 # Động cơ sao lưu snapshot thiết lập cho Valorant Optimize 1.0.0
 
 $Global:BackupSessionActive = $false
@@ -155,7 +155,6 @@ function Save-BackupSession {
     Write-Log "Đã lưu toàn bộ Snapshot Backup vào thư mục: $Global:CurrentBackupDir" "SUCCESS"
 }
 
-Export-ModuleMember -Function Start-BackupSession, Backup-RegistryValue, Backup-Service, Backup-PowerPlan, Save-BackupSession
 
 
 

@@ -1,4 +1,4 @@
-﻿# modules/Audio.ps1
+# modules/Audio.ps1
 # Module tối ưu hóa âm thanh (Audio Latency) cho Valorant Optimize 1.0.0
 
 function Check-Audio {
@@ -58,7 +58,6 @@ function WriteLog-Audio {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Audio, Apply-Audio, Restore-Audio, Verify-Audio, WriteLog-Audio
 
 
 

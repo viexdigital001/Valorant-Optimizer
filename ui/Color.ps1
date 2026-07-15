@@ -1,4 +1,4 @@
-﻿# ui/Color.ps1
+# ui/Color.ps1
 # Định nghĩa bảng màu ANSI cho Valorant Optimize 1.0.0
 
 $esc = [char]27
@@ -92,7 +92,6 @@ function Get-AnsiStr {
     return "${colorCode}${Text}$($Global:Colors['Reset'])"
 }
 
-Export-ModuleMember -Function Write-Ansi, Get-AnsiStr
 
 
 

@@ -1,4 +1,4 @@
-﻿# modules/Process.ps1
+# modules/Process.ps1
 # Module tối ưu hóa ưu tiên tiến trình (Process Priority) cho Valorant Optimize 1.0.0
 
 function Check-Process {
@@ -57,7 +57,6 @@ function WriteLog-Process {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Process, Apply-Process, Restore-Process, Verify-Process, WriteLog-Process
 
 
 

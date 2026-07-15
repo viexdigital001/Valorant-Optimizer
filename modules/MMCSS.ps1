@@ -1,4 +1,4 @@
-﻿# modules/MMCSS.ps1
+# modules/MMCSS.ps1
 # Module cấu hình Multimedia Class Scheduler Service (MMCSS) cho Valorant Optimize 1.0.0
 
 function Check-MMCSS {
@@ -89,7 +89,6 @@ function WriteLog-MMCSS {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-MMCSS, Apply-MMCSS, Restore-MMCSS, Verify-MMCSS, WriteLog-MMCSS
 
 
 

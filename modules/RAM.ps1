@@ -1,4 +1,4 @@
-﻿# modules/RAM.ps1
+# modules/RAM.ps1
 # Module tối ưu RAM cho Valorant Optimize 1.0.0
 
 function Check-RAM {
@@ -90,7 +90,6 @@ function WriteLog-RAM {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-RAM, Apply-RAM, Restore-RAM, Verify-RAM, WriteLog-RAM
 
 
 

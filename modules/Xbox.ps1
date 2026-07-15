@@ -1,4 +1,4 @@
-﻿# modules/Xbox.ps1
+# modules/Xbox.ps1
 # Module vô hiệu hóa dịch vụ Xbox chạy nền và Game DVR cho Valorant Optimize 1.0.0
 
 function Check-Xbox {
@@ -79,7 +79,6 @@ function WriteLog-Xbox {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Xbox, Apply-Xbox, Restore-Xbox, Verify-Xbox, WriteLog-Xbox
 
 
 

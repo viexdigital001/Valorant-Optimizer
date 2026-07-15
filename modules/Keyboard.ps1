@@ -1,4 +1,4 @@
-﻿# modules/Keyboard.ps1
+# modules/Keyboard.ps1
 # Module tối ưu hóa bàn phím (Keyboard) cho Valorant Optimize 1.0.0
 
 function Check-Keyboard {
@@ -80,7 +80,6 @@ function WriteLog-Keyboard {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Keyboard, Apply-Keyboard, Restore-Keyboard, Verify-Keyboard, WriteLog-Keyboard
 
 
 

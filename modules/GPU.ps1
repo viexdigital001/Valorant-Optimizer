@@ -1,4 +1,4 @@
-﻿# modules/GPU.ps1
+# modules/GPU.ps1
 # Module tối ưu GPU cho Valorant Optimize 1.0.0
 
 function Check-GPU {
@@ -95,7 +95,6 @@ function WriteLog-GPU {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-GPU, Apply-GPU, Restore-GPU, Verify-GPU, WriteLog-GPU
 
 
 

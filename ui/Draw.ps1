@@ -1,4 +1,4 @@
-﻿# ui/Draw.ps1
+# ui/Draw.ps1
 # Thư viện vẽ giao diện Console Gaming cho Valorant Optimize 1.0.0
 
 # Điều chỉnh kích thước Console
@@ -189,7 +189,6 @@ function Clear-ContentArea {
     }
 }
 
-Export-ModuleMember -Function Set-ConsoleSize, Move-Cursor, Clear-Screen, Draw-Box, Draw-StartupLogo, Draw-Layout, Clear-ContentArea, Draw-HorizontalLine
 
 
 

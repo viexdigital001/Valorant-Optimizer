@@ -1,4 +1,4 @@
-﻿# core/Restore.ps1
+# core/Restore.ps1
 # Động cơ hoàn trả (Restore) cấu hình hệ thống cho Valorant Optimize 1.0.0
 
 function Get-BackupList {
@@ -113,7 +113,6 @@ function Restore-Snapshot {
     return $true
 }
 
-Export-ModuleMember -Function Get-BackupList, Restore-Snapshot
 
 
 

@@ -1,4 +1,4 @@
-﻿# modules/Security.ps1
+# modules/Security.ps1
 # Module cấu hình bảo mật hệ thống (Security) cho Valorant Optimize 1.0.0
 
 function Check-Security {
@@ -60,7 +60,6 @@ function WriteLog-Security {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Security, Apply-Security, Restore-Security, Verify-Security, WriteLog-Security
 
 
 

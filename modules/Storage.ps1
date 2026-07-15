@@ -1,4 +1,4 @@
-﻿# modules/Storage.ps1
+# modules/Storage.ps1
 # Module tối ưu lưu trữ (Storage/Disk) cho Valorant Optimize 1.0.0
 
 function Check-Storage {
@@ -90,7 +90,6 @@ function WriteLog-Storage {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Storage, Apply-Storage, Restore-Storage, Verify-Storage, WriteLog-Storage
 
 
 

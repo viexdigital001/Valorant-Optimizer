@@ -1,4 +1,4 @@
-﻿# modules/BackgroundApps.ps1
+# modules/BackgroundApps.ps1
 # Module vô hiệu hóa ứng dụng UWP chạy ngầm (Background Apps) cho Valorant Optimize 1.0.0
 
 function Check-BackgroundApps {
@@ -60,7 +60,6 @@ function WriteLog-BackgroundApps {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-BackgroundApps, Apply-BackgroundApps, Restore-BackgroundApps, Verify-BackgroundApps, WriteLog-BackgroundApps
 
 
 

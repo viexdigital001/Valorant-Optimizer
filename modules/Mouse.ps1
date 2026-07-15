@@ -1,4 +1,4 @@
-﻿# modules/Mouse.ps1
+# modules/Mouse.ps1
 # Module tối ưu hóa chuột (Mouse) cho Valorant Optimize 1.0.0
 
 function Check-Mouse {
@@ -85,7 +85,6 @@ function WriteLog-Mouse {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Mouse, Apply-Mouse, Restore-Mouse, Verify-Mouse, WriteLog-Mouse
 
 
 

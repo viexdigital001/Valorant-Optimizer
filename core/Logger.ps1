@@ -1,4 +1,4 @@
-﻿# core/Logger.ps1
+# core/Logger.ps1
 # Hệ thống ghi log cho Valorant Optimize 1.0.0
 
 $Global:LogFilePath = Join-Path $PSScriptRoot "..\logs\ValorantOptimize.log"
@@ -36,7 +36,6 @@ function Write-Log {
 }
 
 # Export hàm để sử dụng ở ngoài
-Export-ModuleMember -Function Initialize-Logger, Write-Log
 
 
 

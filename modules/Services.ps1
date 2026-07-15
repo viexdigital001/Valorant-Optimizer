@@ -1,4 +1,4 @@
-﻿# modules/Services.ps1
+# modules/Services.ps1
 # Module tối ưu hóa các Dịch vụ hệ thống (Services) cho Valorant Optimize 1.0.0
 
 function Check-Services {
@@ -81,7 +81,6 @@ function WriteLog-Services {
     # Tích hợp trực tiếp qua Logger
 }
 
-Export-ModuleMember -Function Check-Services, Apply-Services, Restore-Services, Verify-Services, WriteLog-Services
 
 
 
