@@ -192,3 +192,5 @@ function Clear-ContentArea {
 Export-ModuleMember -Function Set-ConsoleSize, Move-Cursor, Clear-Screen, Draw-Box, Draw-StartupLogo, Draw-Layout, Clear-ContentArea, Draw-HorizontalLine
 
 
+
+

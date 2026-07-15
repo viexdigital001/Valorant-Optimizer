@@ -88,3 +88,5 @@ function WriteLog-Mouse {
 Export-ModuleMember -Function Check-Mouse, Apply-Mouse, Restore-Mouse, Verify-Mouse, WriteLog-Mouse
 
 
+
+

@@ -63,3 +63,5 @@ function WriteLog-BackgroundApps {
 Export-ModuleMember -Function Check-BackgroundApps, Apply-BackgroundApps, Restore-BackgroundApps, Verify-BackgroundApps, WriteLog-BackgroundApps
 
 
+
+

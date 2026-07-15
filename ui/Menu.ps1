@@ -112,3 +112,5 @@ function Get-Confirmation {
 Export-ModuleMember -Function Draw-SidebarMenu, Get-MenuSelection, Get-Confirmation
 
 
+
+

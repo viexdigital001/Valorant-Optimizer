@@ -80,3 +80,5 @@ function WriteLog-Telemetry {
 Export-ModuleMember -Function Check-Telemetry, Apply-Telemetry, Restore-Telemetry, Verify-Telemetry, WriteLog-Telemetry
 
 
+
+
