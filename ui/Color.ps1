@@ -1,4 +1,4 @@
-﻿# ui/Color.ps1
+# ui/Color.ps1
 # Định nghĩa bảng màu ANSI cho Valorant Optimize 1.0.0
 
 $esc = [char]27
@@ -50,10 +50,16 @@ function Write-Ansi {
         [Parameter(Mandatory=$false)]
         [string]$BGColor = "",
         [Parameter(Mandatory=$false)]
-        [switch]$NoNewLine
+        [switch]$NoNewLine,
+        [Parameter(Mandatory=$false)]
+        [switch]$Bold,
+        [Parameter(Mandatory=$false)]
+        [switch]$Underline
     )
     
     $colorCode = ""
+    if ($Bold) { $colorCode += $Global:Colors['Bold'] }
+    if ($Underline) { $colorCode += $Global:Colors['Underline'] }
     if ($Global:Colors.ContainsKey($Color)) {
         $colorCode += $Global:Colors[$Color]
     }
@@ -78,10 +84,16 @@ function Get-AnsiStr {
         [Parameter(Mandatory=$false)]
         [string]$Color = "White",
         [Parameter(Mandatory=$false)]
-        [string]$BGColor = ""
+        [string]$BGColor = "",
+        [Parameter(Mandatory=$false)]
+        [switch]$Bold,
+        [Parameter(Mandatory=$false)]
+        [switch]$Underline
     )
     
     $colorCode = ""
+    if ($Bold) { $colorCode += $Global:Colors['Bold'] }
+    if ($Underline) { $colorCode += $Global:Colors['Underline'] }
     if ($Global:Colors.ContainsKey($Color)) {
         $colorCode += $Global:Colors[$Color]
     }
