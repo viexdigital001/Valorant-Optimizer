@@ -115,7 +115,8 @@ if (-not (Test-Path $mainPath) -or ($PSScriptRoot -eq $null -or $PSScriptRoot -e
             New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
         }
         
-        $remoteUrl = "$rawBaseUrl/$relPath"
+        $cacheBuster = [int][double]::Parse((Get-Date -UFormat %s))
+        $remoteUrl = "$rawBaseUrl/$relPath?t=$cacheBuster"
         Write-Host "[$idx/$($filesToDownload.Count)] Downloading: $relPath" -ForegroundColor Gray
         
         try {
