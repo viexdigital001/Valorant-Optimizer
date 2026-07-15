@@ -383,7 +383,7 @@ function Show-AboutPage {
     
     Move-Cursor 30 16
     Write-Ansi "- Discord Support: " -Color "Gray" -NoNewLine
-    Write-Ansi "https://discord.gg/VieX" -Color "BrightBlue" -Underline
+    Write-Ansi "https://discord.gg/vie-x-digital-1274585470633906176" -Color "BrightBlue" -Underline
     
     Move-Cursor 28 22
     Write-Ansi "[i] Tip: Video games are for entertainment, remember to take care of your health!" -Color "BrightYellow"
