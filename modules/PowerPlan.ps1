@@ -1,4 +1,4 @@
-# modules/PowerPlan.ps1
+﻿# modules/PowerPlan.ps1
 # Module cấu hình nguồn điện (Power Plan) cho Valorant Optimize 1.0.0
 
 function Check-PowerPlan {

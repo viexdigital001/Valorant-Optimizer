@@ -1,4 +1,4 @@
-# modules/Security.ps1
+﻿# modules/Security.ps1
 # Module cấu hình bảo mật hệ thống (Security) cho Valorant Optimize 1.0.0
 
 function Check-Security {

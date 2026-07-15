@@ -1,4 +1,4 @@
-# modules/Mouse.ps1
+﻿# modules/Mouse.ps1
 # Module tối ưu hóa chuột (Mouse) cho Valorant Optimize 1.0.0
 
 function Check-Mouse {

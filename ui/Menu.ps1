@@ -1,4 +1,4 @@
-# ui/Menu.ps1
+﻿# ui/Menu.ps1
 # Hệ thống điều hướng Menu Console bằng bàn phím cho Valorant Optimize 1.0.0
 
 function Draw-SidebarMenu {

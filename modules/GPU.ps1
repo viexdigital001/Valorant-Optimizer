@@ -1,4 +1,4 @@
-# modules/GPU.ps1
+﻿# modules/GPU.ps1
 # Module tối ưu GPU cho Valorant Optimize 1.0.0
 
 function Check-GPU {

@@ -1,4 +1,4 @@
-# core/OptimizeEngine.ps1
+﻿# core/OptimizeEngine.ps1
 # Bộ máy tối ưu hóa thông minh One Click cho Valorant Optimize 1.0.0
 
 function Start-OneClickOptimize {

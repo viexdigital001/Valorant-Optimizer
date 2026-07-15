@@ -1,4 +1,4 @@
-# modules/Network.ps1
+﻿# modules/Network.ps1
 # Module tối ưu hóa kết nối mạng (Network) cho Valorant Optimize 1.0.0
 
 function Check-Network {

@@ -1,4 +1,4 @@
-# modules/Cleanup.ps1
+﻿# modules/Cleanup.ps1
 # Module dọn dẹp tệp tin tạm thời (Cleanup) cho Valorant Optimize 1.0.0
 
 function Check-Cleanup {

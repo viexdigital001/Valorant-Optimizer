@@ -1,4 +1,4 @@
-# ui/Progress.ps1
+﻿# ui/Progress.ps1
 # Thanh tiến trình đồ họa chống nhấp nháy cho Valorant Optimize 1.0.0
 
 function Draw-ProgressBar {

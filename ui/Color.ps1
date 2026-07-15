@@ -1,4 +1,4 @@
-# ui/Color.ps1
+﻿# ui/Color.ps1
 # Định nghĩa bảng màu ANSI cho Valorant Optimize 1.0.0
 
 $esc = [char]27

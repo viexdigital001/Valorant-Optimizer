@@ -1,4 +1,4 @@
-# modules/CPU.ps1
+﻿# modules/CPU.ps1
 # Module tối ưu CPU cho Valorant Optimize 1.0.0
 
 function Check-CPU {

@@ -1,4 +1,4 @@
-# modules/Timer.ps1
+﻿# modules/Timer.ps1
 # Module tối ưu độ phân giải Timer của hệ thống cho Valorant Optimize 1.0.0
 
 function Check-Timer {

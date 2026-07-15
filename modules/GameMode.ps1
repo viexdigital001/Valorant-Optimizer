@@ -1,4 +1,4 @@
-# modules/GameMode.ps1
+﻿# modules/GameMode.ps1
 # Module tối ưu hóa cấu hình Windows Game Mode cho Valorant Optimize 1.0.0
 
 function Check-GameMode {

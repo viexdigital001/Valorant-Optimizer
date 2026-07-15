@@ -1,4 +1,4 @@
-# modules/Services.ps1
+﻿# modules/Services.ps1
 # Module tối ưu hóa các Dịch vụ hệ thống (Services) cho Valorant Optimize 1.0.0
 
 function Check-Services {

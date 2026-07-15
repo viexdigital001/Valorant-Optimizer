@@ -1,4 +1,4 @@
-# modules/Input.ps1
+﻿# modules/Input.ps1
 # Module tối ưu hóa thời gian phản hồi đầu vào (Input Response) cho Valorant Optimize 1.0.0
 
 function Check-Input {

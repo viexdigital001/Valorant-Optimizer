@@ -1,4 +1,4 @@
-# modules/Visual.ps1
+﻿# modules/Visual.ps1
 # Module tối ưu hóa hiệu ứng hình ảnh (Visual Effects) cho Valorant Optimize 1.0.0
 
 function Check-Visual {

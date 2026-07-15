@@ -1,4 +1,4 @@
-# modules/Process.ps1
+﻿# modules/Process.ps1
 # Module tối ưu hóa ưu tiên tiến trình (Process Priority) cho Valorant Optimize 1.0.0
 
 function Check-Process {

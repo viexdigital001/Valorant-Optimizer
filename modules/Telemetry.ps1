@@ -1,4 +1,4 @@
-# modules/Telemetry.ps1
+﻿# modules/Telemetry.ps1
 # Module vô hiệu hóa thu thập dữ liệu (Telemetry) cho Valorant Optimize 1.0.0
 
 function Check-Telemetry {

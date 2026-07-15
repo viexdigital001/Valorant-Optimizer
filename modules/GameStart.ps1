@@ -1,4 +1,4 @@
-# modules/GameStart.ps1
+﻿# modules/GameStart.ps1
 # Module tối ưu hóa quá trình khởi động Valorant cho Valorant Optimize 1.0.0
 
 function Check-GameStart {
