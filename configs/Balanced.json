@@ -1,0 +1,44 @@
+{
+  "profile": "Balanced",
+  "description": "Chế độ tối ưu cân bằng. Giúp chơi game mượt hơn nhưng vẫn giữ hệ điều hành ổn định, tiết kiệm điện và tương thích cao.",
+  "settings": {
+    "cpu": {
+      "Win32PrioritySeparation": 2,
+      "Priority": "AboveNormal",
+      "IoPriority": "Normal"
+    },
+    "gpu": {
+      "Hags": 1,
+      "ShaderCache": 1,
+      "FullscreenOptimizations": 0
+    },
+    "ram": {
+      "LargeSystemCache": 0,
+      "DisablePagingExecutive": 0,
+      "SysMainStartup": "Automatic"
+    },
+    "network": {
+      "NetworkThrottlingIndex": 10,
+      "SystemResponsiveness": 20,
+      "TCPNoDelay": 1,
+      "TCPAckFrequency": 1
+    },
+    "mouse": {
+      "MouseSpeed": "0",
+      "EnhancePointerPrecision": 0
+    },
+    "keyboard": {
+      "KeyboardDelay": "1",
+      "KeyboardSpeed": "31"
+    },
+    "services": {
+      "DisableUnused": false
+    },
+    "telemetry": {
+      "DisableTelemetry": true
+    },
+    "gameMode": {
+      "Enable": 1
+    }
+  }
+}

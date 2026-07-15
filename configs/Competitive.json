@@ -1,0 +1,44 @@
+{
+  "profile": "Competitive",
+  "description": "Chế độ tối ưu tập trung giảm lag combat, mượt chuột, tối đa độ trễ phản hồi phím và ưu tiên tài nguyên game.",
+  "settings": {
+    "cpu": {
+      "Win32PrioritySeparation": 38,
+      "Priority": "High",
+      "IoPriority": "High"
+    },
+    "gpu": {
+      "Hags": 1,
+      "ShaderCache": 1,
+      "FullscreenOptimizations": 0
+    },
+    "ram": {
+      "LargeSystemCache": 0,
+      "DisablePagingExecutive": 1,
+      "SysMainStartup": "Automatic"
+    },
+    "network": {
+      "NetworkThrottlingIndex": 4294967295,
+      "SystemResponsiveness": 0,
+      "TCPNoDelay": 1,
+      "TCPAckFrequency": 1
+    },
+    "mouse": {
+      "MouseSpeed": "0",
+      "EnhancePointerPrecision": 0
+    },
+    "keyboard": {
+      "KeyboardDelay": "0",
+      "KeyboardSpeed": "31"
+    },
+    "services": {
+      "DisableUnused": true
+    },
+    "telemetry": {
+      "DisableTelemetry": true
+    },
+    "gameMode": {
+      "Enable": 1
+    }
+  }
+}

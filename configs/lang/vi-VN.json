@@ -1,0 +1,60 @@
+{
+  "general": {
+    "title": "VALORANT OPTIMIZE 1.0.0",
+    "powered": "Powered by VieX Digital",
+    "license": "License: VieX Studio",
+    "exit_msg": "Hẹn gặp lại ae nha! Chúc aim dính như keo 502! 🔥",
+    "reboot_recommend": "🔥 Xong luôn! Hãy khởi động lại máy để các thay đổi có hiệu lực nha quý dị. Chúc ae có những pha ACE thật cháy! 🎯",
+    "press_key": "Ấn phím bất kỳ để tiếp tục..."
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "optimize": "Chế độ tối ưu",
+    "oneclick": "⚡ One Click",
+    "restore": "🔄 Khôi phục (Restore)",
+    "system_info": "Thông tin hệ thống",
+    "settings": "Cài đặt",
+    "about": "Giới thiệu",
+    "exit": "Thoát"
+  },
+  "dashboard": {
+    "cpu": "Vi xử lý (CPU)",
+    "gpu": "Đồ họa (GPU)",
+    "ram": "Bộ nhớ (RAM)",
+    "windows": "Hệ điều hành Windows",
+    "power_plan": "Cấu hình nguồn (Power Plan)",
+    "game_mode": "Chế độ trò chơi (Game Mode)",
+    "memory_integrity": "Memory Integrity",
+    "vbs": "Virtualization Based Security (VBS)",
+    "tpm": "TPM 2.0",
+    "secure_boot": "Secure Boot",
+    "profile": "Profile thiết bị",
+    "status_on": "Đang bật",
+    "status_off": "Đang tắt",
+    "status_normal": "Bình thường",
+    "status_warning": "Cần chú ý",
+    "status_optimized": "Đã tối ưu"
+  },
+  "optimize": {
+    "title": "CHỌN CHẾ ĐỘ TỐI ƯU HÓA",
+    "competitive_desc": "Dành cho Tryharder. Giảm giật combat, mượt chuột, ổn định FPS tối đa.",
+    "balanced_desc": "Cân bằng giữa chơi game và làm việc/học tập hàng ngày.",
+    "extreme_desc": "⚠️ Tối ưu kịch trần! Tắt tối đa các tiến trình/dịch vụ nền. Có thể làm giảm bảo mật.",
+    "warning_extreme": "⚠️ CẢNH BÁO: Chế độ Extreme có thể tắt các tính năng bảo mật như VBS, Memory Integrity và một số dịch vụ hệ thống. Bạn có chắc chắn muốn tiếp tục không? (Y/N)"
+  },
+  "oneclick": {
+    "analyzing": "Đang quét dọn và phân tích máy tính của bạn...",
+    "profile_detected": "Đã xác định loại máy: ",
+    "applying": "Đang áp dụng profile tối ưu phù hợp...",
+    "promo_title": "🔥 Muốn máy còn mượt hơn nữa?",
+    "promo_desc": "Nâng cấp lên phiên bản cao cấp: VieXF Ultimate\n✔ Nhiều tweak tối ưu hơn\n✔ Cập nhật tweak thường xuyên\n✔ Hỗ trợ thêm nhiều tựa game khác\n✔ Hỗ trợ kỹ thuật ưu tiên\n👉 Tham gia Discord: https://discord.com/channels/1274585470633906176/1416609764779098162"
+  },
+  "restore": {
+    "title": "🔄 TRÌNH KHÔI PHỤC HỆ THỐNG",
+    "all": "Khôi phục toàn bộ",
+    "by_module": "Khôi phục theo Module",
+    "delete_backup": "Xóa Backup cũ",
+    "confirm_restore": "Bạn có chắc chắn muốn khôi phục lại các cài đặt gốc trước khi tối ưu không? (Y/N)",
+    "success": "🎉 Khôi phục hoàn tất! Hệ thống đã quay trở về trạng thái ban đầu sạch sẽ như chưa có cuộc chia ly. Hãy khởi động lại máy nha ae! 🔥"
+  }
+}

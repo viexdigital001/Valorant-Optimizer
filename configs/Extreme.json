@@ -1,0 +1,44 @@
+{
+  "profile": "Extreme",
+  "description": "Chế độ tối ưu kịch sàn! Dành toàn bộ tài nguyên cho Valorant, tắt hầu hết tiến trình nền và dịch vụ không cần thiết.",
+  "settings": {
+    "cpu": {
+      "Win32PrioritySeparation": 40,
+      "Priority": "High",
+      "IoPriority": "High"
+    },
+    "gpu": {
+      "Hags": 1,
+      "ShaderCache": 1,
+      "FullscreenOptimizations": 0
+    },
+    "ram": {
+      "LargeSystemCache": 1,
+      "DisablePagingExecutive": 1,
+      "SysMainStartup": "Disabled"
+    },
+    "network": {
+      "NetworkThrottlingIndex": 4294967295,
+      "SystemResponsiveness": 0,
+      "TCPNoDelay": 1,
+      "TCPAckFrequency": 1
+    },
+    "mouse": {
+      "MouseSpeed": "0",
+      "EnhancePointerPrecision": 0
+    },
+    "keyboard": {
+      "KeyboardDelay": "0",
+      "KeyboardSpeed": "31"
+    },
+    "services": {
+      "DisableUnused": true
+    },
+    "telemetry": {
+      "DisableTelemetry": true
+    },
+    "gameMode": {
+      "Enable": 1
+    }
+  }
+}
