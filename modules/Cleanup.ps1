@@ -1,8 +1,8 @@
-﻿# modules/Cleanup.ps1
-# Module dọn dẹp tệp tin tạm thời (Cleanup) cho Valorant Optimize 1.0.0
+# modules/Cleanup.ps1
+# Module don dep tep tin tam thoi (Cleanup) cho Valorant Optimize 1.0.0
 
 function Check-Cleanup {
-    Write-Log "Tính toán dung lượng tệp tin tạm thời có thể dọn dẹp..." "INFO"
+    Write-Log "Tinh toan dung luong tep tin tam thoi co the don dep..." "INFO"
     $totalSize = 0
     $tempPaths = @($env:TEMP, "C:\Windows\Temp", Join-Path $env:LOCALAPPDATA "CrashDumps")
     
@@ -16,7 +16,7 @@ function Check-Cleanup {
     }
     
     $sizeMB = [Math]::Round($totalSize / 1MB, 2)
-    Write-Log "Tổng dung lượng tệp tạm có thể dọn dẹp: $sizeMB MB" "INFO"
+    Write-Log "Tong dung luong tep tam co the don dep: $sizeMB MB" "INFO"
     return "OK"
 }
 
@@ -26,16 +26,16 @@ function Apply-Cleanup {
         $Config
     )
     
-    Write-Log "Yêu cầu xác nhận từ người dùng để dọn dẹp tệp tạm..." "WARNING"
-    $msg = "Bạn có muốn dọn dẹp các tệp tin tạm thời (Temp, Log, Crash Dump) để giải phóng dung lượng không?"
+    Write-Log "Yeu cau xac nhan tu nguoi dung e don dep tep tam..." "WARNING"
+    $msg = "Ban co muon don dep cac tep tin tam thoi (Temp, Log, Crash Dump) e giai phong dung luong khong?"
     $confirm = Get-Confirmation -PromptMessage $msg
     
     if (-not $confirm) {
-        Write-Log "Người dùng từ chối dọn dẹp tệp tạm. Bỏ qua." "INFO"
+        Write-Log "Nguoi dung tu choi don dep tep tam. Bo qua." "INFO"
         return
     }
     
-    Write-Log "Bắt đầu dọn dẹp tệp tin rác..." "INFO"
+    Write-Log "Bat au don dep tep tin rac..." "INFO"
     
     $tempPaths = @($env:TEMP, "C:\Windows\Temp", Join-Path $env:LOCALAPPDATA "CrashDumps")
     $clearedCount = 0
@@ -52,21 +52,21 @@ function Apply-Cleanup {
         }
     }
     
-    Write-Log "Đã dọn dẹp xong $clearedCount tệp tin/thư mục rác." "SUCCESS"
+    Write-Log "a don dep xong $clearedCount tep tin/thu muc rac." "SUCCESS"
 }
 
 function Restore-Cleanup {
-    # Tệp tạm đã xóa không thể khôi phục
-    Write-Log "Các tệp tạm đã xóa không thể khôi phục." "WARNING"
+    # Tep tam a xoa Cannot Restore
+    Write-Log "Cac tep tam a xoa Cannot Restore." "WARNING"
 }
 
 function Verify-Cleanup {
-    Write-Log "Xác minh dọn dẹp..." "INFO"
+    Write-Log "Xac minh don dep..." "INFO"
     return $true
 }
 
 function WriteLog-Cleanup {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

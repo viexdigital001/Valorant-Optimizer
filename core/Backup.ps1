@@ -1,5 +1,5 @@
-﻿# core/Backup.ps1
-# Động cơ sao lưu snapshot thiết lập cho Valorant Optimize 1.0.0
+# core/Backup.ps1
+# ong co sao luu snapshot thiet lap cho Valorant Optimize 1.0.0
 
 $Global:BackupSessionActive = $false
 $Global:BackupRegistry = @()
@@ -23,7 +23,7 @@ function Start-BackupSession {
     $Global:BackupWindows = @{}
     $Global:BackupSessionActive = $true
     
-    Write-Log "Khởi tạo phiên sao lưu tại: $Global:CurrentBackupDir" "INFO"
+    Write-Log "Initialized backup session at: $Global:CurrentBackupDir" "INFO"
 }
 
 function Backup-RegistryValue {
@@ -34,7 +34,7 @@ function Backup-RegistryValue {
     
     if (-not $Global:BackupSessionActive) { return }
 
-    # Chuẩn hóa đường dẫn registry (VD: HKEY_LOCAL_MACHINE -> HKLM)
+    # Chuan hoa uong dan registry (VD: HKEY_LOCAL_MACHINE -> HKLM)
     $normalizedPath = $Path
     if ($Path -like "HKEY_LOCAL_MACHINE*") {
         $normalizedPath = $Path -replace "HKEY_LOCAL_MACHINE", "HKLM:"
@@ -63,7 +63,7 @@ function Backup-RegistryValue {
         Value     = $val
     }
     
-    # Kiểm tra xem đã backup trùng chưa
+    # Kiem tra xem a backup trung chua
     $alreadyBackedUp = $Global:BackupRegistry | Where-Object { $_.Path -eq $normalizedPath -and $_.ValueName -eq $ValueName }
     if (-not $alreadyBackedUp) {
         $Global:BackupRegistry += [PSCustomObject]$record
@@ -80,7 +80,7 @@ function Backup-Service {
     
     $service = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
     if ($service) {
-        # Lấy StartupType từ WMI/CIM vì Get-Service không hỗ trợ trên PowerShell 5.1
+        # Lay StartupType tu WMI/CIM vi Get-Service khong ho tro tren PowerShell 5.1
         $startupType = "Manual"
         try {
             $serviceWmi = Get-CimInstance -ClassName Win32_Service -Filter "Name='$ServiceName'" -ErrorAction SilentlyContinue
@@ -128,7 +128,7 @@ function Backup-PowerPlan {
 function Save-BackupSession {
     if (-not $Global:BackupSessionActive) { return }
     
-    # Ghi ra các file JSON riêng biệt
+    # Ghi ra cac file JSON rieng biet
     $regPath = Join-Path $Global:CurrentBackupDir "Registry.json"
     $srvPath = Join-Path $Global:CurrentBackupDir "Services.json"
     $pwrPath = Join-Path $Global:CurrentBackupDir "PowerPlan.json"
@@ -140,7 +140,7 @@ function Save-BackupSession {
     $Global:BackupServices | ConvertTo-Json -Depth 5 | Out-File -FilePath $srvPath -Force
     $Global:BackupPowerPlan | ConvertTo-Json -Depth 5 | Out-File -FilePath $pwrPath -Force
     
-    # Ghi dữ liệu rỗng làm placeholder cho các tệp khác nếu không đổi
+    # Ghi du lieu rong lam placeholder cho cac tep khac neu khong oi
     $Global:BackupNetwork | ConvertTo-Json -Depth 5 | Out-File -FilePath $netPath -Force
     $Global:BackupWindows | ConvertTo-Json -Depth 5 | Out-File -FilePath $winPath -Force
     
@@ -152,7 +152,7 @@ function Save-BackupSession {
     $info | ConvertTo-Json -Depth 5 | Out-File -FilePath $infPath -Force
     
     $Global:BackupSessionActive = $false
-    Write-Log "Đã lưu toàn bộ Snapshot Backup vào thư mục: $Global:CurrentBackupDir" "SUCCESS"
+    Write-Log "Saved Snapshot Backup to directory: $Global:CurrentBackupDir" "SUCCESS"
 }
 
 

@@ -1,12 +1,12 @@
-﻿# modules/BackgroundApps.ps1
-# Module vô hiệu hóa ứng dụng UWP chạy ngầm (Background Apps) cho Valorant Optimize 1.0.0
+# modules/BackgroundApps.ps1
+# Module Disabling ung dung UWP chay ngam (Background Apps) cho Valorant Optimize 1.0.0
 
 function Check-BackgroundApps {
-    Write-Log "Kiểm tra cấu hình ứng dụng chạy ngầm..." "INFO"
+    Write-Log "Kiem tra Configuring ung dung chay ngam..." "INFO"
     $appPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications"
     if (Test-Path $appPath) {
         $val = Get-ItemPropertyValue -Path $appPath -Name "GlobalUserDisabled" -ErrorAction SilentlyContinue
-        Write-Log "GlobalUserDisabled (Ứng dụng ngầm): $val (1 là đã vô hiệu hóa)" "INFO"
+        Write-Log "GlobalUserDisabled (Ung dung ngam): $val (1 la a Disabling)" "INFO"
     }
     return "OK"
 }
@@ -17,7 +17,7 @@ function Apply-BackgroundApps {
         $Config
     )
     
-    Write-Log "Bắt đầu vô hiệu hóa ứng dụng UWP chạy ngầm..." "INFO"
+    Write-Log "Bat au Disabling ung dung UWP chay ngam..." "INFO"
     
     $appPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications"
     if (-not (Test-Path $appPath)) {
@@ -26,30 +26,30 @@ function Apply-BackgroundApps {
     
     Backup-RegistryValue -Path $appPath -ValueName "GlobalUserDisabled"
     
-    # GlobalUserDisabled = 1 (Tắt hoàn toàn các app Windows Store chạy ngầm vô bổ)
+    # GlobalUserDisabled = 1 (Tat hoan toan cac app Windows Store chay ngam vo bo)
     Set-ItemProperty -Path $appPath -Name "GlobalUserDisabled" -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
-    # Tắt chẩn đoán ứng dụng chạy ngầm của Windows Search
+    # Tat chan oan ung dung chay ngam cua Windows Search
     $searchPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search"
     if (Test-Path $searchPath) {
         Backup-RegistryValue -Path $searchPath -ValueName "BackgroundAppDiagnostic"
         Set-ItemProperty -Path $searchPath -Name "BackgroundAppDiagnostic" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     }
     
-    Write-Log "Đã vô hiệu hóa các ứng dụng chạy ngầm thành công." "SUCCESS"
+    Write-Log "a Disabling cac ung dung chay ngam Success." "SUCCESS"
 }
 
 function Restore-BackgroundApps {
-    Write-Log "Đang khôi phục ứng dụng chạy ngầm..." "INFO"
+    Write-Log "Currently Restore ung dung chay ngam..." "INFO"
 }
 
 function Verify-BackgroundApps {
-    Write-Log "Xác minh cấu hình ứng dụng chạy ngầm..." "INFO"
+    Write-Log "Xac minh Configuring ung dung chay ngam..." "INFO"
     $appPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications"
     if (Test-Path $appPath) {
         $val = Get-ItemPropertyValue -Path $appPath -Name "GlobalUserDisabled" -ErrorAction SilentlyContinue
         if ($val -eq 1) {
-            Write-Log "Xác minh ứng dụng ngầm thành công!" "SUCCESS"
+            Write-Log "Xac minh ung dung ngam Success!" "SUCCESS"
             return $true
         }
     }
@@ -57,7 +57,7 @@ function Verify-BackgroundApps {
 }
 
 function WriteLog-BackgroundApps {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

@@ -1,5 +1,5 @@
 # ui/Color.ps1
-# Định nghĩa bảng màu ANSI cho Valorant Optimize 1.0.0
+# inh nghia bang mau ANSI cho Valorant Optimize 1.0.0
 
 $esc = [char]27
 $Global:Colors = @{
@@ -40,7 +40,7 @@ $Global:Colors = @{
     BGGray       = "$esc[100m"
 }
 
-# Hàm ghi văn bản màu ra màn hình
+# Ham ghi van ban mau ra man hinh
 function Write-Ansi {
     param (
         [Parameter(Position=0, Mandatory=$true)]
@@ -76,7 +76,7 @@ function Write-Ansi {
     }
 }
 
-# Trả về chuỗi màu thay vì in ra trực tiếp (tiện cho vẽ khung phức tạp)
+# Tra ve chuoi mau thay vi in ra truc tiep (tien cho ve khung phuc tap)
 function Get-AnsiStr {
     param (
         [Parameter(Position=0, Mandatory=$true)]

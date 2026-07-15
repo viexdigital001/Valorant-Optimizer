@@ -1,19 +1,19 @@
-﻿# modules/Input.ps1
-# Module tối ưu hóa thời gian phản hồi đầu vào (Input Response) cho Valorant Optimize 1.0.0
+# modules/Input.ps1
+# Module Optimizing thoi gian phan hoi au vao (Input Response) cho Valorant Optimize 1.0.0
 
 function Check-Input {
-    Write-Log "Kiểm tra cấu hình hàng đợi Input (Mouse & Keyboard class parameters)..." "INFO"
+    Write-Log "Kiem tra Configuring hang oi Input (Mouse & Keyboard class parameters)..." "INFO"
     
     $mouPath = "HKLM:\SYSTEM\CurrentControlSet\Services\mouclass\Parameters"
     if (Test-Path $mouPath) {
         $mouQueue = Get-ItemPropertyValue -Path $mouPath -Name "MouseDataQueueSize" -ErrorAction SilentlyContinue
-        Write-Log "MouseDataQueueSize hiện tại: $mouQueue" "INFO"
+        Write-Log "MouseDataQueueSize hien tai: $mouQueue" "INFO"
     }
     
     $kbdPath = "HKLM:\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters"
     if (Test-Path $kbdPath) {
         $kbdQueue = Get-ItemPropertyValue -Path $kbdPath -Name "KeyboardDataQueueSize" -ErrorAction SilentlyContinue
-        Write-Log "KeyboardDataQueueSize hiện tại: $kbdQueue" "INFO"
+        Write-Log "KeyboardDataQueueSize hien tai: $kbdQueue" "INFO"
     }
     
     return "OK"
@@ -25,45 +25,45 @@ function Apply-Input {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu hóa hàng đợi Input (Mouse/Keyboard class)..." "INFO"
+    Write-Log "Bat au Optimizing hang oi Input (Mouse/Keyboard class)..." "INFO"
     
     $mouPath = "HKLM:\SYSTEM\CurrentControlSet\Services\mouclass\Parameters"
     $kbdPath = "HKLM:\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters"
     
     if (Test-Path $mouPath) {
         Backup-RegistryValue -Path $mouPath -ValueName "MouseDataQueueSize"
-        # Đặt kích thước hàng đợi chuột tối ưu (100 là chuẩn hiệu năng ổn định)
+        # at kich thuoc hang oi chuot toi uu (100 la chuan hieu nang on inh)
         Set-ItemProperty -Path $mouPath -Name "MouseDataQueueSize" -Value 100 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     }
     
     if (Test-Path $kbdPath) {
         Backup-RegistryValue -Path $kbdPath -ValueName "KeyboardDataQueueSize"
-        # Đặt kích thước hàng đợi bàn phím tối ưu
+        # at kich thuoc hang oi ban phim toi uu
         Set-ItemProperty -Path $kbdPath -Name "KeyboardDataQueueSize" -Value 100 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     }
     
-    # Tối ưu hóa phản hồi giao diện kéo thả cửa sổ và nhạy chuột
+    # Optimizing phan hoi giao dien keo tha cua so va nhay chuot
     $desktopPath = "HKCU:\Control Panel\Desktop"
     if (Test-Path $desktopPath) {
         Backup-RegistryValue -Path $desktopPath -ValueName "MenuShowDelay"
-        # Đặt độ trễ hiển thị menu về 0 (nhanh tức thì)
+        # at o tre hien thi menu ve 0 (nhanh tuc thi)
         Set-ItemProperty -Path $desktopPath -Name "MenuShowDelay" -Value "0" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     }
     
-    Write-Log "Tối ưu hóa hàng đợi thiết bị đầu vào hoàn tất!" "SUCCESS"
+    Write-Log "Optimizing hang oi thiet bi au vao Completed!" "SUCCESS"
 }
 
 function Restore-Input {
-    Write-Log "Đang khôi phục cài đặt Input..." "INFO"
+    Write-Log "Currently Restore cai at Input..." "INFO"
 }
 
 function Verify-Input {
-    Write-Log "Xác minh cấu hình Input..." "INFO"
+    Write-Log "Xac minh Configuring Input..." "INFO"
     return $true
 }
 
 function WriteLog-Input {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

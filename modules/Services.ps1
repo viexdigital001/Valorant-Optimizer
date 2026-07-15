@@ -1,8 +1,8 @@
-﻿# modules/Services.ps1
-# Module tối ưu hóa các Dịch vụ hệ thống (Services) cho Valorant Optimize 1.0.0
+# modules/Services.ps1
+# Module Optimizing cac Dich vu System (Services) cho Valorant Optimize 1.0.0
 
 function Check-Services {
-    Write-Log "Kiểm tra trạng thái các Services..." "INFO"
+    Write-Log "Kiem tra trang thai cac Services..." "INFO"
     $checkServices = @("Spooler", "RemoteRegistry", "MapsBroker", "DiagTrack", "dmwappushservice")
     foreach ($srvName in $checkServices) {
         $srv = Get-Service -Name $srvName -ErrorAction SilentlyContinue
@@ -19,25 +19,25 @@ function Apply-Services {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu hóa các Services..." "INFO"
+    Write-Log "Bat au Optimizing cac Services..." "INFO"
     
     $disableUnused = $Config.settings.services.DisableUnused
     if (-not $disableUnused) {
-        Write-Log "Bỏ qua tối ưu Services (Cấu hình profile không yêu cầu tắt)." "WARNING"
+        Write-Log "Bo qua toi uu Services (Configuring profile khong yeu cau tat)." "WARNING"
         return
     }
     
-    # Danh sách các dịch vụ không cần thiết khi chơi game và an toàn để tắt
+    # Danh sach cac dich vu khong can thiet khi choi game va an toan e tat
     $servicesToDisable = @(
-        "RemoteRegistry",     # Remote Registry (Không bao giờ cần, nguy cơ bảo mật)
-        "MapsBroker",         # Downloaded Maps Manager (Bản đồ offline của Windows)
-        "DiagTrack",          # Connected User Experiences and Telemetry (Thu thập dữ liệu)
+        "RemoteRegistry",     # Remote Registry (Khong bao gio can, nguy co bao mat)
+        "MapsBroker",         # Downloaded Maps Manager (Ban o offline cua Windows)
+        "DiagTrack",          # Connected User Experiences and Telemetry (Thu thap du lieu)
         "dmwappushservice",   # WAP Push Message Routing Service (Telemetry)
-        "Spooler"             # Print Spooler (In ấn, tắt tạm thời để giảm giật. Có thể bật lại nếu cần in)
+        "Spooler"             # Print Spooler (In an, tat tam thoi e giam giat. Co the bat lai neu can in)
     )
     
-    # Nếu là Desktop, có thể tắt thêm Bluetooth để tối đa tài nguyên
-    # (Laptop thường dùng chuột/tai nghe Bluetooth nên không tắt ở đây để an toàn)
+    # Neu la Desktop, co the tat them Bluetooth e toi a tai nguyen
+    # (Laptop thuong dung chuot/tai nghe Bluetooth nen khong tat o ay e an toan)
     $sysInfo = Get-SystemInfo
     if (-not $sysInfo.IsLaptop) {
         $servicesToDisable += "bthserv" # Bluetooth Support Service
@@ -48,29 +48,29 @@ function Apply-Services {
         if ($srv) {
             Backup-Service -ServiceName $srvName
             
-            # Dừng service nếu đang chạy
+            # Dung service neu Currently chay
             if ($srv.Status -eq "Running") {
                 Stop-Service -Name $srvName -Force -ErrorAction SilentlyContinue | Out-Null
             }
-            # Cấu hình Startup Type thành Disabled
+            # Configuring Startup Type thanh Disabled
             Set-Service -Name $srvName -StartupType Disabled -ErrorAction SilentlyContinue | Out-Null
-            Write-Log "Đã tắt và vô hiệu hóa dịch vụ: $srvName" "INFO"
+            Write-Log "Disabled va Disabling dich vu: $srvName" "INFO"
         }
     }
     
-    Write-Log "Tối ưu hóa các Services hoàn tất!" "SUCCESS"
+    Write-Log "Optimizing cac Services Completed!" "SUCCESS"
 }
 
 function Restore-Services {
-    Write-Log "Đang khôi phục cài đặt Services..." "INFO"
+    Write-Log "Currently Restore cai at Services..." "INFO"
 }
 
 function Verify-Services {
-    Write-Log "Xác minh các Services..." "INFO"
+    Write-Log "Xac minh cac Services..." "INFO"
     $srv = Get-Service -Name "RemoteRegistry" -ErrorAction SilentlyContinue
     if ($srv) {
         if ($srv.StartType -eq "Disabled") {
-            Write-Log "Xác minh Services thành công!" "SUCCESS"
+            Write-Log "Xac minh Services Success!" "SUCCESS"
             return $true
         }
     }
@@ -78,7 +78,7 @@ function Verify-Services {
 }
 
 function WriteLog-Services {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

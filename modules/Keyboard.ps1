@@ -1,8 +1,8 @@
-﻿# modules/Keyboard.ps1
-# Module tối ưu hóa bàn phím (Keyboard) cho Valorant Optimize 1.0.0
+# modules/Keyboard.ps1
+# Module Optimizing ban phim (Keyboard) cho Valorant Optimize 1.0.0
 
 function Check-Keyboard {
-    Write-Log "Kiểm tra cấu hình bàn phím..." "INFO"
+    Write-Log "Kiem tra Configuring ban phim..." "INFO"
     
     $kbPath = "HKCU:\Control Panel\Keyboard"
     if (Test-Path $kbPath) {
@@ -20,7 +20,7 @@ function Apply-Keyboard {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu hóa cài đặt bàn phím..." "INFO"
+    Write-Log "Bat au Optimizing cai at ban phim..." "INFO"
     
     $kbDelay = $Config.settings.keyboard.KeyboardDelay # 0
     $kbSpeed = $Config.settings.keyboard.KeyboardSpeed # 31
@@ -36,7 +36,7 @@ function Apply-Keyboard {
     Set-ItemProperty -Path $kbPath -Name "KeyboardDelay" -Value $kbDelay -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $kbPath -Name "KeyboardSpeed" -Value $kbSpeed -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     
-    # 2. Vô hiệu hóa phím tắt Accessibility để tránh nhảy ra Popup Sticky Keys/Filter Keys khi chơi game
+    # 2. Disabling phim tat Accessibility e tranh nhay ra Popup Sticky Keys/Filter Keys khi choi game
     $stickyPath = "HKCU:\Control Panel\Accessibility\StickyKeys"
     $filterPath = "HKCU:\Control Panel\Accessibility\Keyboard Response"
     $togglePath = "HKCU:\Control Panel\Accessibility\ToggleKeys"
@@ -49,27 +49,27 @@ function Apply-Keyboard {
     Backup-RegistryValue -Path $filterPath -ValueName "Flags"
     Backup-RegistryValue -Path $togglePath -ValueName "Flags"
     
-    # Flags = 506 (Tắt phím tắt Shift 5 lần cho Sticky Keys)
+    # Flags = 506 (Tat phim tat Shift 5 lan cho Sticky Keys)
     Set-ItemProperty -Path $stickyPath -Name "Flags" -Value "506" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
-    # Flags = 122 (Tắt phím tắt Filter Keys)
+    # Flags = 122 (Tat phim tat Filter Keys)
     Set-ItemProperty -Path $filterPath -Name "Flags" -Value "122" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
-    # Flags = 58 (Tắt phím tắt Toggle Keys)
+    # Flags = 58 (Tat phim tat Toggle Keys)
     Set-ItemProperty -Path $togglePath -Name "Flags" -Value "58" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     
-    Write-Log "Đã vô hiệu hóa các phím tắt Sticky Keys, Filter Keys và Toggle Keys." "SUCCESS"
+    Write-Log "a Disabling cac phim tat Sticky Keys, Filter Keys va Toggle Keys." "SUCCESS"
 }
 
 function Restore-Keyboard {
-    Write-Log "Đang khôi phục cài đặt bàn phím..." "INFO"
+    Write-Log "Currently Restore cai at ban phim..." "INFO"
 }
 
 function Verify-Keyboard {
-    Write-Log "Xác minh cấu hình bàn phím..." "INFO"
+    Write-Log "Xac minh Configuring ban phim..." "INFO"
     $kbPath = "HKCU:\Control Panel\Keyboard"
     if (Test-Path $kbPath) {
         $delay = Get-ItemPropertyValue -Path $kbPath -Name "KeyboardDelay" -ErrorAction SilentlyContinue
         if ($delay -eq "0" -or $delay -eq "1") {
-            Write-Log "Xác minh bàn phím thành công!" "SUCCESS"
+            Write-Log "Xac minh ban phim Success!" "SUCCESS"
             return $true
         }
     }
@@ -77,7 +77,7 @@ function Verify-Keyboard {
 }
 
 function WriteLog-Keyboard {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

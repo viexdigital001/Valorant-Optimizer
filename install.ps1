@@ -1,42 +1,42 @@
 # install.ps1
-# Script cài đặt và khởi chạy cho Valorant Optimize 1.0.0
+# Script cai at va khoi chay cho Valorant Optimize 1.0.0
 
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host "   VALORANT OPTIMIZE 1.0.0 INSTALLER     " -ForegroundColor Cyan -BackgroundColor Black
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "Đang kiểm tra môi trường hệ thống..." -ForegroundColor Yellow
+Write-Host "Checking system environment..." -ForegroundColor Yellow
 
-# 1. Kiểm tra quyền Administrator
+# 1. Kiem tra quyen Administrator
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal($identity)
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "⚠️ Đang tự động yêu cầu quyền Administrator để tối ưu hệ thống..." -ForegroundColor Yellow
+    Write-Host "[!] Automatically requesting Administrator privileges for optimization..." -ForegroundColor Yellow
     try {
         if ($PSCommandPath) {
             Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
         } else {
-            # Nếu chạy online qua iex, gọi trực tiếp link repo của user không dùng nháy kép
+            # Neu chay online qua iex, goi truc tiep link repo cua user khong dung nhay kep
             $onlineUrl = "https://raw.githubusercontent.com/viexdigital001/Valorant-Optimizer/main/install.ps1"
             Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm $onlineUrl | iex`"" -Verb RunAs
         }
         Exit
     } catch {
-        Write-Host "⚠️ LỖI: Ae chưa đồng ý cấp quyền Administrator! Không thể tối ưu được rồi." -ForegroundColor Red
-        Write-Host "Ấn phím bất kỳ để thoát..." -ForegroundColor Gray
+        Write-Host "[X] ERROR: Administrator privileges not granted! Cannot proceed." -ForegroundColor Red
+        Write-Host "Press any key to exit..." -ForegroundColor Gray
         Read-Host | Out-Null
         Exit
     }
 }
 
-# 2. Kiểm tra phiên bản PowerShell
+# 2. Kiem tra phien ban PowerShell
 if ($PSVersionTable.PSVersion.Major -lt 5) {
-    Write-Error "⚠️ LỖI: Dự án yêu cầu tối thiểu PowerShell 5.1! Phiên bản hiện tại của bạn là: $($PSVersionTable.PSVersion.Major)"
-    Write-Host "Ấn phím bất kỳ để thoát..."
+    Write-Error "[X] ERROR: Project requires at least PowerShell 5.1! Your current version is: $($PSVersionTable.PSVersion.Major)"
+    Write-Host "Press any key to exit..."
     [Console]::ReadKey($true) | Out-Null
     Exit
 }
 
-# 3. Xác định thư mục làm việc và Đồng bộ hóa mã nguồn từ GitHub
+# 3. Xac inh thu muc lam viec va ong bo hoa ma nguon tu GitHub
 $scriptDir = $PSScriptRoot
 $isValidLocalDir = $false
 
@@ -50,15 +50,15 @@ if (-not $isValidLocalDir) {
     $scriptDir = Join-Path $env:USERPROFILE "ValorantOptimize"
 }
 
-# Tạo thư mục làm việc nếu chưa có
+# Tao thu muc lam viec neu chua co
 if (-not (Test-Path $scriptDir)) {
     New-Item -ItemType Directory -Path $scriptDir -Force | Out-Null
 }
 
-# Nếu không chạy offline (hoặc thiếu file), tiến hành tải từ GitHub
+# Neu khong chay offline (hoac thieu file), tien hanh tai tu GitHub
 $mainPath = Join-Path $scriptDir "main.ps1"
 if (-not (Test-Path $mainPath) -or ($PSScriptRoot -eq $null -or $PSScriptRoot -eq "")) {
-    Write-Host "📡 Đang đồng bộ hóa mã nguồn mới nhất từ GitHub..." -ForegroundColor Yellow
+    Write-Host "[*] Syncing latest source code from GitHub..." -ForegroundColor Yellow
     
     $githubRepo = "viexdigital001/Valorant-Optimizer"
     $rawBaseUrl = "https://raw.githubusercontent.com/$githubRepo/main"
@@ -103,7 +103,7 @@ if (-not (Test-Path $mainPath) -or ($PSScriptRoot -eq $null -or $PSScriptRoot -e
         "modules/Cleanup.ps1"
     )
     
-    # Ép sử dụng giao thức bảo mật TLS 1.2
+    # Ep su dung giao thuc bao mat TLS 1.2
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     
     $idx = 0
@@ -116,24 +116,24 @@ if (-not (Test-Path $mainPath) -or ($PSScriptRoot -eq $null -or $PSScriptRoot -e
         }
         
         $remoteUrl = "$rawBaseUrl/$relPath"
-        Write-Host "[$idx/$($filesToDownload.Count)] Tải xuống: $relPath" -ForegroundColor Gray
+        Write-Host "[$idx/$($filesToDownload.Count)] Downloading: $relPath" -ForegroundColor Gray
         
         try {
             Invoke-WebRequest -Uri $remoteUrl -OutFile $localPath -ErrorAction Stop
         } catch {
-            Write-Host "⚠️ LỖI khi tải file $relPath : $_" -ForegroundColor Red
-            Write-Host "Ấn phím bất kỳ để thoát..." -ForegroundColor Gray
+            Write-Host "[X] ERROR downloading file $relPath : $_" -ForegroundColor Red
+            Write-Host "Press any key to exit..." -ForegroundColor Gray
             Read-Host | Out-Null
             Exit
         }
     }
-    Write-Host "✔ Đồng bộ hóa hoàn tất!" -ForegroundColor Green
+    Write-Host "[V] Synchronization complete!" -ForegroundColor Green
 }
 
-Write-Host "✔ Môi trường hợp lệ. Đang khởi chạy Valorant Optimize..." -ForegroundColor Green
+Write-Host "[V] Environment is valid. Launching Valorant Optimize..." -ForegroundColor Green
 Start-Sleep -Seconds 1
 
-# 4. Khởi chạy Main
+# 4. Khoi chay Main
 $cmd = "Set-Location -Path '$scriptDir'; & '$mainPath'"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $cmd
 

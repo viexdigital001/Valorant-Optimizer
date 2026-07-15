@@ -1,11 +1,11 @@
-﻿# main.ps1
-# Điểm bắt đầu chính (Main Entrypoint) của ứng dụng Valorant Optimize 1.0.0
+# main.ps1
+# iem bat au chinh (Main Entrypoint) cua ung dung Valorant Optimize 1.0.0
 
-# 1. Kiểm tra quyền Administrator
+# 1. Kiem tra quyen Administrator
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal($identity)
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "⚠️ Đang tự động yêu cầu quyền Administrator để chạy tối ưu..." -ForegroundColor Yellow
+    Write-Host "[!] Automatically requesting Administrator privileges..." -ForegroundColor Yellow
     try {
         if ($PSCommandPath) {
             Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
@@ -14,44 +14,44 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
         }
         Exit
     } catch {
-        Write-Host "⚠️ LỖI CỰC MẠNH: Ae chưa cấp quyền Administrator cho phần mềm!" -ForegroundColor Red
-        Write-Host "Ấn phím bất kỳ để thoát..." -ForegroundColor Gray
+        Write-Host "[X] FATAL ERROR: Administrator privileges not granted!" -ForegroundColor Red
+        Write-Host "Press any key to exit..." -ForegroundColor Gray
         Read-Host | Out-Null
         Exit
     }
 }
 
-# 2. Nạp Loader và khởi tạo dự án
+# 2. Nap Loader va khoi tao du an
 $PSScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
 . (Join-Path $PSScriptRoot "core\Loader.ps1")
 Initialize-Project
 
-# 3. Màn hình mở đầu (Loading & Logo)
+# 3. Man hinh mo au (Loading & Logo)
 Draw-StartupLogo
 
-# 4. Vòng lặp giao diện chính
+# 4. Vong lap giao dien chinh
 $menuItems = @(
-    $Global:Lang.menu.dashboard,
-    $Global:Lang.menu.optimize,
-    $Global:Lang.menu.oneclick,
-    $Global:Lang.menu.restore,
-    "Nhật ký (Log)",
-    $Global:Lang.menu.about,
-    $Global:Lang.menu.exit
+    "Dashboard",
+    "Optimize Mode",
+    "One Click Optimize",
+    "Restore",
+    "Log",
+    "About",
+    "Exit"
 )
 
 $activeMenu = 0
-$sysInfo = Get-SystemInfo # Thu thập thông tin ban đầu
+$sysInfo = Get-SystemInfo # Thu thap thong tin ban au
 
 function Show-Dashboard {
     Clear-ContentArea
     Move-Cursor 28 2
-    Write-Ansi "💻 DASHBOARD TRẠNG THÁI HỆ THỐNG" -Color "BrightCyan" -Bold
-    Draw-HorizontalLine 28 3 85 "═" "Gray"
+    Write-Ansi "[ SYSTEM STATUS DASHBOARD ]" -Color "BrightCyan" -Bold
+    Draw-HorizontalLine 28 3 85 "-" "Gray"
     
-    # Vẽ các cột thông tin
+    # Ve cac cot thong tin
     Move-Cursor 28 5
-    Write-Ansi "THÔNG TIN PHẦN CỨNG" -Color "BrightWhite" -Underline
+    Write-Ansi "HARDWARE INFO" -Color "BrightWhite" -Underline
     
     Move-Cursor 28 7
     Write-Ansi "CPU: " -Color "Gray" -NoNewLine
@@ -70,96 +70,96 @@ function Show-Dashboard {
     Write-Ansi $sysInfo.OSName -Color "BrightCyan"
     
     Move-Cursor 28 12
-    Write-Ansi "CẤU HÌNH TỐI ƯU HIỆN TẠI" -Color "BrightWhite" -Underline
+    Write-Ansi "CURRENT CONFIGURATION" -Color "BrightWhite" -Underline
     
-    # Trạng thái Game Mode
+    # Trang thai Game Mode
     Move-Cursor 28 14
     Write-Ansi "Game Mode: " -Color "Gray" -NoNewLine
     if ($sysInfo.GameMode) {
-        Write-Ansi "🟢 Đang bật" -Color "BrightGreen"
+        Write-Ansi "[V] Enabled" -Color "BrightGreen"
     } else {
-        Write-Ansi "🔴 Đang tắt" -Color "BrightRed"
+        Write-Ansi "[X] Disabled" -Color "BrightRed"
     }
     
-    # Trạng thái VBS
+    # Trang thai VBS
     Move-Cursor 28 15
     Write-Ansi "Virtualization-Based Security (VBS): " -Color "Gray" -NoNewLine
     if ($sysInfo.VBS) {
-        Write-Ansi "🔴 Đang bật (Nặng máy khi game)" -Color "BrightRed"
+        Write-Ansi "[!] Enabled (Reduces Gaming Performance)" -Color "BrightRed"
     } else {
-        Write-Ansi "🟢 Đang tắt (Tối ưu)" -Color "BrightGreen"
+        Write-Ansi "[V] Disabled (Optimized)" -Color "BrightGreen"
     }
     
-    # Trạng thái Memory Integrity
+    # Trang thai Memory Integrity
     Move-Cursor 28 16
     Write-Ansi "Memory Integrity (HVCI): " -Color "Gray" -NoNewLine
     if ($sysInfo.MemoryIntegrity) {
-        Write-Ansi "🔴 Đang bật" -Color "BrightRed"
+        Write-Ansi "[!] Enabled" -Color "BrightRed"
     } else {
-        Write-Ansi "🟢 Đang tắt" -Color "BrightGreen"
+        Write-Ansi "[V] Disabled" -Color "BrightGreen"
     }
     
-    # Trạng thái Power Plan
+    # Trang thai Power Plan
     Move-Cursor 28 17
-    Write-Ansi "Sơ đồ nguồn (Power Plan): " -Color "Gray" -NoNewLine
+    Write-Ansi "Power Plan: " -Color "Gray" -NoNewLine
     if ($sysInfo.PowerPlanName -match "Ultimate") {
-        Write-Ansi "🟢 $($sysInfo.PowerPlanName)" -Color "BrightGreen" -Bold
+        Write-Ansi "[V] $($sysInfo.PowerPlanName)" -Color "BrightGreen" -Bold
     } else {
-        Write-Ansi "🟡 $($sysInfo.PowerPlanName) (Khuyên dùng Ultimate)" -Color "BrightYellow"
+        Write-Ansi "[i] $($sysInfo.PowerPlanName) (Ultimate is Recommended)" -Color "BrightYellow"
     }
     
-    # Trạng thái Valorant
+    # Trang thai Valorant
     Move-Cursor 28 18
     Write-Ansi "Valorant: " -Color "Gray" -NoNewLine
     if ($sysInfo.ValorantInstalled) {
-        Write-Ansi "🟢 Đã cài đặt" -Color "BrightGreen"
+        Write-Ansi "[V] Installed" -Color "BrightGreen"
     } else {
-        Write-Ansi "🔴 Chưa cài đặt" -Color "BrightRed"
+        Write-Ansi "[X] Not Installed" -Color "BrightRed"
     }
     
     Move-Cursor 28 20
     Write-Ansi "Riot Vanguard: " -Color "Gray" -NoNewLine
     if ($sysInfo.VanguardInstalled) {
-        Write-Ansi "🟢 Đang hoạt động" -Color "BrightGreen"
+        Write-Ansi "[V] Running" -Color "BrightGreen"
     } else {
-        Write-Ansi "🔴 Chưa cài/chưa chạy" -Color "BrightRed"
+        Write-Ansi "[X] Not Running/Installed" -Color "BrightRed"
     }
     
     Move-Cursor 28 22
-    Write-Ansi "Phân loại Profile: " -Color "Gray" -NoNewLine
+    Write-Ansi "Profile Classification: " -Color "Gray" -NoNewLine
     Write-Ansi $sysInfo.DeviceProfile -Color "BrightYellow" -Bold
     
-    # Footer nhỏ hướng dẫn
+    # Footer nho huong dan
     Move-Cursor 28 26
-    Write-Ansi "💡 Mẹo Gen Z: Hãy dùng phím mũi tên bên trái để chuyển qua 'One Click' hoặc 'Optimize Mode' nha ae!" -Color "Gray"
+    Write-Ansi "[i] Tip: Use Up/Down arrows to navigate and Enter to select!" -Color "Gray"
 }
 
 function Show-OptimizePage {
     Clear-ContentArea
     Move-Cursor 28 2
-    Write-Ansi "⚡ CHỌN CHẾ ĐỘ TỐI ƯU HỦY DIỆT" -Color "BrightCyan" -Bold
-    Draw-HorizontalLine 28 3 85 "═" "Gray"
+    Write-Ansi "[ OPTIMIZE MODE ]" -Color "BrightCyan" -Bold
+    Draw-HorizontalLine 28 3 85 "-" "Gray"
     
     $optItems = @(
-        "🟢 Competitive (Khuyên dùng cho Tryharder)",
-        "🔵 Balanced (Mượt vừa phải, giữ pin ổn định)",
-        "🔴 Extreme (Vắt kiệt phần cứng, tắt bảo mật)",
-        "◀ Quay lại Menu chính"
+        "[V] Competitive (Recommended for Tryharders)",
+        "[~] Balanced (Smooth, keeps battery stable)",
+        "[!] Extreme (Max performance, disables security)",
+        "< Go back to Main Menu"
     )
     
     $sel = 0
     $subLoop = $true
     
     while ($subLoop) {
-        # Vẽ danh sách chế độ
+        # Ve danh sach che o
         for ($i = 0; $i -lt $optItems.Count; $i++) {
             Move-Cursor 30 (6 + $i * 2)
             if ($i -eq $sel) {
-                Write-Ansi "▶ $($optItems[$i])" -Color "BrightCyan" -Bold
+                Write-Ansi "> $($optItems[$i])" -Color "BrightCyan" -Bold
             } else {
                 Write-Ansi "  $($optItems[$i])" -Color "White"
             }
-            # Thêm khoảng trắng đệm
+            # Them khoang trang em
             Write-Host (" " * 15) -NoNewLine
         }
         
@@ -186,27 +186,27 @@ function Show-OptimizePage {
                         $configObj = $Global:ConfigExtreme
                     }
                     
-                    # Xác nhận trước khi áp dụng
-                    $msg = "Bạn có chắc chắn muốn áp dụng tối ưu chế độ $profileName không?"
+                    # Xac nhan truoc khi ap dung
+                    $msg = "Are you sure you want to apply the $profileName profile?"
                     if ($profileName -eq "Extreme") {
-                        $msg = "⚠️ CHÚ Ý: Chế độ Extreme có thể làm yếu bảo mật hệ thống. Vẫn chơi chứ ae?"
+                        $msg = "[!] WARNING: Extreme mode may weaken system security. Proceed anyway?"
                     }
                     
                     $confirm = Get-Confirmation -PromptMessage $msg -Row 15
                     if ($confirm) {
                         Clear-ContentArea
                         Move-Cursor 28 5
-                        Write-Ansi "Đang tiến hành tối ưu hóa profile: $profileName..." -Color "BrightCyan"
+                        Write-Ansi "Optimizing profile: $profileName..." -Color "BrightCyan"
                         Start-BackupSession
                         
-                        # Chạy Apply cho tất cả module
+                        # Chay Apply cho tat ca module
                         $successCount = 0
                         $modules = @("CPU", "GPU", "RAM", "Storage", "PowerPlan", "Timer", "MMCSS", "Services", "Network", "Mouse", "Keyboard", "Input", "Audio", "Security", "Telemetry", "Xbox", "GameMode", "GameStart", "BackgroundApps", "Visual", "Process", "Cleanup")
                         
                         $p = 0
                         foreach ($mName in $modules) {
                             $p += 4
-                            Draw-ProgressBar 28 7 $p "Đang cấu hình $mName..."
+                            Draw-ProgressBar 28 7 $p "Configuring $mName..."
                             $applyFunc = "Apply-$mName"
                             if (Get-Command $applyFunc -ErrorAction SilentlyContinue) {
                                 try {
@@ -220,12 +220,12 @@ function Show-OptimizePage {
                         Save-BackupSession
                         
                         Move-Cursor 28 10
-                        Write-Ansi "🎉 Đã tối ưu xong chế độ $profileName cho máy của bạn!" -Color "BrightGreen" -Bold
+                        Write-Ansi "[V] Successfully optimized $profileName profile!" -Color "BrightGreen" -Bold
                         Move-Cursor 28 11
-                        Write-Ansi "Vui lòng khởi động lại máy để chiến game mượt đét nhé! 🚀" -Color "BrightYellow"
+                        Write-Ansi "Please restart your PC for the changes to take effect! [*]" -Color "BrightYellow"
                         
                         Move-Cursor 28 13
-                        Write-Ansi $Global:Lang.general.press_key -Color "Gray"
+                        Write-Ansi "Press any key to continue..." -Color "Gray"
                         [Console]::ReadKey($true) | Out-Null
                     }
                     $subLoop = $false
@@ -237,7 +237,7 @@ function Show-OptimizePage {
         }
     }
     
-    # Reload lại thông tin
+    # Reload lai thong tin
     $Global:sysInfo = Get-SystemInfo
     Show-Dashboard
 }
@@ -245,21 +245,21 @@ function Show-OptimizePage {
 function Show-RestorePage {
     Clear-ContentArea
     Move-Cursor 28 2
-    Write-Ansi "🔄 HOÀN TRẢ CÀI ĐẶT HỆ THỐNG" -Color "BrightCyan" -Bold
-    Draw-HorizontalLine 28 3 85 "═" "Gray"
+    Write-Ansi "[ RESTORE SYSTEM CONFIGURATION ]" -Color "BrightCyan" -Bold
+    Draw-HorizontalLine 28 3 85 "-" "Gray"
     
     $backups = Get-BackupList
     if ($backups.Count -eq 0) {
         Move-Cursor 28 5
-        Write-Ansi "Không tìm thấy bản sao lưu snapshot nào trong hệ thống!" -Color "BrightRed"
+        Write-Ansi "No backup snapshots found in the system!" -Color "BrightRed"
         Move-Cursor 28 7
-        Write-Ansi $Global:Lang.general.press_key -Color "Gray"
+        Write-Ansi "Press any key to continue..." -Color "Gray"
         [Console]::ReadKey($true) | Out-Null
         return
     }
     
     Move-Cursor 28 5
-    Write-Ansi "Chọn bản sao lưu muốn khôi phục:" -Color "BrightWhite"
+    Write-Ansi "Select a backup to restore:" -Color "BrightWhite"
     
     $sel = 0
     $subLoop = $true
@@ -269,7 +269,7 @@ function Show-RestorePage {
             Move-Cursor 30 (7 + $i)
             $folderName = $backups[$i].Name
             if ($i -eq $sel) {
-                Write-Ansi "▶ $folderName" -Color "BrightCyan" -Bold
+                Write-Ansi "> $folderName" -Color "BrightCyan" -Bold
             } else {
                 Write-Ansi "  $folderName" -Color "White"
             }
@@ -277,9 +277,9 @@ function Show-RestorePage {
         
         Move-Cursor 30 (7 + $backups.Count + 1)
         if ($sel -eq $backups.Count) {
-            Write-Ansi "▶ ◀ Quay lại" -Color "BrightCyan" -Bold
+            Write-Ansi "> < Go back" -Color "BrightCyan" -Bold
         } else {
-            Write-Ansi "  Quay lại" -Color "White"
+            Write-Ansi "  Go back" -Color "White"
         }
         
         $key = [Console]::ReadKey($true)
@@ -295,19 +295,19 @@ function Show-RestorePage {
                     $subLoop = $false
                 } else {
                     $selectedBackup = $backups[$sel].FullName
-                    $confirm = Get-Confirmation -PromptMessage "Bạn có muốn khôi phục lại bản snapshot này không?" -Row 16
+                    $confirm = Get-Confirmation -PromptMessage "Do you want to restore this snapshot?" -Row 16
                     if ($confirm) {
                         Clear-ContentArea
                         Move-Cursor 28 5
-                        Write-Ansi "Đang khôi phục cài đặt..." -Color "BrightCyan"
+                        Write-Ansi "Restoring configuration..." -Color "BrightCyan"
                         
-                        # Chạy khôi phục
+                        # Chay khoi phuc
                         Restore-Snapshot -BackupDir $selectedBackup
                         
                         Move-Cursor 28 10
-                        Write-Ansi "🎉 Khôi phục hoàn tất! Khởi động lại máy nha ae!" -Color "BrightGreen" -Bold
+                        Write-Ansi "[V] Restore completed! Please restart your PC." -Color "BrightGreen" -Bold
                         Move-Cursor 28 12
-                        Write-Ansi $Global:Lang.general.press_key -Color "Gray"
+                        Write-Ansi "Press any key to continue..." -Color "Gray"
                         [Console]::ReadKey($true) | Out-Null
                     }
                     $subLoop = $false
@@ -326,18 +326,18 @@ function Show-RestorePage {
 function Show-LogPage {
     Clear-ContentArea
     Move-Cursor 28 2
-    Write-Ansi "📜 NHẬT KÝ HOẠT ĐỘNG (LOG FILE)" -Color "BrightCyan" -Bold
-    Draw-HorizontalLine 28 3 85 "═" "Gray"
+    Write-Ansi "[ ACTIVITY LOG ]" -Color "BrightCyan" -Bold
+    Draw-HorizontalLine 28 3 85 "-" "Gray"
     
     if (Test-Path $Global:LogFilePath) {
         $logs = Get-Content -Path $Global:LogFilePath -Tail 20
         $row = 5
         foreach ($line in $logs) {
             Move-Cursor 28 $row
-            # Cắt bớt dòng dài
+            # Cat bot dong dai
             $trimmed = if ($line.Length -gt 88) { $line.Substring(0, 85) + "..." } else { $line }
             
-            # Tô màu log line
+            # To mau log line
             if ($trimmed -match "\[SUCCESS\]") {
                 Write-Ansi $trimmed -Color "BrightGreen"
             } elseif ($trimmed -match "\[WARNING\]") {
@@ -351,60 +351,60 @@ function Show-LogPage {
         }
     } else {
         Move-Cursor 28 5
-        Write-Ansi "Chưa có log file nào được tạo." -Color "Gray"
+        Write-Ansi "No log file found." -Color "Gray"
     }
     
     Move-Cursor 28 27
-    Write-Ansi "Nhấn phím bất kỳ để quay lại menu..." -Color "Gray"
+    Write-Ansi "Press any key to return to menu..." -Color "Gray"
     [Console]::ReadKey($true) | Out-Null
 }
 
 function Show-AboutPage {
     Clear-ContentArea
     Move-Cursor 28 2
-    Write-Ansi "ℹ GIỚI THIỆU PHẦN MỀM" -Color "BrightCyan" -Bold
-    Draw-HorizontalLine 28 3 85 "═" "Gray"
+    Write-Ansi "[ ABOUT ]" -Color "BrightCyan" -Bold
+    Draw-HorizontalLine 28 3 85 "-" "Gray"
     
     Move-Cursor 30 6
-    Write-Ansi "🎮 Valorant Optimize 1.0.0" -Color "BrightWhite" -Bold
+    Write-Ansi "[*] Valorant Optimize 1.0.0" -Color "BrightWhite" -Bold
     Move-Cursor 30 8
-    Write-Ansi "• Tác giả: " -Color "Gray" -NoNewLine
+    Write-Ansi "- Author: " -Color "Gray" -NoNewLine
     Write-Ansi "VieX Digital & VieX Studio" -Color "BrightCyan" -Bold
     
     Move-Cursor 30 10
-    Write-Ansi "• Mục tiêu: " -Color "Gray" -NoNewLine
-    Write-Ansi "Mang lại trải nghiệm FPS mượt mà và giảm độ trễ chuột/phím" -Color "BrightWhite"
+    Write-Ansi "- Goal: " -Color "Gray" -NoNewLine
+    Write-Ansi "Provide a smooth FPS experience and reduce input lag" -Color "BrightWhite"
     Move-Cursor 32 11
-    Write-Ansi "để ae leo rank Valorant dễ dàng hơn mà không bị khựng combat." -Color "BrightWhite"
+    Write-Ansi "so you can climb ranks in Valorant without stuttering." -Color "BrightWhite"
     
     Move-Cursor 30 13
-    Write-Ansi "• Bản quyền: " -Color "Gray" -NoNewLine
-    Write-Ansi "Tự do chia sẻ và phi thương mại. Bảo hiểm khôi phục 100%." -Color "BrightWhite"
+    Write-Ansi "- License: " -Color "Gray" -NoNewLine
+    Write-Ansi "Free to share, non-commercial. 100% restoration guarantee." -Color "BrightWhite"
     
     Move-Cursor 30 16
-    Write-Ansi "👉 Discord liên hệ hỗ trợ: " -Color "Gray" -NoNewLine
+    Write-Ansi "- Discord Support: " -Color "Gray" -NoNewLine
     Write-Ansi "https://discord.gg/VieX" -Color "BrightBlue" -Underline
     
     Move-Cursor 28 22
-    Write-Ansi "Mẹo Gen Z: Trò chơi điện tử là để giải trí, nhớ giữ gìn sức khỏe nhé ae! 🤙" -Color "BrightYellow"
+    Write-Ansi "[i] Tip: Video games are for entertainment, remember to take care of your health!" -Color "BrightYellow"
     
     Move-Cursor 28 26
-    Write-Ansi "Nhấn phím bất kỳ để quay lại menu..." -Color "Gray"
+    Write-Ansi "Press any key to return to menu..." -Color "Gray"
     [Console]::ReadKey($true) | Out-Null
 }
 
-# Khởi tạo vẽ layout chính
+# Khoi tao ve layout chinh
 Draw-Layout
 Show-Dashboard
 
-# Vòng lặp menu chính
+# Vong lap menu chinh
 $running = $true
 while ($running) {
-    # Vẽ lại menu sidebar để highlight mục hiện tại
+    # Ve lai menu sidebar e highlight muc hien tai
     $sel = Get-MenuSelection $menuItems $activeMenu
     
     if ($sel -eq -1) {
-        # Nếu nhấn ESC ngoài menu chính
+        # Neu nhan ESC ngoai menu chinh
         continue
     }
     
@@ -418,11 +418,11 @@ while ($running) {
         4 { Show-LogPage; Show-Dashboard }
         5 { Show-AboutPage; Show-Dashboard }
         6 {
-            # Thoát ứng dụng
+            # Thoat ung dung
             Clear-Screen
             Move-Cursor 0 0
             [Console]::CursorVisible = $true
-            Write-Ansi $Global:Lang.general.exit_msg -Color "BrightYellow"
+            Write-Ansi "Exiting Valorant Optimize..." -Color "BrightYellow"
             $running = $false
         }
     }

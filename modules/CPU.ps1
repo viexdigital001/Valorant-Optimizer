@@ -1,25 +1,25 @@
-﻿# modules/CPU.ps1
-# Module tối ưu CPU cho Valorant Optimize 1.0.0
+# modules/CPU.ps1
+# Module toi uu CPU cho Valorant Optimize 1.0.0
 
 function Check-CPU {
-    Write-Log "Kiểm tra cấu hình CPU hiện tại..." "INFO"
+    Write-Log "Kiem tra Configuring CPU hien tai..." "INFO"
     $status = "OK"
     
-    # Kiểm tra Win32PrioritySeparation
+    # Kiem tra Win32PrioritySeparation
     $priPath = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
     if (Test-Path $priPath) {
         $val = Get-ItemPropertyValue -Path $priPath -Name "Win32PrioritySeparation" -ErrorAction SilentlyContinue
-        Write-Log "Win32PrioritySeparation hiện tại: $val" "INFO"
+        Write-Log "Win32PrioritySeparation hien tai: $val" "INFO"
     }
     
-    # Kiểm tra cấu hình ưu tiên tiến trình cho Valorant
+    # Kiem tra Configuring uu tien tien trinh cho Valorant
     $valPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\VALORANT-Win64-Shipping.exe\PerfOptions"
     if (Test-Path $valPath) {
         $cpuPri = Get-ItemPropertyValue -Path $valPath -Name "CpuPriorityClass" -ErrorAction SilentlyContinue
         $ioPri = Get-ItemPropertyValue -Path $valPath -Name "IoPriority" -ErrorAction SilentlyContinue
-        Write-Log "Độ ưu tiên CPU Valorant hiện tại: $cpuPri, IO: $ioPri" "INFO"
+        Write-Log "o uu tien CPU Valorant hien tai: $cpuPri, IO: $ioPri" "INFO"
     } else {
-        Write-Log "Chưa cấu hình độ ưu tiên riêng cho Valorant." "INFO"
+        Write-Log "Chua Configuring o uu tien rieng cho Valorant." "INFO"
     }
     
     return $status
@@ -31,23 +31,23 @@ function Apply-CPU {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu CPU..." "INFO"
+    Write-Log "Bat au toi uu CPU..." "INFO"
     
-    # Lấy các thiết lập từ config profile
+    # Lay cac thiet lap tu config profile
     $win32Pri = $Config.settings.cpu.Win32PrioritySeparation
     $priority = $Config.settings.cpu.Priority # High
     $ioPriority = $Config.settings.cpu.IoPriority # High
     
-    # 1. Tối ưu Win32PrioritySeparation
+    # 1. Toi uu Win32PrioritySeparation
     $priPath = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
     if (-not (Test-Path $priPath)) {
         New-Item -Path $priPath -Force | Out-Null
     }
     Backup-RegistryValue -Path $priPath -ValueName "Win32PrioritySeparation"
     Set-ItemProperty -Path $priPath -Name "Win32PrioritySeparation" -Value $win32Pri -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
-    Write-Log "Đã cấu hình Win32PrioritySeparation thành $win32Pri" "INFO"
+    Write-Log "a Configuring Win32PrioritySeparation thanh $win32Pri" "INFO"
     
-    # 2. Tối ưu độ ưu tiên của Valorant
+    # 2. Toi uu o uu tien cua Valorant
     $valPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\VALORANT-Win64-Shipping.exe\PerfOptions"
     if (-not (Test-Path $valPath)) {
         New-Item -Path $valPath -Force | Out-Null
@@ -67,16 +67,16 @@ function Apply-CPU {
     Set-ItemProperty -Path $valPath -Name "CpuPriorityClass" -Value $cpuPriVal -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $valPath -Name "IoPriority" -Value $ioPriVal -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
-    Write-Log "Đã cấu hình CPU Priority Class = $cpuPriVal và IO Priority = $ioPriVal cho Valorant" "SUCCESS"
+    Write-Log "a Configuring CPU Priority Class = $cpuPriVal va IO Priority = $ioPriVal cho Valorant" "SUCCESS"
 }
 
 function Restore-CPU {
-    Write-Log "Đang khôi phục cài đặt CPU..." "INFO"
-    # Logic Restore toàn cục sẽ nạp và xử lý từ snapshot backup
+    Write-Log "Currently Restore cai at CPU..." "INFO"
+    # Logic Restore toan cuc se nap va xu ly tu snapshot backup
 }
 
 function Verify-CPU {
-    Write-Log "Xác minh cấu hình CPU..." "INFO"
+    Write-Log "Xac minh Configuring CPU..." "INFO"
     $priPath = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
     $valPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\VALORANT-Win64-Shipping.exe\PerfOptions"
     
@@ -93,15 +93,15 @@ function Verify-CPU {
     }
     
     if ($check1 -and $check2) {
-        Write-Log "Xác minh CPU thành công!" "SUCCESS"
+        Write-Log "Xac minh CPU Success!" "SUCCESS"
         return $true
     }
-    Write-Log "Xác minh CPU thất bại hoặc chưa hoàn thành." "WARNING"
+    Write-Log "Xac minh CPU that bai hoac chua hoan thanh." "WARNING"
     return $false
 }
 
 function WriteLog-CPU {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

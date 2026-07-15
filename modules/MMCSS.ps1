@@ -1,8 +1,8 @@
-﻿# modules/MMCSS.ps1
-# Module cấu hình Multimedia Class Scheduler Service (MMCSS) cho Valorant Optimize 1.0.0
+# modules/MMCSS.ps1
+# Module Configuring Multimedia Class Scheduler Service (MMCSS) cho Valorant Optimize 1.0.0
 
 function Check-MMCSS {
-    Write-Log "Kiểm tra cấu hình MMCSS..." "INFO"
+    Write-Log "Kiem tra Configuring MMCSS..." "INFO"
     
     $sysProfilePath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
     if (Test-Path $sysProfilePath) {
@@ -28,12 +28,12 @@ function Apply-MMCSS {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu hóa cấu hình MMCSS cho Gaming..." "INFO"
+    Write-Log "Bat au Optimizing Configuring MMCSS cho Gaming..." "INFO"
     
     $resConfig = $Config.settings.network.SystemResponsiveness
     $netConfig = $Config.settings.network.NetworkThrottlingIndex
     
-    # 1. Cấu hình SystemProfile
+    # 1. Configuring SystemProfile
     $sysProfilePath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
     if (-not (Test-Path $sysProfilePath)) {
         New-Item -Path $sysProfilePath -Force | Out-Null
@@ -42,14 +42,14 @@ function Apply-MMCSS {
     Backup-RegistryValue -Path $sysProfilePath -ValueName "SystemResponsiveness"
     Backup-RegistryValue -Path $sysProfilePath -ValueName "NetworkThrottlingIndex"
     
-    # SystemResponsiveness = 0 (Ưu tiên tối đa cho game trước các tiến trình nền)
+    # SystemResponsiveness = 0 (Uu tien toi a cho game truoc cac tien trinh nen)
     Set-ItemProperty -Path $sysProfilePath -Name "SystemResponsiveness" -Value $resConfig -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
-    # NetworkThrottlingIndex = 0xffffffff (Vô hiệu hóa bóp băng thông mạng khi có ứng dụng đa phương tiện chạy)
+    # NetworkThrottlingIndex = 0xffffffff (Disabling bop bang thong mang khi co ung dung a phuong tien chay)
     Set-ItemProperty -Path $sysProfilePath -Name "NetworkThrottlingIndex" -Value $netConfig -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
-    Write-Log "Đã thiết lập SystemResponsiveness=$resConfig và NetworkThrottlingIndex=$netConfig" "INFO"
+    Write-Log "a thiet lap SystemResponsiveness=$resConfig va NetworkThrottlingIndex=$netConfig" "INFO"
     
-    # 2. Cấu hình Tasks Games
+    # 2. Configuring Tasks Games
     $gameTaskPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"
     if (-not (Test-Path $gameTaskPath)) {
         New-Item -Path $gameTaskPath -Force | Out-Null
@@ -65,20 +65,20 @@ function Apply-MMCSS {
     Set-ItemProperty -Path $gameTaskPath -Name "Scheduling Category" -Value "High" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $gameTaskPath -Name "SFIO Priority" -Value "High" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     
-    Write-Log "Đã cấu hình tác vụ Games trong MMCSS lên mức ưu tiên cao nhất (High)." "SUCCESS"
+    Write-Log "a Configuring tac vu Games trong MMCSS len muc uu tien cao nhat (High)." "SUCCESS"
 }
 
 function Restore-MMCSS {
-    Write-Log "Đang khôi phục cấu hình MMCSS..." "INFO"
+    Write-Log "Currently Restore Configuring MMCSS..." "INFO"
 }
 
 function Verify-MMCSS {
-    Write-Log "Xác minh cấu hình MMCSS..." "INFO"
+    Write-Log "Xac minh Configuring MMCSS..." "INFO"
     $sysProfilePath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
     if (Test-Path $sysProfilePath) {
         $res = Get-ItemPropertyValue -Path $sysProfilePath -Name "SystemResponsiveness" -ErrorAction SilentlyContinue
         if ($res -eq 0) {
-            Write-Log "Xác minh MMCSS thành công!" "SUCCESS"
+            Write-Log "Xac minh MMCSS Success!" "SUCCESS"
             return $true
         }
     }
@@ -86,7 +86,7 @@ function Verify-MMCSS {
 }
 
 function WriteLog-MMCSS {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

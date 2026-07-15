@@ -1,14 +1,14 @@
-﻿# modules/Mouse.ps1
-# Module tối ưu hóa chuột (Mouse) cho Valorant Optimize 1.0.0
+# modules/Mouse.ps1
+# Module Optimizing chuot (Mouse) cho Valorant Optimize 1.0.0
 
 function Check-Mouse {
-    Write-Log "Kiểm tra cấu hình chuột..." "INFO"
+    Write-Log "Kiem tra Configuring chuot..." "INFO"
     
     $mousePath = "HKCU:\Control Panel\Mouse"
     if (Test-Path $mousePath) {
         $speed = Get-ItemPropertyValue -Path $mousePath -Name "MouseSpeed" -ErrorAction SilentlyContinue
         $epp = Get-ItemPropertyValue -Path $mousePath -Name "EnhancePointerPrecision" -ErrorAction SilentlyContinue
-        Write-Log "MouseSpeed: $speed, EnhancePointerPrecision (Gia tốc): $epp" "INFO"
+        Write-Log "MouseSpeed: $speed, EnhancePointerPrecision (Gia toc): $epp" "INFO"
     }
     
     return "OK"
@@ -20,7 +20,7 @@ function Apply-Mouse {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu hóa thiết lập chuột (Xóa gia tốc)..." "INFO"
+    Write-Log "Bat au Optimizing thiet lap chuot (Xoa gia toc)..." "INFO"
     
     $mousePath = "HKCU:\Control Panel\Mouse"
     if (-not (Test-Path $mousePath)) {
@@ -34,14 +34,14 @@ function Apply-Mouse {
     Backup-RegistryValue -Path $mousePath -ValueName "SmoothMouseXCurve"
     Backup-RegistryValue -Path $mousePath -ValueName "SmoothMouseYCurve"
     
-    # 1. Tắt gia tốc chuột chuẩn Windows
+    # 1. Tat gia toc chuot chuan Windows
     # MouseSpeed = 0, MouseThreshold1 = 0, MouseThreshold2 = 0, EnhancePointerPrecision = 0
     Set-ItemProperty -Path $mousePath -Name "MouseSpeed" -Value "0" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $mousePath -Name "EnhancePointerPrecision" -Value "0" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $mousePath -Name "MouseThreshold1" -Value "0" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $mousePath -Name "MouseThreshold2" -Value "0" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     
-    # 2. Áp dụng đường cong phẳng 1:1 (MarkC Mouse Fix style) để gạt bỏ hoàn toàn gia tốc ẩn của phần cứng
+    # 2. Applying uong cong phang 1:1 (MarkC Mouse Fix style) e gat bo hoan toan gia toc an cua phan cung
     [byte[]]$xCurve = @(
         0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
         0x00,0xa0,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -61,20 +61,20 @@ function Apply-Mouse {
     Set-ItemProperty -Path $mousePath -Name "SmoothMouseXCurve" -Value $xCurve -Type Binary -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $mousePath -Name "SmoothMouseYCurve" -Value $yCurve -Type Binary -Force -ErrorAction SilentlyContinue | Out-Null
     
-    Write-Log "Đã thiết lập tỷ lệ di chuột phẳng 1:1 (Xóa gia tốc thành công)." "SUCCESS"
+    Write-Log "a thiet lap ty le di chuot phang 1:1 (Xoa gia toc Success)." "SUCCESS"
 }
 
 function Restore-Mouse {
-    Write-Log "Đang khôi phục cài đặt chuột..." "INFO"
+    Write-Log "Currently Restore cai at chuot..." "INFO"
 }
 
 function Verify-Mouse {
-    Write-Log "Xác minh cấu hình chuột..." "INFO"
+    Write-Log "Xac minh Configuring chuot..." "INFO"
     $mousePath = "HKCU:\Control Panel\Mouse"
     if (Test-Path $mousePath) {
         $epp = Get-ItemPropertyValue -Path $mousePath -Name "EnhancePointerPrecision" -ErrorAction SilentlyContinue
         if ($epp -eq "0") {
-            Write-Log "Xác minh cấu hình chuột thành công!" "SUCCESS"
+            Write-Log "Xac minh Configuring chuot Success!" "SUCCESS"
             return $true
         }
     }
@@ -82,7 +82,7 @@ function Verify-Mouse {
 }
 
 function WriteLog-Mouse {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

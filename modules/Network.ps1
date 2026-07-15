@@ -1,10 +1,10 @@
-﻿# modules/Network.ps1
-# Module tối ưu hóa kết nối mạng (Network) cho Valorant Optimize 1.0.0
+# modules/Network.ps1
+# Module Optimizing ket noi mang (Network) cho Valorant Optimize 1.0.0
 
 function Check-Network {
-    Write-Log "Kiểm tra cấu hình Network hiện tại..." "INFO"
+    Write-Log "Kiem tra Configuring Network hien tai..." "INFO"
     
-    # Kiểm tra cấu hình TCP ở mức toàn cục
+    # Kiem tra Configuring TCP o muc toan cuc
     $tcpPath = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
     if (Test-Path $tcpPath) {
         $sack = Get-ItemPropertyValue -Path $tcpPath -Name "SackOpts" -ErrorAction SilentlyContinue
@@ -20,12 +20,12 @@ function Apply-Network {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu hóa cài đặt mạng..." "INFO"
+    Write-Log "Bat au Optimizing cai at mang..." "INFO"
     
     $tcpNoDelay = $Config.settings.network.TCPNoDelay
     $tcpAckFreq = $Config.settings.network.TCPAckFrequency
     
-    # 1. Tối ưu TCP Nagle's Algorithm (TcpAckFrequency & TCPNoDelay) cho từng card mạng
+    # 1. Toi uu TCP Nagle's Algorithm (TcpAckFrequency & TCPNoDelay) cho tung card mang
     $interfacesPath = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces"
     if (Test-Path $interfacesPath) {
         $interfaces = Get-ChildItem -Path $interfacesPath -ErrorAction SilentlyContinue
@@ -36,49 +36,49 @@ function Apply-Network {
             Set-ItemProperty -Path $i.PSPath -Name "TcpAckFrequency" -Value $tcpAckFreq -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
             Set-ItemProperty -Path $i.PSPath -Name "TCPNoDelay" -Value $tcpNoDelay -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
         }
-        Write-Log "Đã cấu hình TCPNoDelay và TcpAckFrequency thành công trên các card mạng." "INFO"
+        Write-Log "a Configuring TCPNoDelay va TcpAckFrequency Success tren cac card mang." "INFO"
     }
     
-    # 2. Tắt các chế độ tiết kiệm điện năng trên Card Mạng (Giảm độ trễ gói tin)
+    # 2. Tat cac Mode tiet kiem ien nang tren Card Mang (Giam o tre goi tin)
     try {
-        # Tắt Energy Efficient Ethernet (EEE)
+        # Tat Energy Efficient Ethernet (EEE)
         Set-NetAdapterAdvancedProperty -Name * -RegistryKeyword "*EEE" -RegistryValue "0" -ErrorAction SilentlyContinue | Out-Null
-        # Tắt Green Ethernet
+        # Tat Green Ethernet
         Set-NetAdapterAdvancedProperty -Name * -RegistryKeyword "*Green" -RegistryValue "0" -ErrorAction SilentlyContinue | Out-Null
-        # Bật Receive Side Scaling (RSS) để xử lý gói tin trên nhiều nhân CPU
+        # Bat Receive Side Scaling (RSS) e xu ly goi tin tren nhieu nhan CPU
         Set-NetAdapterAdvancedProperty -Name * -RegistryKeyword "*RSS" -RegistryValue "1" -ErrorAction SilentlyContinue | Out-Null
         
-        Write-Log "Đã cấu hình EEE=0, GreenEthernet=0, RSS=1 trên các card mạng có hỗ trợ." "INFO"
+        Write-Log "a Configuring EEE=0, GreenEthernet=0, RSS=1 tren cac card mang co ho tro." "INFO"
     } catch {
-        Write-Log "Lỗi khi cấu hình nâng cao Adapter mạng: $_" "WARNING"
+        Write-Log "ERROR khi Configuring nang cao Adapter mang: $_" "WARNING"
     }
     
-    # 3. Tối ưu hóa các cài đặt TCP/IP khác
+    # 3. Optimizing cac cai at TCP/IP khac
     $tcpPath = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
     if (Test-Path $tcpPath) {
         Backup-RegistryValue -Path $tcpPath -ValueName "SackOpts"
         Backup-RegistryValue -Path $tcpPath -ValueName "TcpWindowSize"
         
-        # SackOpts = 1 (Bật selective ack)
+        # SackOpts = 1 (Bat selective ack)
         Set-ItemProperty -Path $tcpPath -Name "SackOpts" -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
-        # Cấu hình kích thước cửa sổ nhận dữ liệu tối ưu
+        # Configuring kich thuoc cua so nhan du lieu toi uu
         Set-ItemProperty -Path $tcpPath -Name "TcpWindowSize" -Value 65535 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     }
     
-    Write-Log "Tối ưu hóa Network hoàn tất!" "SUCCESS"
+    Write-Log "Optimizing Network Completed!" "SUCCESS"
 }
 
 function Restore-Network {
-    Write-Log "Đang khôi phục cấu hình Network..." "INFO"
+    Write-Log "Currently Restore Configuring Network..." "INFO"
 }
 
 function Verify-Network {
-    Write-Log "Xác minh cấu hình Network..." "INFO"
+    Write-Log "Xac minh Configuring Network..." "INFO"
     return $true
 }
 
 function WriteLog-Network {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

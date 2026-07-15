@@ -1,11 +1,11 @@
-﻿# modules/GameStart.ps1
-# Module tối ưu hóa quá trình khởi động Valorant cho Valorant Optimize 1.0.0
+# modules/GameStart.ps1
+# Module Optimizing qua trinh khoi ong Valorant cho Valorant Optimize 1.0.0
 
 function Check-GameStart {
-    Write-Log "Kiểm tra cấu hình thư mục rác của Valorant..." "INFO"
+    Write-Log "Kiem tra Configuring thu muc rac cua Valorant..." "INFO"
     $valAppData = Join-Path $env:LOCALAPPDATA "VALORANT\Saved"
     if (Test-Path $valAppData) {
-        Write-Log "Thư mục Saved của Valorant tồn tại tại: $valAppData" "INFO"
+        Write-Log "Thu muc Saved cua Valorant ton tai tai: $valAppData" "INFO"
     }
     return "OK"
 }
@@ -16,9 +16,9 @@ function Apply-GameStart {
         $Config
     )
     
-    Write-Log "Bắt đầu dọn dẹp log rác và tối ưu khởi động Valorant..." "INFO"
+    Write-Log "Bat au don dep log rac va toi uu khoi ong Valorant..." "INFO"
     
-    # 1. Dọn dẹp log và crash dump cũ của Valorant
+    # 1. Don dep log va crash dump cu cua Valorant
     $valSaved = Join-Path $env:LOCALAPPDATA "VALORANT\Saved"
     if (Test-Path $valSaved) {
         $logPath = Join-Path $valSaved "Logs"
@@ -27,42 +27,42 @@ function Apply-GameStart {
         
         if (Test-Path $logPath) {
             Remove-Item -Path $logPath -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-            Write-Log "Đã dọn dẹp thư mục Logs cũ của game." "INFO"
+            Write-Log "a don dep thu muc Logs cu cua game." "INFO"
         }
         if (Test-Path $crashPath) {
             Remove-Item -Path $crashPath -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-            Write-Log "Đã dọn dẹp các tệp tin Crashes cũ." "INFO"
+            Write-Log "a don dep cac tep tin Crashes cu." "INFO"
         }
         if (Test-Path $webCachePath) {
             Remove-Item -Path $webCachePath -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-            Write-Log "Đã dọn dẹp cache web tích hợp của game." "INFO"
+            Write-Log "a don dep cache web tich hop cua game." "INFO"
         }
     }
     
-    # 2. Dọn dẹp log của Riot Client
+    # 2. Don dep log cua Riot Client
     $riotClientApp = Join-Path $env:LOCALAPPDATA "Riot Games\Riot Client"
     if (Test-Path $riotClientApp) {
         $clientLogs = Join-Path $riotClientApp "Logs"
         if (Test-Path $clientLogs) {
             Remove-Item -Path $clientLogs -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-            Write-Log "Đã dọn dẹp Logs cũ của Riot Client." "INFO"
+            Write-Log "a don dep Logs cu cua Riot Client." "INFO"
         }
     }
     
-    Write-Log "Tối ưu hóa khởi động Valorant hoàn tất!" "SUCCESS"
+    Write-Log "Optimizing khoi ong Valorant Completed!" "SUCCESS"
 }
 
 function Restore-GameStart {
-    Write-Log "Không cần khôi phục cho dọn dẹp khởi động." "INFO"
+    Write-Log "Khong can Restore cho don dep khoi ong." "INFO"
 }
 
 function Verify-GameStart {
-    Write-Log "Xác minh cấu hình khởi động..." "INFO"
+    Write-Log "Xac minh Configuring khoi ong..." "INFO"
     return $true
 }
 
 function WriteLog-GameStart {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

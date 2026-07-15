@@ -1,5 +1,5 @@
-﻿# core/Restore.ps1
-# Động cơ hoàn trả (Restore) cấu hình hệ thống cho Valorant Optimize 1.0.0
+# core/Restore.ps1
+# ong co hoan tra (Restore) Configuring System cho Valorant Optimize 1.0.0
 
 function Get-BackupList {
     $backupRoot = Join-Path $Global:ProjectRoot "backup"
@@ -7,7 +7,7 @@ function Get-BackupList {
         return @()
     }
     
-    # Lấy danh sách các thư mục con và sắp xếp theo ngày giảm dần
+    # Lay danh sach cac thu muc con va sap xep theo ngay giam dan
     $dirs = Get-ChildItem -Path $backupRoot -Directory | Sort-Object Name -Descending
     return $dirs
 }
@@ -17,19 +17,19 @@ function Restore-Snapshot {
         [string]$BackupDir
     )
     
-    Write-Log "Khởi động quy trình khôi phục từ snapshot: $BackupDir" "INFO"
+    Write-Log "Khoi ong quy trinh Restore tu snapshot: $BackupDir" "INFO"
     
     $regFile = Join-Path $BackupDir "Registry.json"
     $srvFile = Join-Path $BackupDir "Services.json"
     $pwrFile = Join-Path $BackupDir "PowerPlan.json"
     
-    # 1. Khôi phục Registry
+    # 1. Restore Registry
     if (Test-Path $regFile) {
-        Write-Log "Đang khôi phục Registry..." "INFO"
+        Write-Log "Currently Restore Registry..." "INFO"
         try {
             $regBackup = Get-Content $regFile -Raw | ConvertFrom-Json
             foreach ($item in $regBackup) {
-                # Đảm bảo đường dẫn tồn tại
+                # am bao uong dan ton tai
                 if (-not (Test-Path $item.Path)) {
                     if ($item.Exists) {
                         New-Item -Path $item.Path -Force | Out-Null
@@ -37,31 +37,31 @@ function Restore-Snapshot {
                 }
                 
                 if ($item.Exists) {
-                    # Trả lại giá trị cũ
-                    # Một số giá trị dạng Hex/DWord/QWord nạp từ JSON có thể cần ép kiểu
+                    # Tra lai gia tri cu
+                    # Mot so gia tri dang Hex/DWord/QWord nap tu JSON co the can ep kieu
                     $val = $item.Value
                     if ($item.Type -eq "DWord") { $val = [int]$item.Value }
                     elseif ($item.Type -eq "QWord") { $val = [long]$item.Value }
                     
                     Set-ItemProperty -Path $item.Path -Name $item.ValueName -Value $val -Type $item.Type -Force -ErrorAction SilentlyContinue | Out-Null
-                    Write-Log "Đã khôi phục Registry: $($item.Path) \ $($item.ValueName) = $val" "DEBUG"
+                    Write-Log "a Restore Registry: $($item.Path) \ $($item.ValueName) = $val" "DEBUG"
                 } else {
-                    # Nếu lúc trước không tồn tại -> Xóa nó đi
+                    # Neu luc truoc khong ton tai -> Xoa no i
                     if (Test-Path $item.Path) {
                         Remove-ItemProperty -Path $item.Path -Name $item.ValueName -Force -ErrorAction SilentlyContinue | Out-Null
-                        Write-Log "Đã xóa Registry tạo thêm: $($item.Path) \ $($item.ValueName)" "DEBUG"
+                        Write-Log "a xoa Registry tao them: $($item.Path) \ $($item.ValueName)" "DEBUG"
                     }
                 }
             }
-            Write-Log "Đã khôi phục xong Registry thành công." "SUCCESS"
+            Write-Log "a Restore xong Registry Success." "SUCCESS"
         } catch {
-            Write-Log "Lỗi khi khôi phục Registry: $_" "ERROR"
+            Write-Log "ERROR khi Restore Registry: $_" "ERROR"
         }
     }
     
-    # 2. Khôi phục Services
+    # 2. Restore Services
     if (Test-Path $srvFile) {
-        Write-Log "Đang khôi phục Services..." "INFO"
+        Write-Log "Currently Restore Services..." "INFO"
         try {
             $srvBackup = Get-Content $srvFile -Raw | ConvertFrom-Json
             foreach ($item in $srvBackup) {
@@ -69,14 +69,14 @@ function Restore-Snapshot {
                     $srvName = $item.ServiceName
                     $startupType = $item.StartupType
                     
-                    # Chuẩn hóa startup type cho Set-Service (Automatic, Manual, Disabled)
+                    # Chuan hoa startup type cho Set-Service (Automatic, Manual, Disabled)
                     if ($startupType -eq "Auto") { $startupType = "Automatic" }
                     elseif ($startupType -eq "Demand") { $startupType = "Manual" }
                     
-                    # Thiết lập Startup Type
+                    # Thiet lap Startup Type
                     Set-Service -Name $srvName -StartupType $startupType -ErrorAction SilentlyContinue | Out-Null
                     
-                    # Thiết lập Status (Running/Stopped)
+                    # Thiet lap Status (Running/Stopped)
                     $srv = Get-Service -Name $srvName -ErrorAction SilentlyContinue
                     if ($srv) {
                         if ($item.Status -eq "Running" -and $srv.Status -ne "Running") {
@@ -85,31 +85,31 @@ function Restore-Snapshot {
                             Stop-Service -Name $srvName -ErrorAction SilentlyContinue | Out-Null
                         }
                     }
-                    Write-Log "Đã khôi phục Service: $srvName ($startupType, status: $($item.Status))" "DEBUG"
+                    Write-Log "a Restore Service: $srvName ($startupType, status: $($item.Status))" "DEBUG"
                 }
             }
-            Write-Log "Đã khôi phục xong các Services." "SUCCESS"
+            Write-Log "a Restore xong cac Services." "SUCCESS"
         } catch {
-            Write-Log "Lỗi khi khôi phục Services: $_" "ERROR"
+            Write-Log "ERROR khi Restore Services: $_" "ERROR"
         }
     }
     
-    # 3. Khôi phục Power Plan
+    # 3. Restore Power Plan
     if (Test-Path $pwrFile) {
-        Write-Log "Đang khôi phục Power Plan..." "INFO"
+        Write-Log "Currently Restore Power Plan..." "INFO"
         try {
             $pwrBackup = Get-Content $pwrFile -Raw | ConvertFrom-Json
             if ($pwrBackup -and $pwrBackup.GUID) {
                 $guid = $pwrBackup.GUID
                 powercfg /setactive $guid
-                Write-Log "Đã khôi phục Power Plan thành: $($pwrBackup.Name) ($guid)" "SUCCESS"
+                Write-Log "a Restore Power Plan thanh: $($pwrBackup.Name) ($guid)" "SUCCESS"
             }
         } catch {
-            Write-Log "Lỗi khi khôi phục Power Plan: $_" "ERROR"
+            Write-Log "ERROR khi Restore Power Plan: $_" "ERROR"
         }
     }
     
-    Write-Log "Khôi phục Snapshot hoàn tất thành công!" "SUCCESS"
+    Write-Log "Restore Snapshot Completed Success!" "SUCCESS"
     return $true
 }
 

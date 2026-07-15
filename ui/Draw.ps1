@@ -1,18 +1,18 @@
 # ui/Draw.ps1
-# Thư viện vẽ giao diện Console Gaming cho Valorant Optimize 1.0.0
+# Thu vien ve giao dien Console Gaming cho Valorant Optimize 1.0.0
 
-# Điều chỉnh kích thước Console
+# ieu chinh kich thuoc Console
 function Set-ConsoleSize {
     param (
         [int]$Width = 120,
         [int]$Height = 35
     )
     
-    # Ẩn con trỏ nhấp nháy để đỡ ngứa mắt
+    # An con tro nhap nhay e o ngua mat
     [Console]::CursorVisible = $false
     
     try {
-        # Đặt kích thước buffer trước, kích thước window sau để tránh crash
+        # at kich thuoc buffer truoc, kich thuoc window sau e tranh crash
         if ($Host.UI.RawUI.BufferSize.Width -lt $Width -or $Host.UI.RawUI.BufferSize.Height -lt $Height) {
             $bufferSize = New-Object System.Management.Automation.Host.Size($Width, 2000)
             $Host.UI.RawUI.BufferSize = $bufferSize
@@ -20,15 +20,15 @@ function Set-ConsoleSize {
         $windowSize = New-Object System.Management.Automation.Host.Size($Width, $Height)
         $Host.UI.RawUI.WindowSize = $windowSize
         
-        # Đặt lại buffer bằng đúng window để bỏ thanh cuộn bên phải
+        # at lai buffer bang ung window e bo thanh cuon ben phai
         $bufferSize = New-Object System.Management.Automation.Host.Size($Width, $Height)
         $Host.UI.RawUI.BufferSize = $bufferSize
     } catch {
-        # Bỏ qua nếu môi trường không cho phép resize (VD: VSCode terminal)
+        # Bo qua neu moi truong khong cho phep resize (VD: VSCode terminal)
     }
 }
 
-# Di chuyển con trỏ
+# Di chuyen con tro
 function Move-Cursor {
     param (
         [int]$Col,
@@ -37,18 +37,18 @@ function Move-Cursor {
     [Console]::SetCursorPosition($Col, $Row)
 }
 
-# Xóa màn hình
+# Xoa man hinh
 function Clear-Screen {
     [Console]::Clear()
 }
 
-# Vẽ đường kẻ ngang
+# Ve uong ke ngang
 function Draw-HorizontalLine {
     param (
         [int]$Col,
         [int]$Row,
         [int]$Length,
-        [string]$Char = "═",
+        [string]$Char = "-",
         [string]$Color = "Gray"
     )
     Move-Cursor $Col $Row
@@ -56,7 +56,7 @@ function Draw-HorizontalLine {
     Write-Ansi $line -Color $Color -NoNewLine
 }
 
-# Vẽ khung chữ nhật (Double-line box)
+# Ve khung chu nhat (Double-line box)
 function Draw-Box {
     param (
         [int]$Col,
@@ -67,14 +67,14 @@ function Draw-Box {
         [string]$Color = "Cyan"
     )
     
-    $topLeft = "╔"
-    $topRight = "╗"
-    $bottomLeft = "╚"
-    $bottomRight = "╝"
-    $horizontal = "═"
-    $vertical = "║"
+    $topLeft = "+"
+    $topRight = "+"
+    $bottomLeft = "+"
+    $bottomRight = "+"
+    $horizontal = "-"
+    $vertical = "|"
     
-    # Vẽ góc trên và tiêu đề
+    # Ve goc tren va tieu e
     Move-Cursor $Col $Row
     if ($Title -ne "") {
         $titleStr = " $Title "
@@ -87,7 +87,7 @@ function Draw-Box {
         Write-Ansi $headerLine -Color $Color -NoNewLine
     }
     
-    # Vẽ các hàng bên cạnh
+    # Ve cac hang ben canh
     for ($i = 1; $i -lt ($Height - 1); $i++) {
         Move-Cursor $Col ($Row + $i)
         Write-Ansi $vertical -Color $Color -NoNewLine
@@ -95,28 +95,28 @@ function Draw-Box {
         Write-Ansi $vertical -Color $Color -NoNewLine
     }
     
-    # Vẽ cạnh dưới
+    # Ve canh duoi
     Move-Cursor $Col ($Row + $Height - 1)
     $footerLine = $bottomLeft + ($horizontal * ($Width - 2)) + $bottomRight
     Write-Ansi $footerLine -Color $Color -NoNewLine
 }
 
-# Vẽ logo mở màn ASCII và hoạt ảnh typing / fade
+# Ve logo mo man ASCII va hoat anh typing / fade
 function Draw-StartupLogo {
     Clear-Screen
     $logo = @(
-        "   ██╗   ██╗██╗███████╗██╗  ██╗    ",
-        "   ██║   ██║██║██╔════╝╚██╗██╔╝    ",
-        "   ██║   ██║██║█████╗   ╚███╔╝     ",
-        "   ╚██╗ ██╔╝██║██╔══╝   ██╔██╗     ",
-        "    ╚████╔╝ ██║███████╗██╔╝ ██╗    ",
-        "     ╚═══╝  ╚═╝╚══════╝╚═╝  ╚═╝    "
+        ' __      __  ___   _____   __  __  ',
+        ' \ \    / / |_ _| |  ___|  \ \/ /  ',
+        '  \ \  / /   | |  | |__     \  /   ',
+        '   \ \/ /    | |  |  __|    /  \   ',
+        '    \  /    _| |_ | |___   / /\ \  ',
+        '     \/    |_____||_____| /_/  \_\ '
     )
     
     $startRow = 5
     $startCol = 42
     
-    # Hiệu ứng gõ chữ (typing)
+    # Hieu ung go chu (typing)
     for ($i = 0; $i -lt $logo.Count; $i++) {
         Move-Cursor $startCol ($startRow + $i)
         $line = $logo[$i]
@@ -126,7 +126,7 @@ function Draw-StartupLogo {
         }
     }
     
-    # In thêm thông tin bản quyền
+    # In them thong tin ban quyen
     Move-Cursor 45 13
     Write-Ansi "VALORANT OPTIMIZE 1.0.0" -Color "BrightWhite"
     Move-Cursor 47 15
@@ -134,15 +134,15 @@ function Draw-StartupLogo {
     Move-Cursor 49 16
     Write-Ansi "License: VieX Studio" -Color "Gray"
     
-    # Vẽ tiến trình giả lập lúc mở màn
+    # Ve tien trinh gia lap luc mo man
     Move-Cursor 40 20
-    Write-Ansi "Đang nạp động cơ tối ưu..." -Color "Cyan"
+    Write-Ansi "Loading optimization engine..." -Color "Cyan"
     
-    # Progress Bar mở màn
+    # Progress Bar mo man
     for ($k = 0; $k -le 10; $k++) {
         Move-Cursor 40 22
-        $bar = ("█" * $k) + ("░" * (10 - $k))
-        Write-Ansi $bar -Color "BrightCyan" -NoNewLine
+        $bar = ("#" * $k) + ("-" * (10 - $k))
+        Write-Ansi "[$bar]" -Color "BrightCyan" -NoNewLine
         Write-Ansi " $($k * 10)%" -Color "BrightWhite" -NoNewLine
         Start-Sleep -Milliseconds 150
     }
@@ -150,41 +150,41 @@ function Draw-StartupLogo {
     Start-Sleep -Milliseconds 400
 }
 
-# Vẽ khung cấu trúc chính (Layout)
+# Ve khung cau truc chinh (Layout)
 function Draw-Layout {
     Clear-Screen
     Set-ConsoleSize 120 35
     
-    # Vẽ khung tổng thể ứng dụng
+    # Ve khung tong the ung dung
     Draw-Box 0 0 120 34 " VALORANT OPTIMIZE v1.0.0 " "Cyan"
     
-    # Phân chia vùng Sidebar và Content
-    # Vẽ đường ngăn dọc cho Sidebar (cột 25)
+    # Phan chia vung Sidebar va Content
+    # Ve uong ngan doc cho Sidebar (cot 25)
     for ($i = 1; $i -lt 33; $i++) {
         Move-Cursor 25 $i
-        Write-Ansi "║" -Color "Cyan" -NoNewLine
+        Write-Ansi "|" -Color "Cyan" -NoNewLine
     }
     
-    # Vẽ ngã ba biên trên và dưới cột ngăn dọc
+    # Ve nga ba bien tren va duoi cot ngan doc
     Move-Cursor 25 0
-    Write-Ansi "╦" -Color "Cyan" -NoNewLine
+    Write-Ansi "+" -Color "Cyan" -NoNewLine
     Move-Cursor 25 33
-    Write-Ansi "╩" -Color "Cyan" -NoNewLine
+    Write-Ansi "+" -Color "Cyan" -NoNewLine
     
-    # In footer bản quyền bên dưới cùng
+    # In footer ban quyen ben duoi cung
     Move-Cursor 3 33
     Write-Ansi "VieX Digital | VieX Studio" -Color "Gray" -NoNewLine
     
-    # Trạng thái gõ phím hướng dẫn góc phải
-    Move-Cursor 90 33
-    Write-Ansi "↑↓: Chọn | Enter: Đồng ý" -Color "Gray" -NoNewLine
+    # Trang thai go phim huong dan goc phai
+    Move-Cursor 85 33
+    Write-Ansi "[Up/Down]: Select | [Enter]: Accept" -Color "Gray" -NoNewLine
 }
 
-# Xuất thông tin lên vùng content
+# Xuat thong tin len vung content
 function Clear-ContentArea {
     for ($i = 1; $i -lt 33; $i++) {
         Move-Cursor 26 $i
-        # Xóa sạch dòng từ cột 26 đến 119
+        # Xoa sach dong tu cot 26 en 119
         Write-Ansi (" " * 93) -NoNewLine
     }
 }

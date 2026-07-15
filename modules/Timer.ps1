@@ -1,16 +1,16 @@
-﻿# modules/Timer.ps1
-# Module tối ưu độ phân giải Timer của hệ thống cho Valorant Optimize 1.0.0
+# modules/Timer.ps1
+# Module toi uu o phan giai Timer cua System cho Valorant Optimize 1.0.0
 
 function Check-Timer {
-    Write-Log "Kiểm tra cấu hình Timer hệ thống..." "INFO"
-    # Kiểm tra bằng bcdedit
+    Write-Log "Kiem tra Configuring Timer System..." "INFO"
+    # Kiem tra bang bcdedit
     try {
         $bcd = bcdedit /enum [{current}]
         $dynTick = $bcd -match "disabledynamictick\s+Yes"
         $platClock = $bcd -match "useplatformclock\s+Yes"
         Write-Log "Bcdedit - DisableDynamicTick: $dynTick, UsePlatformClock: $platClock" "INFO"
     } catch {
-        Write-Log "Lỗi đọc bcdedit: $_" "WARNING"
+        Write-Log "ERROR oc bcdedit: $_" "WARNING"
     }
     return "OK"
 }
@@ -21,52 +21,52 @@ function Apply-Timer {
         $Config
     )
     
-    Write-Log "Bắt đầu tối ưu hóa System Timer..." "INFO"
+    Write-Log "Bat au Optimizing System Timer..." "INFO"
     
-    # 1. Tắt Dynamic Tick (Ngăn Windows tự động thay đổi nhịp đồng hồ, giảm giật/lag chuột)
+    # 1. Tat Dynamic Tick (Ngan Windows Automatic thay oi nhip ong ho, giam giat/lag chuot)
     try {
         bcdedit /set disabledynamictick yes 2>&1 | Out-Null
-        Write-Log "Đã kích hoạt DisableDynamicTick trong BCD." "INFO"
+        Write-Log "a kich hoat DisableDynamicTick trong BCD." "INFO"
     } catch {
-        Write-Log "Không thể cấu hình disabledynamictick: $_" "WARNING"
+        Write-Log "Cannot Configuring disabledynamictick: $_" "WARNING"
     }
     
-    # 2. Xóa UsePlatformClock (Tắt HPET ở mức phần mềm để chuyển sang TSC nhanh hơn)
+    # 2. Xoa UsePlatformClock (Tat HPET o muc phan mem e chuyen sang TSC nhanh hon)
     try {
         bcdedit /deletevalue useplatformclock 2>&1 | Out-Null
-        Write-Log "Đã tắt HPET phần mềm (sử dụng TSC có độ trễ cực thấp)." "INFO"
+        Write-Log "Disabled HPET phan mem (su dung TSC co o tre cuc thap)." "INFO"
     } catch {
-        # Nếu khóa này chưa từng được đặt thì bcdedit sẽ lỗi, bỏ qua
-        Write-Log "HPET mặc định của BIOS đã được áp dụng hoặc useplatformclock chưa từng được cấu hình." "DEBUG"
+        # Neu khoa nay chua tung uoc at thi bcdedit se ERROR, bo qua
+        Write-Log "HPET mac inh cua BIOS a uoc Applying hoac useplatformclock chua tung uoc Configuring." "DEBUG"
     }
     
-    # 3. Cấu hình Registry phụ trợ cho RTC (Real Time Clock) và High Resolution Timer
+    # 3. Configuring Registry phu tro cho RTC (Real Time Clock) va High Resolution Timer
     $timerPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"
     if (-not (Test-Path $timerPath)) {
         New-Item -Path $timerPath -Force | Out-Null
     }
     Backup-RegistryValue -Path $timerPath -ValueName "GlobalTimerResolutionLimits"
-    # Thiết lập kích hoạt giới hạn độ phân giải tối đa cho Timer
+    # Thiet lap kich hoat gioi han o phan giai toi a cho Timer
     Set-ItemProperty -Path $timerPath -Name "GlobalTimerResolutionLimits" -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
-    Write-Log "Tối ưu hóa Timer hoàn tất!" "SUCCESS"
+    Write-Log "Optimizing Timer Completed!" "SUCCESS"
 }
 
 function Restore-Timer {
-    Write-Log "Đang khôi phục cấu hình Timer..." "INFO"
+    Write-Log "Currently Restore Configuring Timer..." "INFO"
     try {
         bcdedit /deletevalue disabledynamictick 2>&1 | Out-Null
-        Write-Log "Đã trả lại thiết lập mặc định cho Dynamic Tick." "INFO"
+        Write-Log "a tra lai thiet lap mac inh cho Dynamic Tick." "INFO"
     } catch {}
 }
 
 function Verify-Timer {
-    Write-Log "Xác minh cấu hình Timer..." "INFO"
+    Write-Log "Xac minh Configuring Timer..." "INFO"
     return $true
 }
 
 function WriteLog-Timer {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

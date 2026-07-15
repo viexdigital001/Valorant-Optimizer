@@ -1,5 +1,5 @@
-﻿# core/Logger.ps1
-# Hệ thống ghi log cho Valorant Optimize 1.0.0
+# core/Logger.ps1
+# System ghi log cho Valorant Optimize 1.0.0
 
 $Global:LogFilePath = Join-Path $PSScriptRoot "..\logs\ValorantOptimize.log"
 
@@ -8,7 +8,7 @@ function Initialize-Logger {
     if (-not (Test-Path $logDir)) {
         New-Item -ItemType Directory -Path $logDir -Force | Out-Null
     }
-    # Tạo file log mới nếu chưa tồn tại
+    # Tao file log moi neu chua ton tai
     if (-not (Test-Path $Global:LogFilePath)) {
         New-Item -ItemType File -Path $Global:LogFilePath -Force | Out-Null
     }
@@ -31,11 +31,11 @@ function Write-Log {
         Add-Content -Path $Global:LogFilePath -Value $logLine -ErrorAction SilentlyContinue
     } catch {}
 
-    # Nếu đang ở chế độ Debug hoặc là lỗi/cảnh báo quan trọng, có thể in ra console tùy ý.
-    # Tuy nhiên việc vẽ giao diện sẽ do UI điều phối để không làm hỏng layout.
+    # Neu Currently o Mode Debug hoac la ERROR/WARNING quan trong, co the in ra console tuy y.
+    # Tuy nhien viec ve giao dien se do UI ieu phoi e khong lam hong layout.
 }
 
-# Export hàm để sử dụng ở ngoài
+# Export ham e su dung o ngoai
 
 
 

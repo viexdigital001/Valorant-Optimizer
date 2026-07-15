@@ -1,8 +1,8 @@
-﻿# modules/Xbox.ps1
-# Module vô hiệu hóa dịch vụ Xbox chạy nền và Game DVR cho Valorant Optimize 1.0.0
+# modules/Xbox.ps1
+# Module Disabling dich vu Xbox chay nen va Game DVR cho Valorant Optimize 1.0.0
 
 function Check-Xbox {
-    Write-Log "Kiểm tra cấu hình Xbox Game DVR..." "INFO"
+    Write-Log "Kiem tra Configuring Xbox Game DVR..." "INFO"
     $gcsPath = "HKCU:\System\GameConfigStore"
     if (Test-Path $gcsPath) {
         $enabled = Get-ItemPropertyValue -Path $gcsPath -Name "GameDVR_Enabled" -ErrorAction SilentlyContinue
@@ -17,20 +17,20 @@ function Apply-Xbox {
         $Config
     )
     
-    Write-Log "Bắt đầu tắt Game DVR và các dịch vụ Xbox không sử dụng..." "INFO"
+    Write-Log "Bat au tat Game DVR va cac dich vu Xbox khong su dung..." "INFO"
     
-    # 1. Tắt Game DVR trong GameConfigStore
+    # 1. Tat Game DVR trong GameConfigStore
     $gcsPath = "HKCU:\System\GameConfigStore"
     if (Test-Path $gcsPath) {
         Backup-RegistryValue -Path $gcsPath -ValueName "GameDVR_Enabled"
         Backup-RegistryValue -Path $gcsPath -ValueName "GameDVR_FSEBehaviorMode"
         
         Set-ItemProperty -Path $gcsPath -Name "GameDVR_Enabled" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
-        # FSEBehaviorMode = 2 (Vô hiệu hóa tối ưu hóa toàn màn hình cũ)
+        # FSEBehaviorMode = 2 (Disabling Optimizing toan man hinh cu)
         Set-ItemProperty -Path $gcsPath -Name "GameDVR_FSEBehaviorMode" -Value 2 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     }
     
-    # 2. Tắt Capture âm thanh/hình ảnh của Xbox App Capture
+    # 2. Tat Capture am thanh/hinh anh cua Xbox App Capture
     $dvrPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR"
     if (-not (Test-Path $dvrPath)) {
         New-Item -Path $dvrPath -Force | Out-Null
@@ -41,7 +41,7 @@ function Apply-Xbox {
     Set-ItemProperty -Path $dvrPath -Name "AppCaptureEnabled" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     Set-ItemProperty -Path $dvrPath -Name "AudioCaptureEnabled" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
-    # 3. Tắt các dịch vụ Xbox nếu người dùng Tryhard (Để tránh nó liên tục thăm dò trong lúc chơi game)
+    # 3. Tat cac dich vu Xbox neu nguoi dung Tryhard (e tranh no lien tuc tham do trong luc choi game)
     $xboxServices = @("XblAuthManager", "XblGameSave", "XboxNetApiSvc", "XboxGipSvc")
     foreach ($srvName in $xboxServices) {
         $srv = Get-Service -Name $srvName -ErrorAction SilentlyContinue
@@ -51,24 +51,24 @@ function Apply-Xbox {
                 Stop-Service -Name $srvName -Force -ErrorAction SilentlyContinue | Out-Null
             }
             Set-Service -Name $srvName -StartupType Disabled -ErrorAction SilentlyContinue | Out-Null
-            Write-Log "Đã vô hiệu hóa dịch vụ Xbox: $srvName" "INFO"
+            Write-Log "a Disabling dich vu Xbox: $srvName" "INFO"
         }
     }
     
-    Write-Log "Vô hiệu hóa Game DVR và Xbox Services hoàn tất!" "SUCCESS"
+    Write-Log "Disabling Game DVR va Xbox Services Completed!" "SUCCESS"
 }
 
 function Restore-Xbox {
-    Write-Log "Đang khôi phục cấu hình Xbox..." "INFO"
+    Write-Log "Currently Restore Configuring Xbox..." "INFO"
 }
 
 function Verify-Xbox {
-    Write-Log "Xác minh cấu hình Xbox..." "INFO"
+    Write-Log "Xac minh Configuring Xbox..." "INFO"
     $gcsPath = "HKCU:\System\GameConfigStore"
     if (Test-Path $gcsPath) {
         $enabled = Get-ItemPropertyValue -Path $gcsPath -Name "GameDVR_Enabled" -ErrorAction SilentlyContinue
         if ($enabled -eq 0) {
-            Write-Log "Xác minh Xbox thành công!" "SUCCESS"
+            Write-Log "Xac minh Xbox Success!" "SUCCESS"
             return $true
         }
     }
@@ -76,7 +76,7 @@ function Verify-Xbox {
 }
 
 function WriteLog-Xbox {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

@@ -1,5 +1,5 @@
-﻿# ui/Menu.ps1
-# Hệ thống điều hướng Menu Console bằng bàn phím cho Valorant Optimize 1.0.0
+# ui/Menu.ps1
+# He thong ieu huong Menu Console bang ban phim cho Valorant Optimize 1.0.0
 
 function Draw-SidebarMenu {
     param (
@@ -18,14 +18,14 @@ function Draw-SidebarMenu {
         $itemText = $Items[$i]
         
         if ($i -eq $SelectedIndex) {
-            # Mục đang được chọn: Vẽ mũi tên màu Cyan, chữ in đậm
-            Write-Ansi "▶ " -Color "BrightCyan" -NoNewLine
+            # Muc ang uoc chon: Ve mui ten mau Cyan, chu in am
+            Write-Ansi "> " -Color "BrightCyan" -NoNewLine
             Write-Ansi $itemText -Color "BrightCyan" -NoNewLine
-            # Xóa các ký tự thừa phía sau bằng cách đệm khoảng trắng
+            # Xoa cac ky tu thua phia sau bang cach em khoang trang
             $padding = 20 - $itemText.Length
             if ($padding -gt 0) { Write-Host (" " * $padding) -NoNewline }
         } else {
-            # Mục thường: In chữ xám/trắng
+            # Muc thuong: In chu xam/trang
             Write-Ansi "  " -NoNewLine
             Write-Ansi $itemText -Color "White" -NoNewLine
             $padding = 20 - $itemText.Length
@@ -45,11 +45,11 @@ function Get-MenuSelection {
     $selectedIndex = $DefaultIndex
     $running = $true
     
-    # Vẽ menu lần đầu tiên
+    # Ve menu lan au tien
     Draw-SidebarMenu $Items $selectedIndex
     
     while ($running) {
-        # Đợi phím bấm của người dùng
+        # oi phim bam cua nguoi dung
         $key = [Console]::ReadKey($true)
         
         switch ($key.Key) {
@@ -77,13 +77,13 @@ function Get-MenuSelection {
             }
             "Escape" {
                 $running = $false
-                return -1 # -1 nghĩa là nhấn ESC thoát hoặc quay lại
+                return -1 # -1 nghia la nhan ESC thoat hoac quay lai
             }
         }
     }
 }
 
-# Hàm hiển thị prompt xác nhận Y/N Gen Z
+# Ham hien thi prompt xac nhan Y/N Gen Z
 function Get-Confirmation {
     param (
         [Parameter(Mandatory=$true)]
@@ -93,7 +93,7 @@ function Get-Confirmation {
     )
     
     Move-Cursor $Col $Row
-    # Xóa sạch dòng cần viết
+    # Xoa sach dong can viet
     Write-Ansi (" " * 85) -NoNewLine
     Move-Cursor $Col $Row
     Write-Ansi "$PromptMessage [Y/N]: " -Color "BrightYellow" -NoNewLine

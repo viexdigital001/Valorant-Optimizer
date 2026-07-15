@@ -1,8 +1,8 @@
-﻿# modules/GameMode.ps1
-# Module tối ưu hóa cấu hình Windows Game Mode cho Valorant Optimize 1.0.0
+# modules/GameMode.ps1
+# Module Optimizing Configuring Windows Game Mode cho Valorant Optimize 1.0.0
 
 function Check-GameMode {
-    Write-Log "Kiểm tra cấu hình Windows Game Mode..." "INFO"
+    Write-Log "Kiem tra Configuring Windows Game Mode..." "INFO"
     $gmPath = "HKCU:\Software\Microsoft\GameBar"
     if (Test-Path $gmPath) {
         $gmVal = Get-ItemPropertyValue -Path $gmPath -Name "AllowAutoGameMode" -ErrorAction SilentlyContinue
@@ -17,7 +17,7 @@ function Apply-GameMode {
         $Config
     )
     
-    Write-Log "Bắt đầu kích hoạt Windows Game Mode..." "INFO"
+    Write-Log "Bat au kich hoat Windows Game Mode..." "INFO"
     
     $gmPath = "HKCU:\Software\Microsoft\GameBar"
     if (-not (Test-Path $gmPath)) {
@@ -25,10 +25,10 @@ function Apply-GameMode {
     }
     Backup-RegistryValue -Path $gmPath -ValueName "AllowAutoGameMode"
     
-    # 1. Kích hoạt Game Mode (Nhân Windows sẽ ưu tiên phân bổ CPU & GPU cho tiến trình Game)
+    # 1. Kich hoat Game Mode (Nhan Windows se uu tien phan bo CPU & GPU cho tien trinh Game)
     Set-ItemProperty -Path $gmPath -Name "AllowAutoGameMode" -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
-    # 2. Đảm bảo Game DVR bị khóa ở Policy
+    # 2. am bao Game DVR bi khoa o Policy
     $policyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR"
     if (-not (Test-Path $policyPath)) {
         New-Item -Path $policyPath -Force | Out-Null
@@ -36,20 +36,20 @@ function Apply-GameMode {
     Backup-RegistryValue -Path $policyPath -ValueName "AllowGameDVR"
     Set-ItemProperty -Path $policyPath -Name "AllowGameDVR" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
-    Write-Log "Đã bật Game Mode và vô hiệu hóa Policy Game DVR thành công." "SUCCESS"
+    Write-Log "Enabled Game Mode va Disabling Policy Game DVR Success." "SUCCESS"
 }
 
 function Restore-GameMode {
-    Write-Log "Đang khôi phục cấu hình Game Mode..." "INFO"
+    Write-Log "Currently Restore Configuring Game Mode..." "INFO"
 }
 
 function Verify-GameMode {
-    Write-Log "Xác minh cấu hình Game Mode..." "INFO"
+    Write-Log "Xac minh Configuring Game Mode..." "INFO"
     $gmPath = "HKCU:\Software\Microsoft\GameBar"
     if (Test-Path $gmPath) {
         $val = Get-ItemPropertyValue -Path $gmPath -Name "AllowAutoGameMode" -ErrorAction SilentlyContinue
         if ($val -eq 1) {
-            Write-Log "Xác minh Game Mode thành công!" "SUCCESS"
+            Write-Log "Xac minh Game Mode Success!" "SUCCESS"
             return $true
         }
     }
@@ -57,7 +57,7 @@ function Verify-GameMode {
 }
 
 function WriteLog-GameMode {
-    # Tích hợp trực tiếp qua Logger
+    # Tich hop truc tiep qua Logger
 }
 
 

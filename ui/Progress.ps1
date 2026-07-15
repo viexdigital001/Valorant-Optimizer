@@ -1,5 +1,5 @@
-﻿# ui/Progress.ps1
-# Thanh tiến trình đồ họa chống nhấp nháy cho Valorant Optimize 1.0.0
+# ui/Progress.ps1
+# Thanh tien trinh o hoa chong nhap nhay cho Valorant Optimize 1.0.0
 
 function Draw-ProgressBar {
     param (
@@ -20,11 +20,11 @@ function Draw-ProgressBar {
     if ($filledLength -gt $barWidth) { $filledLength = $barWidth }
     $unfilledLength = $barWidth - $filledLength
     
-    $filledBar = "█" * $filledLength
-    $unfilledBar = "░" * $unfilledLength
+    $filledBar = "#" * $filledLength
+    $unfilledBar = "-" * $unfilledLength
     
     Move-Cursor $Col $Row
-    # Xóa sạch dòng cũ trước khi ghi đè để không bị đè chữ thừa
+    # Xoa sach dong cu truoc khi ghi e e khong bi e chu thua
     Write-Ansi (" " * 90) -NoNewLine
     
     Move-Cursor $Col $Row
