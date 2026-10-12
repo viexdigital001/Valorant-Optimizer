@@ -5,7 +5,7 @@ function Check-BackgroundApps {
     Write-Log "Kiem tra Configuring ung dung chay ngam..." "INFO"
     $appPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications"
     if (Test-Path $appPath) {
-        $val = Get-ItemPropertyValue -Path $appPath -Name "GlobalUserDisabled" -ErrorAction SilentlyContinue
+        $val = Get-RegistryPropertySafe -Path $appPath -Name "GlobalUserDisabled"
         Write-Log "GlobalUserDisabled (Ung dung ngam): $val (1 la a Disabling)" "INFO"
     }
     return "OK"
@@ -47,7 +47,7 @@ function Verify-BackgroundApps {
     Write-Log "Xac minh Configuring ung dung chay ngam..." "INFO"
     $appPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications"
     if (Test-Path $appPath) {
-        $val = Get-ItemPropertyValue -Path $appPath -Name "GlobalUserDisabled" -ErrorAction SilentlyContinue
+        $val = Get-RegistryPropertySafe -Path $appPath -Name "GlobalUserDisabled"
         if ($val -eq 1) {
             Write-Log "Xac minh ung dung ngam Success!" "SUCCESS"
             return $true

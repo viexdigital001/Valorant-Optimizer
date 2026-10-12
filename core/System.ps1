@@ -1,5 +1,55 @@
 ﻿# core/System.ps1
-# ong co phat hien thong tin System cho Valorant Optimize 1.0.0
+# Dong co phat hien thong tin System va doc Registry an toan cho Valorant Optimize
+
+function Get-RegistryPropertySafe {
+    param (
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [string]$Path = "",
+        
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [string]$Name = "",
+        
+        [Parameter(Mandatory = $false)]
+        $Default = $null
+    )
+    
+    try {
+        if ([string]::IsNullOrWhiteSpace($Path) -or [string]::IsNullOrWhiteSpace($Name)) {
+            return $Default
+        }
+        
+        # 1. Thu lay gia tri qua .NET RegistryKey bang PSDrive path
+        if (Test-Path -LiteralPath $Path -ErrorAction SilentlyContinue) {
+            $key = Get-Item -LiteralPath $Path -ErrorAction SilentlyContinue
+            if ($key -and ($key -is [Microsoft.Win32.RegistryKey])) {
+                $val = $key.GetValue($Name, $null)
+                if ($null -ne $val) { return $val }
+            }
+        }
+        
+        # 2. Chuan hoa PSDrive sang Win32 Hive de goi Microsoft.Win32.Registry::GetValue
+        $normPath = $Path -replace '^Registry::', '' `
+                          -replace '^HKLM:\\?', 'HKEY_LOCAL_MACHINE\' `
+                          -replace '^HKCU:\\?', 'HKEY_CURRENT_USER\' `
+                          -replace '^HKCR:\\?', 'HKEY_CLASSES_ROOT\' `
+                          -replace '^HKU:\\?', 'HKEY_USERS\' `
+                          -replace '^HKCC:\\?', 'HKEY_CURRENT_CONFIG\'
+        $netVal = [Microsoft.Win32.Registry]::GetValue($normPath, $Name, $null)
+        if ($null -ne $netVal) {
+            return $netVal
+        }
+        
+        return $Default
+    } catch {
+        return $Default
+    }
+}
+
+Set-Alias -Name Get-SafeRegistryValue -Value Get-RegistryPropertySafe -ErrorAction SilentlyContinue
 
 function Get-SystemInfo {
     Write-Log "Bat au thu thap thong tin phan cung..." "INFO"
@@ -95,11 +145,9 @@ function Get-SystemInfo {
     # 6. Kiem tra Secure Boot
     try {
         $sbPath = "HKLM:\SYSTEM\CurrentControlSet\Control\SecureBoot\State"
-        if (Test-Path $sbPath) {
-            $sbVal = (Get-ItemProperty -Path $sbPath -Name "UEFISecureBootEnabled" -ErrorAction SilentlyContinue).UEFISecureBootEnabled
-            if ($sbVal -eq 1) {
-                $info.SecureBoot = $true
-            }
+        $sbVal = Get-RegistryPropertySafe -Path $sbPath -Name "UEFISecureBootEnabled"
+        if ($sbVal -eq 1) {
+            $info.SecureBoot = $true
         }
     } catch {
         Write-Log "ERROR kiem tra Secure Boot: $_" "WARNING"
@@ -119,13 +167,10 @@ function Get-SystemInfo {
     # 8. Kiem tra Game Mode
     try {
         $gmPath = "HKCU:\Software\Microsoft\GameBar"
-        if (Test-Path $gmPath) {
-            $gmVal = (Get-ItemProperty -Path $gmPath -Name "AllowAutoGameMode" -ErrorAction SilentlyContinue).AllowAutoGameMode
-            if ($gmVal -eq 1) {
-                $info.GameMode = $true
-            }
-        } else {
-            # Mac inh cua Windows thuong bat Game Mode
+        $gmVal = Get-RegistryPropertySafe -Path $gmPath -Name "AllowAutoGameMode"
+        if ($null -eq $gmVal) {
+            $info.GameMode = $true
+        } elseif ($gmVal -eq 1) {
             $info.GameMode = $true
         }
     } catch {
@@ -135,11 +180,9 @@ function Get-SystemInfo {
     # 9. Kiem tra Memory Integrity (HVCI)
     try {
         $hvciPath = "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity"
-        if (Test-Path $hvciPath) {
-            $hvciVal = (Get-ItemProperty -Path $hvciPath -Name "Enabled" -ErrorAction SilentlyContinue).Enabled
-            if ($hvciVal -eq 1) {
-                $info.MemoryIntegrity = $true
-            }
+        $hvciVal = Get-RegistryPropertySafe -Path $hvciPath -Name "Enabled"
+        if ($hvciVal -eq 1) {
+            $info.MemoryIntegrity = $true
         }
     } catch {
         Write-Log "ERROR kiem tra Memory Integrity: $_" "WARNING"
@@ -148,11 +191,9 @@ function Get-SystemInfo {
     # 10. Kiem tra VBS
     try {
         $vbsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard"
-        if (Test-Path $vbsPath) {
-            $vbsVal = (Get-ItemProperty -Path $vbsPath -Name "EnableVirtualizationBasedSecurity" -ErrorAction SilentlyContinue).EnableVirtualizationBasedSecurity
-            if ($vbsVal -eq 1) {
-                $info.VBS = $true
-            }
+        $vbsVal = Get-RegistryPropertySafe -Path $vbsPath -Name "EnableVirtualizationBasedSecurity"
+        if ($vbsVal -eq 1) {
+            $info.VBS = $true
         }
     } catch {
         Write-Log "ERROR kiem tra VBS: $_" "WARNING"

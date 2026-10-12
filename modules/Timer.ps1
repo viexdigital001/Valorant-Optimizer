@@ -64,7 +64,7 @@ function Verify-Timer {
     Write-Log "Xac minh Configuring Timer..." "INFO"
     $timerPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"
     if (Test-Path $timerPath) {
-        $val = (Get-ItemProperty -Path $timerPath -Name "GlobalTimerResolutionRequests" -ErrorAction SilentlyContinue).GlobalTimerResolutionRequests
+        $val = Get-RegistryPropertySafe -Path $timerPath -Name "GlobalTimerResolutionRequests"
         if ($val -eq 1) {
             return $true
         }

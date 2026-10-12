@@ -6,7 +6,7 @@ function Check-Telemetry {
     
     $telPath1 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
     if (Test-Path $telPath1) {
-        $val = Get-ItemPropertyValue -Path $telPath1 -Name "AllowTelemetry" -ErrorAction SilentlyContinue
+        $val = Get-RegistryPropertySafe -Path $telPath1 -Name "AllowTelemetry"
         Write-Log "AllowTelemetry (Policies): $val" "INFO"
     }
     
@@ -64,7 +64,7 @@ function Verify-Telemetry {
     Write-Log "Xac minh Configuring Telemetry..." "INFO"
     $telPath1 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
     if (Test-Path $telPath1) {
-        $val = Get-ItemPropertyValue -Path $telPath1 -Name "AllowTelemetry" -ErrorAction SilentlyContinue
+        $val = Get-RegistryPropertySafe -Path $telPath1 -Name "AllowTelemetry"
         if ($val -eq 0) {
             Write-Log "Xac minh Telemetry Success!" "SUCCESS"
             return $true

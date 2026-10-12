@@ -8,15 +8,15 @@ function Check-CPU {
     # Kiem tra Win32PrioritySeparation
     $priPath = "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl"
     if (Test-Path $priPath) {
-        $val = Get-ItemPropertyValue -Path $priPath -Name "Win32PrioritySeparation" -ErrorAction SilentlyContinue
+        $val = Get-RegistryPropertySafe -Path $priPath -Name "Win32PrioritySeparation"
         Write-Log "Win32PrioritySeparation hien tai: $val" "INFO"
     }
     
     # Kiem tra Configuring uu tien tien trinh cho Valorant
     $valPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\VALORANT-Win64-Shipping.exe\PerfOptions"
     if (Test-Path $valPath) {
-        $cpuPri = Get-ItemPropertyValue -Path $valPath -Name "CpuPriorityClass" -ErrorAction SilentlyContinue
-        $ioPri = Get-ItemPropertyValue -Path $valPath -Name "IoPriority" -ErrorAction SilentlyContinue
+        $cpuPri = Get-RegistryPropertySafe -Path $valPath -Name "CpuPriorityClass"
+        $ioPri = Get-RegistryPropertySafe -Path $valPath -Name "IoPriority"
         Write-Log "o uu tien CPU Valorant hien tai: $cpuPri, IO: $ioPri" "INFO"
     } else {
         Write-Log "Chua Configuring o uu tien rieng cho Valorant." "INFO"
@@ -84,11 +84,11 @@ function Verify-CPU {
     $check2 = $false
     
     if (Test-Path $priPath) {
-        $val = Get-ItemPropertyValue -Path $priPath -Name "Win32PrioritySeparation" -ErrorAction SilentlyContinue
+        $val = Get-RegistryPropertySafe -Path $priPath -Name "Win32PrioritySeparation"
         if ($val -ne $null) { $check1 = $true }
     }
     if (Test-Path $valPath) {
-        $cpu = Get-ItemPropertyValue -Path $valPath -Name "CpuPriorityClass" -ErrorAction SilentlyContinue
+        $cpu = Get-RegistryPropertySafe -Path $valPath -Name "CpuPriorityClass"
         if ($cpu -eq 3 -or $cpu -eq 6) { $check2 = $true }
     }
     

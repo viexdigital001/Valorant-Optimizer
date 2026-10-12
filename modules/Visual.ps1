@@ -5,7 +5,7 @@ function Check-Visual {
     Write-Log "Kiem tra Configuring hieu ung hinh anh..." "INFO"
     $vfxPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects"
     if (Test-Path $vfxPath) {
-        $setting = Get-ItemPropertyValue -Path $vfxPath -Name "VisualFXSetting" -ErrorAction SilentlyContinue
+        $setting = Get-RegistryPropertySafe -Path $vfxPath -Name "VisualFXSetting"
         Write-Log "VisualFXSetting: $setting (2 la Currently toi uu cho hieu nang tot nhat)" "INFO"
     }
     return "OK"
@@ -63,7 +63,7 @@ function Verify-Visual {
     Write-Log "Xac minh Configuring Visual..." "INFO"
     $vfxPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects"
     if (Test-Path $vfxPath) {
-        $setting = Get-ItemPropertyValue -Path $vfxPath -Name "VisualFXSetting" -ErrorAction SilentlyContinue
+        $setting = Get-RegistryPropertySafe -Path $vfxPath -Name "VisualFXSetting"
         if ($setting -eq 2) {
             Write-Log "Xac minh Visual Success!" "SUCCESS"
             return $true

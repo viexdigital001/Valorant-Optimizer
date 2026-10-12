@@ -6,13 +6,13 @@ function Check-Input {
     
     $mouPath = "HKLM:\SYSTEM\CurrentControlSet\Services\mouclass\Parameters"
     if (Test-Path $mouPath) {
-        $mouQueue = Get-ItemPropertyValue -Path $mouPath -Name "MouseDataQueueSize" -ErrorAction SilentlyContinue
+        $mouQueue = Get-RegistryPropertySafe -Path $mouPath -Name "MouseDataQueueSize"
         Write-Log "MouseDataQueueSize hien tai: $mouQueue" "INFO"
     }
     
     $kbdPath = "HKLM:\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters"
     if (Test-Path $kbdPath) {
-        $kbdQueue = Get-ItemPropertyValue -Path $kbdPath -Name "KeyboardDataQueueSize" -ErrorAction SilentlyContinue
+        $kbdQueue = Get-RegistryPropertySafe -Path $kbdPath -Name "KeyboardDataQueueSize"
         Write-Log "KeyboardDataQueueSize hien tai: $kbdQueue" "INFO"
     }
     

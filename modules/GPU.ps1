@@ -7,14 +7,14 @@ function Check-GPU {
     # Kiem tra HAGS (Hardware Accelerated GPU Scheduling)
     $hagsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers"
     if (Test-Path $hagsPath) {
-        $mode = Get-ItemPropertyValue -Path $hagsPath -Name "HwSchMode" -ErrorAction SilentlyContinue
+        $mode = Get-RegistryPropertySafe -Path $hagsPath -Name "HwSchMode"
         Write-Log "Trang thai HAGS hien tai: $mode (2 la Enabling, 1 la Disabling)" "INFO"
     }
     
     # Kiem tra DirectX Shader Cache Size
     $dxPath = "HKLM:\SOFTWARE\Microsoft\DirectX"
     if (Test-Path $dxPath) {
-        $size = Get-ItemPropertyValue -Path $dxPath -Name "MaxShaderCacheSize" -ErrorAction SilentlyContinue
+        $size = Get-RegistryPropertySafe -Path $dxPath -Name "MaxShaderCacheSize"
         Write-Log "DirectX MaxShaderCacheSize hien tai: $size" "INFO"
     }
     
@@ -84,7 +84,7 @@ function Verify-GPU {
     Write-Log "Xac minh Configuring GPU..." "INFO"
     $hagsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers"
     if (Test-Path $hagsPath) {
-        $mode = Get-ItemPropertyValue -Path $hagsPath -Name "HwSchMode" -ErrorAction SilentlyContinue
+        $mode = Get-RegistryPropertySafe -Path $hagsPath -Name "HwSchMode"
         if ($mode -ne $null) {
             Write-Log "Xac minh GPU Success!" "SUCCESS"
             return $true

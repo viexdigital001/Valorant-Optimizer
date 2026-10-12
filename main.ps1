@@ -394,19 +394,51 @@ function Show-LatencyDiagnosticsPage {
     
     Move-Cursor 28 5
     Write-Ansi "Dang phan tich do tre phan cung va thiet lap he thong Windows..." -Color "BrightWhite"
-    Start-Sleep -Milliseconds 250
+    Start-Sleep -Milliseconds 150
     
-    # 1. Kiem tra Timer Resolution
+    # 1. Kiem tra Timer Resolution an toan (Zero exception)
     $timerPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"
-    $hasTimerRes = $false
-    if (Test-Path $timerPath) {
-        $val = Get-ItemPropertyValue -Path $timerPath -Name "GlobalTimerResolutionRequests" -ErrorAction SilentlyContinue
-        if ($val -eq 1) { $hasTimerRes = $true }
-    }
+    $timerVal = Get-RegistryPropertySafe -Path $timerPath -Name "GlobalTimerResolutionRequests" -Default 0
+    $hasTimerRes = ($timerVal -eq 1)
     
-    # 2. Kiem tra Power Plan
-    $activeScheme = powercfg /getactivescheme
-    $isUltimate = $activeScheme -match "Ultimate"
+    # 2. Kiem tra Power Plan (Ho tro ca Windows tieng Anh va tieng Viet/quoc te)
+    $isUltimate = $false
+    try {
+        if ($Global:sysInfo -and $Global:sysInfo.PowerPlanName) {
+            $isUltimate = ($Global:sysInfo.PowerPlanName -match "Ultimate") -or ($Global:sysInfo.PowerPlanGUID -eq "e9a42b02-d5df-448d-aa00-03f14749eb61")
+        } else {
+            $activeScheme = powercfg /getactivescheme 2>$null
+            $isUltimate = ($activeScheme -match "Ultimate") -or ($activeScheme -match "e9a42b02-d5df-448d-aa00-03f14749eb61")
+        }
+    } catch { $isUltimate = $false }
+    
+    # 3. Kiem tra MSI Mode tren GPU / Interrupts
+    $hasGpuMsi = $false
+    try {
+        $gpuPnp = (Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue | Select-Object -First 1).PNPDeviceID
+        if ($gpuPnp) {
+            $msiVal = Get-RegistryPropertySafe -Path "HKLM:\SYSTEM\CurrentControlSet\Enum\$gpuPnp\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" -Name "MSISupported" -Default 0
+            if ($msiVal -eq 1) { $hasGpuMsi = $true }
+        }
+    } catch { $hasGpuMsi = $false }
+    
+    # 4. Kiem tra MMCSS & Network Throttling
+    $netThrottling = Get-RegistryPropertySafe -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "NetworkThrottlingIndex" -Default 10
+    $sysResp = Get-RegistryPropertySafe -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "SystemResponsiveness" -Default 20
+    $isNetOptimized = ($netThrottling -eq -1 -or $netThrottling -eq 4294967295 -or $netThrottling -eq 0xffffffff)
+    $isMMCSSOptimized = ($sysResp -eq 0)
+    
+    # Cap nhat thong bao hoan tat tai Row 5
+    Move-Cursor 28 5
+    Write-Ansi "[OK] Hoan tat danh gia 5 chi so do tre he thong Windows              " -Color "BrightGreen"
+    
+    # Tinh toan diem toi uu thuc te hien tai
+    $currentScore = 45
+    if ($hasTimerRes) { $currentScore += 10 }
+    if ($isUltimate) { $currentScore += 10 }
+    if ($hasGpuMsi) { $currentScore += 10 }
+    if ($isNetOptimized) { $currentScore += 5 }
+    if ($isMMCSSOptimized) { $currentScore += 5 }
     
     $diagItems = @(
         @{ 
@@ -417,7 +449,7 @@ function Show-LatencyDiagnosticsPage {
         },
         @{ 
             Label = "2. GPU & Audio Interrupts"
-            Current = "Line-based IRQ (Shared Bus)"
+            Current = if ($hasGpuMsi) { "MSI Mode Active (Low DPC Latency)" } else { "Line-based IRQ (Shared Bus Latency)" }
             Plus = "MSI Mode High (Dedicated Lane)"
             Impact = "Triet tieu DPC delay khi nghe util"
         },
@@ -434,8 +466,8 @@ function Show-LatencyDiagnosticsPage {
             Impact = "Triet tieu 100% micro-stutter smoke"
         },
         @{ 
-            Label = "5. Network Bufferbloat & QoS"
-            Current = "Windows Standard Packet Queue"
+            Label = "5. MMCSS & Network Bufferbloat"
+            Current = if ($isNetOptimized -and $isMMCSSOptimized) { "MMCSS High + No Throttling" } else { "Windows Standard Packet Queue" }
             Plus = "DSCP QoS Tagging + Bufferbloat Fix"
             Impact = "Xoa bo hoan toan Ghost Bullets"
         }
@@ -453,15 +485,16 @@ function Show-LatencyDiagnosticsPage {
         Write-Ansi " | $($item.Impact)" -Color "Cyan"
         
         $row += 3
-        Start-Sleep -Milliseconds 60
+        Start-Sleep -Milliseconds 40
     }
     
     Draw-HorizontalLine 28 $row 85 "-" "Gray"
     
     Move-Cursor 28 ($row + 1)
     Write-Ansi "TỔNG ĐIỂM TỐI ƯU HIỆN TẠI (BẢN FREE): " -Color "BrightWhite" -Bold -NoNewLine
-    Write-Ansi "64 / 100 ĐIỂM " -Color "BrightYellow" -Bold -NoNewLine
-    Write-Ansi "(MỨC KHÁ - CÒN 36% DƯ ĐỊA NGHẼN ĐỘ TRỄ)" -Color "Gray"
+    Write-Ansi "$currentScore / 100 ĐIỂM " -Color "BrightYellow" -Bold -NoNewLine
+    $remaining = 100 - $currentScore
+    Write-Ansi "(CÒN $remaining% DƯ ĐỊA NGHẼN ĐỘ TRỄ)" -Color "Gray"
     
     Move-Cursor 28 ($row + 2)
     Write-Ansi "TIỀM NĂNG KHI NÂNG CẤP VIEX PLUS 2.0.0:  " -Color "BrightWhite" -Bold -NoNewLine
@@ -475,14 +508,20 @@ function Show-LatencyDiagnosticsPage {
     Move-Cursor 28 ($row + 5)
     Write-Ansi "[Esc] Quay lai menu chinh" -Color "Gray"
     
-    $key = [Console]::ReadKey($true)
-    if ($key.Key -eq "Enter" -or $key.Key -eq "V") {
-        try {
-            Start-Process "https://discord.gg/Xx4pcdvHkw"
-            Move-Cursor 28 ($row + 6)
-            Write-Ansi "[OK] Da mo Discord VieX Digital tren trinh duyet!" -Color "BrightGreen"
-            Start-Sleep -Milliseconds 800
-        } catch {}
+    $inDiag = $true
+    while ($inDiag) {
+        $key = [Console]::ReadKey($true)
+        if ($key.Key -eq "Escape") {
+            $inDiag = $false
+        } elseif ($key.Key -eq "Enter" -or $key.Key -eq "V") {
+            try {
+                Start-Process "https://discord.gg/Xx4pcdvHkw"
+                Move-Cursor 28 ($row + 6)
+                Write-Ansi "[OK] Da mo Discord VieX Digital tren trinh duyet!               " -Color "BrightGreen"
+                Start-Sleep -Milliseconds 800
+            } catch {}
+            $inDiag = $false
+        }
     }
 }
 

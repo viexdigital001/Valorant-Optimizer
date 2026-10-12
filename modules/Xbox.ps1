@@ -5,7 +5,7 @@ function Check-Xbox {
     Write-Log "Kiem tra Configuring Xbox Game DVR..." "INFO"
     $gcsPath = "HKCU:\System\GameConfigStore"
     if (Test-Path $gcsPath) {
-        $enabled = Get-ItemPropertyValue -Path $gcsPath -Name "GameDVR_Enabled" -ErrorAction SilentlyContinue
+        $enabled = Get-RegistryPropertySafe -Path $gcsPath -Name "GameDVR_Enabled"
         Write-Log "GameDVR_Enabled: $enabled" "INFO"
     }
     return "OK"
@@ -66,7 +66,7 @@ function Verify-Xbox {
     Write-Log "Xac minh Configuring Xbox..." "INFO"
     $gcsPath = "HKCU:\System\GameConfigStore"
     if (Test-Path $gcsPath) {
-        $enabled = Get-ItemPropertyValue -Path $gcsPath -Name "GameDVR_Enabled" -ErrorAction SilentlyContinue
+        $enabled = Get-RegistryPropertySafe -Path $gcsPath -Name "GameDVR_Enabled"
         if ($enabled -eq 0) {
             Write-Log "Xac minh Xbox Success!" "SUCCESS"
             return $true

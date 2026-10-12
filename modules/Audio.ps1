@@ -5,8 +5,8 @@ function Check-Audio {
     Write-Log "Kiem tra Configuring MMCSS Task Audio..." "INFO"
     $audioTaskPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio"
     if (Test-Path $audioTaskPath) {
-        $pri = Get-ItemPropertyValue -Path $audioTaskPath -Name "Priority" -ErrorAction SilentlyContinue
-        $sched = Get-ItemPropertyValue -Path $audioTaskPath -Name "Scheduling Category" -ErrorAction SilentlyContinue
+        $pri = Get-RegistryPropertySafe -Path $audioTaskPath -Name "Priority"
+        $sched = Get-RegistryPropertySafe -Path $audioTaskPath -Name "Scheduling Category"
         Write-Log "MMCSS Tasks Audio - Priority: $pri, Category: $sched" "INFO"
     }
     return "OK"

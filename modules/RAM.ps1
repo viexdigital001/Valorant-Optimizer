@@ -6,8 +6,8 @@ function Check-RAM {
     
     $memPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
     if (Test-Path $memPath) {
-        $lsc = Get-ItemPropertyValue -Path $memPath -Name "LargeSystemCache" -ErrorAction SilentlyContinue
-        $dpe = Get-ItemPropertyValue -Path $memPath -Name "DisablePagingExecutive" -ErrorAction SilentlyContinue
+        $lsc = Get-RegistryPropertySafe -Path $memPath -Name "LargeSystemCache"
+        $dpe = Get-RegistryPropertySafe -Path $memPath -Name "DisablePagingExecutive"
         Write-Log "LargeSystemCache: $lsc, DisablePagingExecutive: $dpe" "INFO"
     }
     
@@ -77,7 +77,7 @@ function Verify-RAM {
     Write-Log "Xac minh Configuring RAM..." "INFO"
     $memPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
     if (Test-Path $memPath) {
-        $dpe = Get-ItemPropertyValue -Path $memPath -Name "DisablePagingExecutive" -ErrorAction SilentlyContinue
+        $dpe = Get-RegistryPropertySafe -Path $memPath -Name "DisablePagingExecutive"
         if ($dpe -ne $null) {
             Write-Log "Xac minh RAM Success!" "SUCCESS"
             return $true

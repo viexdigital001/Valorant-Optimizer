@@ -6,8 +6,8 @@ function Check-Keyboard {
     
     $kbPath = "HKCU:\Control Panel\Keyboard"
     if (Test-Path $kbPath) {
-        $delay = Get-ItemPropertyValue -Path $kbPath -Name "KeyboardDelay" -ErrorAction SilentlyContinue
-        $speed = Get-ItemPropertyValue -Path $kbPath -Name "KeyboardSpeed" -ErrorAction SilentlyContinue
+        $delay = Get-RegistryPropertySafe -Path $kbPath -Name "KeyboardDelay"
+        $speed = Get-RegistryPropertySafe -Path $kbPath -Name "KeyboardSpeed"
         Write-Log "KeyboardDelay: $delay, KeyboardSpeed: $speed" "INFO"
     }
     
@@ -67,7 +67,7 @@ function Verify-Keyboard {
     Write-Log "Xac minh Configuring ban phim..." "INFO"
     $kbPath = "HKCU:\Control Panel\Keyboard"
     if (Test-Path $kbPath) {
-        $delay = Get-ItemPropertyValue -Path $kbPath -Name "KeyboardDelay" -ErrorAction SilentlyContinue
+        $delay = Get-RegistryPropertySafe -Path $kbPath -Name "KeyboardDelay"
         if ($delay -eq "0" -or $delay -eq "1") {
             Write-Log "Xac minh ban phim Success!" "SUCCESS"
             return $true

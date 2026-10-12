@@ -5,7 +5,7 @@ function Check-GameMode {
     Write-Log "Kiem tra Configuring Windows Game Mode..." "INFO"
     $gmPath = "HKCU:\Software\Microsoft\GameBar"
     if (Test-Path $gmPath) {
-        $gmVal = Get-ItemPropertyValue -Path $gmPath -Name "AllowAutoGameMode" -ErrorAction SilentlyContinue
+        $gmVal = Get-RegistryPropertySafe -Path $gmPath -Name "AllowAutoGameMode"
         Write-Log "AllowAutoGameMode: $gmVal" "INFO"
     }
     return "OK"
@@ -47,7 +47,7 @@ function Verify-GameMode {
     Write-Log "Xac minh Configuring Game Mode..." "INFO"
     $gmPath = "HKCU:\Software\Microsoft\GameBar"
     if (Test-Path $gmPath) {
-        $val = Get-ItemPropertyValue -Path $gmPath -Name "AllowAutoGameMode" -ErrorAction SilentlyContinue
+        $val = Get-RegistryPropertySafe -Path $gmPath -Name "AllowAutoGameMode"
         if ($val -eq 1) {
             Write-Log "Xac minh Game Mode Success!" "SUCCESS"
             return $true

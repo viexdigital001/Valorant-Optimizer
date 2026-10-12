@@ -6,8 +6,8 @@ function Check-Mouse {
     
     $mousePath = "HKCU:\Control Panel\Mouse"
     if (Test-Path $mousePath) {
-        $speed = Get-ItemPropertyValue -Path $mousePath -Name "MouseSpeed" -ErrorAction SilentlyContinue
-        $epp = Get-ItemPropertyValue -Path $mousePath -Name "EnhancePointerPrecision" -ErrorAction SilentlyContinue
+        $speed = Get-RegistryPropertySafe -Path $mousePath -Name "MouseSpeed"
+        $epp = Get-RegistryPropertySafe -Path $mousePath -Name "EnhancePointerPrecision"
         Write-Log "MouseSpeed: $speed, EnhancePointerPrecision (Gia toc): $epp" "INFO"
     }
     
@@ -72,7 +72,7 @@ function Verify-Mouse {
     Write-Log "Xac minh Configuring chuot..." "INFO"
     $mousePath = "HKCU:\Control Panel\Mouse"
     if (Test-Path $mousePath) {
-        $epp = Get-ItemPropertyValue -Path $mousePath -Name "EnhancePointerPrecision" -ErrorAction SilentlyContinue
+        $epp = Get-RegistryPropertySafe -Path $mousePath -Name "EnhancePointerPrecision"
         if ($epp -eq "0") {
             Write-Log "Xac minh Configuring chuot Success!" "SUCCESS"
             return $true

@@ -6,8 +6,8 @@ function Check-Storage {
     
     $fsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"
     if (Test-Path $fsPath) {
-        $la = Get-ItemPropertyValue -Path $fsPath -Name "NtfsDisableLastAccessUpdate" -ErrorAction SilentlyContinue
-        $dot3 = Get-ItemPropertyValue -Path $fsPath -Name "NtfsDisable8dot3NameCreation" -ErrorAction SilentlyContinue
+        $la = Get-RegistryPropertySafe -Path $fsPath -Name "NtfsDisableLastAccessUpdate"
+        $dot3 = Get-RegistryPropertySafe -Path $fsPath -Name "NtfsDisable8dot3NameCreation"
         Write-Log "NtfsDisableLastAccessUpdate: $la, NtfsDisable8dot3NameCreation: $dot3" "INFO"
     }
     
@@ -77,7 +77,7 @@ function Verify-Storage {
     Write-Log "Xac minh Configuring Storage..." "INFO"
     $fsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"
     if (Test-Path $fsPath) {
-        $la = Get-ItemPropertyValue -Path $fsPath -Name "NtfsDisableLastAccessUpdate" -ErrorAction SilentlyContinue
+        $la = Get-RegistryPropertySafe -Path $fsPath -Name "NtfsDisableLastAccessUpdate"
         if ($la -eq 1) {
             Write-Log "Xac minh Storage Success!" "SUCCESS"
             return $true
