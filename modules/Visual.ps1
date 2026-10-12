@@ -1,4 +1,4 @@
-# modules/Visual.ps1
+﻿# modules/Visual.ps1
 # Module Optimizing hieu ung hinh anh (Visual Effects) cho Valorant Optimize 1.0.0
 
 function Check-Visual {
@@ -43,6 +43,15 @@ function Apply-Visual {
         Set-ItemProperty -Path $advPath -Name "TaskbarAnimations" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     }
     
+    # 4. Giu font chu min (Font Smoothing & ClearType) de Discord va trinh duyet khong bi rang cua
+    $desktopPath = "HKCU:\Control Panel\Desktop"
+    if (Test-Path $desktopPath) {
+        Backup-RegistryValue -Path $desktopPath -ValueName "FontSmoothing"
+        Backup-RegistryValue -Path $desktopPath -ValueName "FontSmoothingType"
+        Set-ItemProperty -Path $desktopPath -Name "FontSmoothing" -Value "2" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
+        Set-ItemProperty -Path $desktopPath -Name "FontSmoothingType" -Value 2 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    
     Write-Log "Optimizing hieu ung hinh anh (Visual) Completed!" "SUCCESS"
 }
 
@@ -66,6 +75,8 @@ function Verify-Visual {
 function WriteLog-Visual {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

@@ -1,4 +1,4 @@
-# modules/GameMode.ps1
+﻿# modules/GameMode.ps1
 # Module Optimizing Configuring Windows Game Mode cho Valorant Optimize 1.0.0
 
 function Check-GameMode {
@@ -59,6 +59,8 @@ function Verify-GameMode {
 function WriteLog-GameMode {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

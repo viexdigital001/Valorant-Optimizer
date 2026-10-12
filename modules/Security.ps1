@@ -1,4 +1,4 @@
-# modules/Security.ps1
+﻿# modules/Security.ps1
 # Module Configuring bao mat System (Security) cho Valorant Optimize 1.0.0
 
 function Check-Security {
@@ -20,30 +20,26 @@ function Apply-Security {
     # Chi WARNING va cho phep nguoi dung tat VBS / Memory Integrity neu chay profile Extreme.
     
     if ($Config.profile -eq "Extreme") {
-        Write-Log "Yeu cau xac nhan tu nguoi dung e tat VBS / Memory Integrity (Extreme Profile)" "WARNING"
-        
-        $msg = "WARNING: Tat VBS va Memory Integrity se tang FPS (~5-15%) nhung lam giam bao mat Windows. Ban co muon tat khong?"
-        $confirm = Get-Confirmation -PromptMessage $msg
-        
-        if ($confirm) {
-            # Tat VBS
+        $sysInfo = Get-SystemInfo
+        # Tren Windows 11, Vanguard bat buoc Secure Boot va nhieu may yeu cau VBS/HVCI on dinh de tranh ma loi VAN9005
+        if ($sysInfo.OSName -match "Windows 11") {
+            Write-Log "Phat hien Windows 11: De phong tranh loi Riot Vanguard VAN9005, giu an toan VBS/HVCI." "WARNING"
+        } else {
+            # Tat VBS & HVCI tren Windows 10 cho Extreme profile
             $vbsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard"
             if (-not (Test-Path $vbsPath)) { New-Item -Path $vbsPath -Force | Out-Null }
             Backup-RegistryValue -Path $vbsPath -ValueName "EnableVirtualizationBasedSecurity"
             Set-ItemProperty -Path $vbsPath -Name "EnableVirtualizationBasedSecurity" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
             
-            # Tat Memory Integrity (HVCI)
             $hvciPath = "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity"
             if (-not (Test-Path $hvciPath)) { New-Item -Path $hvciPath -Force | Out-Null }
             Backup-RegistryValue -Path $hvciPath -ValueName "Enabled"
             Set-ItemProperty -Path $hvciPath -Name "Enabled" -Value 0 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
             
-            Write-Log "Disabled VBS va Memory Integrity (Yeu cau khoi ong lai e co hieu luc)." "SUCCESS"
-        } else {
-            Write-Log "Nguoi dung tu choi tat VBS / Memory Integrity. Bo qua toi uu nay." "INFO"
+            Write-Log "Disabled VBS va Memory Integrity tren Windows 10 (Extreme Mode)." "SUCCESS"
         }
     } else {
-        Write-Log "Profile hien tai khong yeu cau tat VBS/Memory Integrity. Giu nguyen mac inh an toan." "INFO"
+        Write-Log "Profile hien tai khong yeu cau tat VBS/Memory Integrity. Giu nguyen mac dinh an toan." "INFO"
     }
 }
 
@@ -59,6 +55,8 @@ function Verify-Security {
 function WriteLog-Security {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

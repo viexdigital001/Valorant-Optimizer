@@ -1,4 +1,4 @@
-# modules/MMCSS.ps1
+﻿# modules/MMCSS.ps1
 # Module Configuring Multimedia Class Scheduler Service (MMCSS) cho Valorant Optimize 1.0.0
 
 function Check-MMCSS {
@@ -6,16 +6,18 @@ function Check-MMCSS {
     
     $sysProfilePath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
     if (Test-Path $sysProfilePath) {
-        $res = Get-ItemPropertyValue -Path $sysProfilePath -Name "SystemResponsiveness" -ErrorAction SilentlyContinue
-        $net = Get-ItemPropertyValue -Path $sysProfilePath -Name "NetworkThrottlingIndex" -ErrorAction SilentlyContinue
+        $props = Get-ItemProperty -Path $sysProfilePath -ErrorAction SilentlyContinue
+        $res = if ($props) { $props.SystemResponsiveness } else { $null }
+        $net = if ($props) { $props.NetworkThrottlingIndex } else { $null }
         Write-Log "SystemResponsiveness: $res, NetworkThrottlingIndex: $net" "INFO"
     }
     
     $gameTaskPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"
     if (Test-Path $gameTaskPath) {
-        $gpuPri = Get-ItemPropertyValue -Path $gameTaskPath -Name "GPU Priority" -ErrorAction SilentlyContinue
-        $pri = Get-ItemPropertyValue -Path $gameTaskPath -Name "Priority" -ErrorAction SilentlyContinue
-        $sched = Get-ItemPropertyValue -Path $gameTaskPath -Name "Scheduling Category" -ErrorAction SilentlyContinue
+        $gameProps = Get-ItemProperty -Path $gameTaskPath -ErrorAction SilentlyContinue
+        $gpuPri = if ($gameProps) { $gameProps.'GPU Priority' } else { $null }
+        $pri = if ($gameProps) { $gameProps.Priority } else { $null }
+        $sched = if ($gameProps) { $gameProps.'Scheduling Category' } else { $null }
         Write-Log "MMCSS Tasks Games - GPU Priority: $gpuPri, Priority: $pri, Category: $sched" "INFO"
     }
     
@@ -73,11 +75,12 @@ function Restore-MMCSS {
 }
 
 function Verify-MMCSS {
+    param ($Config)
     Write-Log "Xac minh Configuring MMCSS..." "INFO"
     $sysProfilePath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
     if (Test-Path $sysProfilePath) {
-        $res = Get-ItemPropertyValue -Path $sysProfilePath -Name "SystemResponsiveness" -ErrorAction SilentlyContinue
-        if ($res -eq 0) {
+        $props = Get-ItemProperty -Path $sysProfilePath -ErrorAction SilentlyContinue
+        if ($props -and $props.SystemResponsiveness -ne $null) {
             Write-Log "Xac minh MMCSS Success!" "SUCCESS"
             return $true
         }
@@ -88,6 +91,8 @@ function Verify-MMCSS {
 function WriteLog-MMCSS {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

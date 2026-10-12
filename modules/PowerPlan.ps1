@@ -1,4 +1,4 @@
-# modules/PowerPlan.ps1
+﻿# modules/PowerPlan.ps1
 # Module Configuring nguon ien (Power Plan) cho Valorant Optimize 1.0.0
 
 function Check-PowerPlan {
@@ -23,27 +23,30 @@ function Apply-PowerPlan {
     $ultimateGuid = "e9a42b02-d5df-448d-aa00-03f14749eb61" # Ultimate Performance
     $highPerfGuid = "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c" # High Performance
     
-    $targetGuid = $null
-    
-    # Thu tao / nap Ultimate Performance
-    $output = powercfg /duplicatescheme $ultimateGuid 2>&1
-    if ($output -match "GUID: ([a-f0-9\-]+)") {
+    # Kiem tra xem da co VieX Ultimate Performance chua de tranh tao trung lap GUID
+    $existing = powercfg /list
+    if ($existing -match "GUID: ([a-f0-9\-]+)\s+\(VieX Ultimate Performance\)") {
         $targetGuid = $Matches[1]
-        Write-Log "a nhan ban so o nguon Ultimate Performance." "INFO"
+        Write-Log "Su dung lai so do nguon VieX Ultimate Performance da co: $targetGuid" "INFO"
     } else {
-        # Neu Ultimate khong ho tro, nhan ban High Performance
-        $output = powercfg /duplicatescheme $highPerfGuid 2>&1
+        # Thu tao / nap Ultimate Performance
+        $output = powercfg /duplicatescheme $ultimateGuid 2>&1
         if ($output -match "GUID: ([a-f0-9\-]+)") {
             $targetGuid = $Matches[1]
-            Write-Log "System khong ho tro Ultimate, a nhan ban High Performance." "WARNING"
+            Write-Log "a nhan ban so o nguon Ultimate Performance." "INFO"
+        } else {
+            # Neu Ultimate khong ho tro, nhan ban High Performance
+            $output = powercfg /duplicatescheme $highPerfGuid 2>&1
+            if ($output -match "GUID: ([a-f0-9\-]+)") {
+                $targetGuid = $Matches[1]
+                Write-Log "System khong ho tro Ultimate, a nhan ban High Performance." "WARNING"
+            }
         }
-    }
-    
-    if (-not $targetGuid) {
-        # Neu khong nhan ban uoc gi ca, su dung so o High Performance goc
-        $targetGuid = $highPerfGuid
-        powercfg /changename $targetGuid "VieX Ultimate Performance" 2>&1 | Out-Null
-    } else {
+        
+        if (-not $targetGuid) {
+            # Neu khong nhan ban uoc gi ca, su dung so o High Performance goc
+            $targetGuid = $highPerfGuid
+        }
         powercfg /changename $targetGuid "VieX Ultimate Performance" 2>&1 | Out-Null
     }
     
@@ -66,9 +69,9 @@ function Apply-PowerPlan {
     $eppGuid = "3668a663-de38-4a55-8b38-a54c992d698e"
     powercfg /setacvalueindex $targetGuid $subProcessor $eppGuid 0 2>&1 | Out-Null
     
-    # Tat o ia tu tat khi ranh (Turn off hard disk after = 0 phut)
-    # SUB_DISK (0012ee47-9041-4b5d-9b77-535fba8b1442) -> DISKIDLE (6733a27e-28b9-4e49-87c7-bdc4463409d7)
-    powercfg /setacvalueindex $targetGuid 0012ee47-9041-4b5d-9b77-535fba8b1442 6733a27e-28b9-4e49-87c7-bdc4463409d7 0 2>&1 | Out-Null
+    # Tat o dia tu tat khi ranh (Turn off hard disk after = 0 phut)
+    # SUB_DISK (0012ee47-9041-4b5d-9b77-535fba8b1442) -> DISKIDLE
+    powercfg /setacvalueindex $targetGuid 0012ee47-9041-4b5d-9b77-535fba8b1442 DISKIDLE 0 2>&1 | Out-Null
     
     # Kich hoat so o nguon moi lam mac inh
     powercfg /setactive $targetGuid 2>&1 | Out-Null
@@ -93,6 +96,8 @@ function Verify-PowerPlan {
 function WriteLog-PowerPlan {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

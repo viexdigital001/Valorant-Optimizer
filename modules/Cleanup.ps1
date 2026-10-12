@@ -1,10 +1,10 @@
-# modules/Cleanup.ps1
+﻿# modules/Cleanup.ps1
 # Module don dep tep tin tam thoi (Cleanup) cho Valorant Optimize 1.0.0
 
 function Check-Cleanup {
     Write-Log "Tinh toan dung luong tep tin tam thoi co the don dep..." "INFO"
     $totalSize = 0
-    $tempPaths = @($env:TEMP, "C:\Windows\Temp", Join-Path $env:LOCALAPPDATA "CrashDumps")
+    $tempPaths = @($env:TEMP, "C:\Windows\Temp", (Join-Path $env:LOCALAPPDATA "CrashDumps"))
     
     foreach ($path in $tempPaths) {
         if (Test-Path $path) {
@@ -26,18 +26,12 @@ function Apply-Cleanup {
         $Config
     )
     
-    Write-Log "Yeu cau xac nhan tu nguoi dung e don dep tep tam..." "WARNING"
-    $msg = "Ban co muon don dep cac tep tin tam thoi (Temp, Log, Crash Dump) e giai phong dung luong khong?"
-    $confirm = Get-Confirmation -PromptMessage $msg
-    
-    if (-not $confirm) {
-        Write-Log "Nguoi dung tu choi don dep tep tam. Bo qua." "INFO"
-        return
-    }
+    # Khi chay trong One-Click hoac Profile tu dong, don dep cac file rac tam thoi ma khong chan giao dien
+    Write-Log "Bat dau don dep tep tin rac (Temp, Crash Dumps)..." "INFO"
     
     Write-Log "Bat au don dep tep tin rac..." "INFO"
     
-    $tempPaths = @($env:TEMP, "C:\Windows\Temp", Join-Path $env:LOCALAPPDATA "CrashDumps")
+    $tempPaths = @($env:TEMP, "C:\Windows\Temp", (Join-Path $env:LOCALAPPDATA "CrashDumps"))
     $clearedCount = 0
     
     foreach ($path in $tempPaths) {
@@ -68,6 +62,8 @@ function Verify-Cleanup {
 function WriteLog-Cleanup {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

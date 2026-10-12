@@ -1,4 +1,4 @@
-# modules/RAM.ps1
+﻿# modules/RAM.ps1
 # Module toi uu RAM cho Valorant Optimize 1.0.0
 
 function Check-RAM {
@@ -89,6 +89,8 @@ function Verify-RAM {
 function WriteLog-RAM {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

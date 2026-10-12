@@ -1,4 +1,4 @@
-# core/System.ps1
+﻿# core/System.ps1
 # ong co phat hien thong tin System cho Valorant Optimize 1.0.0
 
 function Get-SystemInfo {
@@ -96,7 +96,7 @@ function Get-SystemInfo {
     try {
         $sbPath = "HKLM:\SYSTEM\CurrentControlSet\Control\SecureBoot\State"
         if (Test-Path $sbPath) {
-            $sbVal = Get-ItemPropertyValue -Path $sbPath -Name "UEFISecureBootEnabled" -ErrorAction SilentlyContinue
+            $sbVal = (Get-ItemProperty -Path $sbPath -Name "UEFISecureBootEnabled" -ErrorAction SilentlyContinue).UEFISecureBootEnabled
             if ($sbVal -eq 1) {
                 $info.SecureBoot = $true
             }
@@ -120,7 +120,7 @@ function Get-SystemInfo {
     try {
         $gmPath = "HKCU:\Software\Microsoft\GameBar"
         if (Test-Path $gmPath) {
-            $gmVal = Get-ItemPropertyValue -Path $gmPath -Name "AllowAutoGameMode" -ErrorAction SilentlyContinue
+            $gmVal = (Get-ItemProperty -Path $gmPath -Name "AllowAutoGameMode" -ErrorAction SilentlyContinue).AllowAutoGameMode
             if ($gmVal -eq 1) {
                 $info.GameMode = $true
             }
@@ -136,7 +136,7 @@ function Get-SystemInfo {
     try {
         $hvciPath = "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity"
         if (Test-Path $hvciPath) {
-            $hvciVal = Get-ItemPropertyValue -Path $hvciPath -Name "Enabled" -ErrorAction SilentlyContinue
+            $hvciVal = (Get-ItemProperty -Path $hvciPath -Name "Enabled" -ErrorAction SilentlyContinue).Enabled
             if ($hvciVal -eq 1) {
                 $info.MemoryIntegrity = $true
             }
@@ -149,7 +149,7 @@ function Get-SystemInfo {
     try {
         $vbsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard"
         if (Test-Path $vbsPath) {
-            $vbsVal = Get-ItemPropertyValue -Path $vbsPath -Name "EnableVirtualizationBasedSecurity" -ErrorAction SilentlyContinue
+            $vbsVal = (Get-ItemProperty -Path $vbsPath -Name "EnableVirtualizationBasedSecurity" -ErrorAction SilentlyContinue).EnableVirtualizationBasedSecurity
             if ($vbsVal -eq 1) {
                 $info.VBS = $true
             }
@@ -171,9 +171,9 @@ function Get-SystemInfo {
 
     # 12. Kiem tra cai at Valorant & Vanguard
     try {
-        # Kiem tra qua uong dan mac inh
-        $valPathDefault = "C:\Riot Games\VALORANT"
-        if (Test-Path $valPathDefault) {
+        # Kiem tra qua ham Get-ValorantPath dong
+        $valExeDetected = Get-ValorantPath
+        if (Test-Path $valExeDetected) {
             $info.ValorantInstalled = $true
         } else {
             # Thu tim trong Uninstall registry
@@ -185,7 +185,7 @@ function Get-SystemInfo {
                 if (Test-Path $rp) {
                     $keys = Get-ChildItem -Path $rp -ErrorAction SilentlyContinue
                     foreach ($key in $keys) {
-                        $disp = Get-ItemPropertyValue -Path $key.PSPath -Name "DisplayName" -ErrorAction SilentlyContinue
+                        $disp = (Get-ItemProperty -Path $key.PSPath -Name "DisplayName" -ErrorAction SilentlyContinue).DisplayName
                         if ($disp -and $disp -like "*VALORANT*") {
                             $info.ValorantInstalled = $true
                             break
@@ -195,9 +195,9 @@ function Get-SystemInfo {
             }
         }
 
-        # Kiem tra Riot Vanguard service vgc
+        # Kiem tra Riot Vanguard service vgc hoac file binary
         $vanguardService = Get-Service -Name "vgc" -ErrorAction SilentlyContinue
-        if ($vanguardService) {
+        if ($vanguardService -or (Test-Path "C:\Program Files\Riot Vanguard\vgc.exe")) {
             $info.VanguardInstalled = $true
         }
     } catch {
@@ -219,8 +219,33 @@ function Get-SystemInfo {
     return [PSCustomObject]$info
 }
 
-# Export ham
-
-
+function Get-ValorantPath {
+    # 1. Kiem tra qua cac o dia
+    $drives = Get-PSDrive -PSProvider FileSystem -ErrorAction SilentlyContinue
+    foreach ($d in $drives) {
+        $candidate = Join-Path $d.Root "Riot Games\VALORANT\live\ShooterGame\Binaries\Win64\VALORANT-Win64-Shipping.exe"
+        if (Test-Path $candidate) {
+            return $candidate
+        }
+    }
+    
+    # 2. Kiem tra qua metadata cua Riot Client
+    $yamlPath = "C:\ProgramData\Riot Games\Metadata\valorant.live\valorant.live.product_settings.yaml"
+    if (Test-Path $yamlPath) {
+        try {
+            $content = Get-Content $yamlPath -Raw -ErrorAction SilentlyContinue
+            if ($content -match 'product_install_full_path:\s*"([^"]+)"') {
+                $baseDir = $Matches[1].Trim()
+                $candidate = Join-Path $baseDir "live\ShooterGame\Binaries\Win64\VALORANT-Win64-Shipping.exe"
+                if (Test-Path $candidate) {
+                    return $candidate
+                }
+            }
+        } catch {}
+    }
+    
+    # 3. Mac dinh fallback
+    return "C:\Riot Games\VALORANT\live\ShooterGame\Binaries\Win64\VALORANT-Win64-Shipping.exe"
+}
 
 

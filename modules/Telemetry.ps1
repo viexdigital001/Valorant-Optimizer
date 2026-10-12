@@ -1,4 +1,4 @@
-# modules/Telemetry.ps1
+﻿# modules/Telemetry.ps1
 # Module Disabling thu thap du lieu (Telemetry) cho Valorant Optimize 1.0.0
 
 function Check-Telemetry {
@@ -76,6 +76,8 @@ function Verify-Telemetry {
 function WriteLog-Telemetry {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

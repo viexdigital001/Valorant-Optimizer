@@ -1,4 +1,4 @@
-# core/Loader.ps1
+﻿# core/Loader.ps1
 # Bo nap module va tai nguyen System cho Valorant Optimize 1.0.0
 
 $Global:ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
@@ -58,3 +58,5 @@ if (Test-Path $modulesDir) {
 function Initialize-Project {
     Write-Log "Khoi tao du an Completed!" "SUCCESS"
 }
+
+

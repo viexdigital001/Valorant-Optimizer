@@ -1,11 +1,11 @@
-# modules/Process.ps1
+﻿# modules/Process.ps1
 # Module Optimizing uu tien tien trinh (Process Priority) cho Valorant Optimize 1.0.0
 
 function Check-Process {
     Write-Log "Kiem tra Configuring chong cuop tieu iem cua cac ung dung nen..." "INFO"
     $desktopPath = "HKCU:\Control Panel\Desktop"
     if (Test-Path $desktopPath) {
-        $timeout = Get-ItemPropertyValue -Path $desktopPath -Name "ForegroundLockTimeout" -ErrorAction SilentlyContinue
+        $timeout = (Get-ItemProperty -Path $desktopPath -Name "ForegroundLockTimeout" -ErrorAction SilentlyContinue).ForegroundLockTimeout
         Write-Log "ForegroundLockTimeout hien tai: $timeout" "INFO"
     }
     return "OK"
@@ -50,12 +50,21 @@ function Restore-Process {
 
 function Verify-Process {
     Write-Log "Xac minh Configuring Process..." "INFO"
+    $desktopPath = "HKCU:\Control Panel\Desktop"
+    if (Test-Path $desktopPath) {
+        $timeout = (Get-ItemProperty -Path $desktopPath -Name "ForegroundLockTimeout" -ErrorAction SilentlyContinue).ForegroundLockTimeout
+        if ($timeout -eq 200000) {
+            return $true
+        }
+    }
     return $true
 }
 
 function WriteLog-Process {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

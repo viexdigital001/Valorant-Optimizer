@@ -1,4 +1,4 @@
-# modules/GameStart.ps1
+﻿# modules/GameStart.ps1
 # Module Optimizing qua trinh khoi ong Valorant cho Valorant Optimize 1.0.0
 
 function Check-GameStart {
@@ -64,6 +64,8 @@ function Verify-GameStart {
 function WriteLog-GameStart {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

@@ -1,4 +1,4 @@
-# modules/Network.ps1
+﻿# modules/Network.ps1
 # Module Optimizing ket noi mang (Network) cho Valorant Optimize 1.0.0
 
 function Check-Network {
@@ -7,7 +7,7 @@ function Check-Network {
     # Kiem tra Configuring TCP o muc toan cuc
     $tcpPath = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
     if (Test-Path $tcpPath) {
-        $sack = Get-ItemPropertyValue -Path $tcpPath -Name "SackOpts" -ErrorAction SilentlyContinue
+        $sack = (Get-ItemProperty -Path $tcpPath -Name "SackOpts" -ErrorAction SilentlyContinue).SackOpts
         Write-Log "SackOpts (Selective Acknowledgment): $sack" "INFO"
     }
     
@@ -39,30 +39,38 @@ function Apply-Network {
         Write-Log "a Configuring TCPNoDelay va TcpAckFrequency Success tren cac card mang." "INFO"
     }
     
-    # 2. Tat cac Mode tiet kiem ien nang tren Card Mang (Giam o tre goi tin)
+    # 2. Tat cac che do tiet kiem dien nang tren Card mang vat ly (Giam do tre goi tin UDP/TCP)
     try {
-        # Tat Energy Efficient Ethernet (EEE)
-        Set-NetAdapterAdvancedProperty -Name * -RegistryKeyword "*EEE" -RegistryValue "0" -ErrorAction SilentlyContinue | Out-Null
-        # Tat Green Ethernet
-        Set-NetAdapterAdvancedProperty -Name * -RegistryKeyword "*Green" -RegistryValue "0" -ErrorAction SilentlyContinue | Out-Null
-        # Bat Receive Side Scaling (RSS) e xu ly goi tin tren nhieu nhan CPU
-        Set-NetAdapterAdvancedProperty -Name * -RegistryKeyword "*RSS" -RegistryValue "1" -ErrorAction SilentlyContinue | Out-Null
-        
-        Write-Log "a Configuring EEE=0, GreenEthernet=0, RSS=1 tren cac card mang co ho tro." "INFO"
+        $physicalAdapters = Get-NetAdapter -Physical -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Up" }
+        foreach ($adapter in $physicalAdapters) {
+            # Tat Energy Efficient Ethernet (EEE)
+            Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword "*EEE" -RegistryValue "0" -ErrorAction SilentlyContinue | Out-Null
+            # Tat Green Ethernet
+            Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword "*Green" -RegistryValue "0" -ErrorAction SilentlyContinue | Out-Null
+            # Bat Receive Side Scaling (RSS) de chia deu goi tin UDP tren cac nhan CPU
+            Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword "*RSS" -RegistryValue "1" -ErrorAction SilentlyContinue | Out-Null
+            # Tat Flow Control de tranh delay buffer
+            Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword "*FlowControl" -RegistryValue "0" -ErrorAction SilentlyContinue | Out-Null
+        }
+        Write-Log "a Configuring EEE=0, GreenEthernet=0, RSS=1 tren cac card mang vat ly dang hoat dong." "INFO"
     } catch {
         Write-Log "ERROR khi Configuring nang cao Adapter mang: $_" "WARNING"
     }
     
-    # 3. Optimizing cac cai at TCP/IP khac
+    # 3. Optimizing TCP Global Parameters (Giu Auto-tuning o muc chuan, khong bop bang thong)
+    try {
+        netsh int tcp set global autotuninglevel=normal 2>&1 | Out-Null
+        netsh int tcp set global rss=enabled 2>&1 | Out-Null
+        netsh int tcp set global timestamps=disabled 2>&1 | Out-Null
+    } catch {}
+    
     $tcpPath = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
     if (Test-Path $tcpPath) {
         Backup-RegistryValue -Path $tcpPath -ValueName "SackOpts"
         Backup-RegistryValue -Path $tcpPath -ValueName "TcpWindowSize"
-        
-        # SackOpts = 1 (Bat selective ack)
         Set-ItemProperty -Path $tcpPath -Name "SackOpts" -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
-        # Configuring kich thuoc cua so nhan du lieu toi uu
-        Set-ItemProperty -Path $tcpPath -Name "TcpWindowSize" -Value 65535 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
+        # Xoa TcpWindowSize cu neu co de Windows tu dong mo rong cua so mang toc do cao
+        Remove-ItemProperty -Path $tcpPath -Name "TcpWindowSize" -ErrorAction SilentlyContinue | Out-Null
     }
     
     Write-Log "Optimizing Network Completed!" "SUCCESS"
@@ -74,12 +82,21 @@ function Restore-Network {
 
 function Verify-Network {
     Write-Log "Xac minh Configuring Network..." "INFO"
+    $tcpPath = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
+    if (Test-Path $tcpPath) {
+        $props = Get-ItemProperty -Path $tcpPath -ErrorAction SilentlyContinue
+        if ($props -and $props.SackOpts -eq 1) {
+            return $true
+        }
+    }
     return $true
 }
 
 function WriteLog-Network {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

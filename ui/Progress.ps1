@@ -1,4 +1,4 @@
-# ui/Progress.ps1
+﻿# ui/Progress.ps1
 # Thanh tien trinh o hoa chong nhap nhay cho Valorant Optimize 1.0.0
 
 function Draw-ProgressBar {
@@ -38,6 +38,8 @@ function Draw-ProgressBar {
         Write-Ansi " - $StatusText" -Color "Gray" -NoNewLine
     }
 }
+
+
 
 
 

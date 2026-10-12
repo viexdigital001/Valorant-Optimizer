@@ -1,4 +1,4 @@
-# ui/Draw.ps1
+﻿# ui/Draw.ps1
 # Thu vien ve giao dien Console Gaming cho Valorant Optimize 1.0.0
 
 # ieu chinh kich thuoc Console
@@ -138,16 +138,16 @@ function Draw-StartupLogo {
     Move-Cursor 40 20
     Write-Ansi "Loading optimization engine..." -Color "Cyan"
     
-    # Progress Bar mo man
+    # Progress Bar mo man (nhanh va muot ma)
     for ($k = 0; $k -le 10; $k++) {
         Move-Cursor 40 22
         $bar = ("#" * $k) + ("-" * (10 - $k))
         Write-Ansi "[$bar]" -Color "BrightCyan" -NoNewLine
         Write-Ansi " $($k * 10)%" -Color "BrightWhite" -NoNewLine
-        Start-Sleep -Milliseconds 150
+        Start-Sleep -Milliseconds 45
     }
     
-    Start-Sleep -Milliseconds 400
+    Start-Sleep -Milliseconds 150
 }
 
 # Ve khung cau truc chinh (Layout)
@@ -188,6 +188,8 @@ function Clear-ContentArea {
         Write-Ansi (" " * 93) -NoNewLine
     }
 }
+
+
 
 
 

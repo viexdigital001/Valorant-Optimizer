@@ -1,4 +1,4 @@
-# ui/Menu.ps1
+﻿# ui/Menu.ps1
 # He thong ieu huong Menu Console bang ban phim cho Valorant Optimize 1.0.0
 
 function Draw-SidebarMenu {
@@ -17,17 +17,21 @@ function Draw-SidebarMenu {
         
         $itemText = $Items[$i]
         
+        $isVIP = $itemText -match "\[VIP\]|VieX Plus"
+        
         if ($i -eq $SelectedIndex) {
-            # Muc ang uoc chon: Ve mui ten mau Cyan, chu in am
-            Write-Ansi "> " -Color "BrightCyan" -NoNewLine
-            Write-Ansi $itemText -Color "BrightCyan" -NoNewLine
-            # Xoa cac ky tu thua phia sau bang cach em khoang trang
+            # Muc ang uoc chon: Ve mui ten mau Cyan/Yellow, chu in am
+            $arrowColor = if ($isVIP) { "BrightYellow" } else { "BrightCyan" }
+            $textColor = if ($isVIP) { "BrightGreen" } else { "BrightCyan" }
+            Write-Ansi "> " -Color $arrowColor -NoNewLine
+            Write-Ansi $itemText -Color $textColor -Bold -NoNewLine
             $padding = 20 - $itemText.Length
             if ($padding -gt 0) { Write-Host (" " * $padding) -NoNewline }
         } else {
-            # Muc thuong: In chu xam/trang
+            # Muc thuong: Neu la VIP thi to vang noi bat, con lai mau trang
+            $textColor = if ($isVIP) { "BrightYellow" } else { "White" }
             Write-Ansi "  " -NoNewLine
-            Write-Ansi $itemText -Color "White" -NoNewLine
+            Write-Ansi $itemText -Color $textColor -NoNewLine
             $padding = 20 - $itemText.Length
             if ($padding -gt 0) { Write-Host (" " * $padding) -NoNewline }
         }
@@ -108,6 +112,8 @@ function Get-Confirmation {
         }
     }
 }
+
+
 
 
 

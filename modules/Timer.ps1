@@ -1,4 +1,4 @@
-# modules/Timer.ps1
+﻿# modules/Timer.ps1
 # Module toi uu o phan giai Timer cua System cho Valorant Optimize 1.0.0
 
 function Check-Timer {
@@ -45,9 +45,9 @@ function Apply-Timer {
     if (-not (Test-Path $timerPath)) {
         New-Item -Path $timerPath -Force | Out-Null
     }
-    Backup-RegistryValue -Path $timerPath -ValueName "GlobalTimerResolutionLimits"
-    # Thiet lap kich hoat gioi han o phan giai toi a cho Timer
-    Set-ItemProperty -Path $timerPath -Name "GlobalTimerResolutionLimits" -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
+    Backup-RegistryValue -Path $timerPath -ValueName "GlobalTimerResolutionRequests"
+    # Thiet lap GlobalTimerResolutionRequests = 1 de Windows uu tien do phan giai timer cao nhat
+    Set-ItemProperty -Path $timerPath -Name "GlobalTimerResolutionRequests" -Value 1 -Type DWord -Force -ErrorAction SilentlyContinue | Out-Null
     
     Write-Log "Optimizing Timer Completed!" "SUCCESS"
 }
@@ -62,12 +62,21 @@ function Restore-Timer {
 
 function Verify-Timer {
     Write-Log "Xac minh Configuring Timer..." "INFO"
+    $timerPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"
+    if (Test-Path $timerPath) {
+        $val = (Get-ItemProperty -Path $timerPath -Name "GlobalTimerResolutionRequests" -ErrorAction SilentlyContinue).GlobalTimerResolutionRequests
+        if ($val -eq 1) {
+            return $true
+        }
+    }
     return $true
 }
 
 function WriteLog-Timer {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

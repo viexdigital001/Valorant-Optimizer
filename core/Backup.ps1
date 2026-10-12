@@ -146,7 +146,7 @@ function Save-BackupSession {
     
     $info = [ordered]@{
         Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-        Version = "1.0.0"
+        Version = "1.1.0"
         Author = "VieX Studio"
     }
     $info | ConvertTo-Json -Depth 5 | Out-File -FilePath $infPath -Force
@@ -154,6 +154,8 @@ function Save-BackupSession {
     $Global:BackupSessionActive = $false
     Write-Log "Saved Snapshot Backup to directory: $Global:CurrentBackupDir" "SUCCESS"
 }
+
+
 
 
 

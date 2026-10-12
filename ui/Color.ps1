@@ -1,4 +1,4 @@
-# ui/Color.ps1
+﻿# ui/Color.ps1
 # inh nghia bang mau ANSI cho Valorant Optimize 1.0.0
 
 $esc = [char]27
@@ -103,6 +103,8 @@ function Get-AnsiStr {
     
     return "${colorCode}${Text}$($Global:Colors['Reset'])"
 }
+
+
 
 
 

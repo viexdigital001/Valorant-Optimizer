@@ -1,4 +1,4 @@
-# modules/GPU.ps1
+﻿# modules/GPU.ps1
 # Module toi uu GPU cho Valorant Optimize 1.0.0
 
 function Check-GPU {
@@ -55,23 +55,25 @@ function Apply-GPU {
         Write-Log "a Configuring MaxShaderCacheSize thanh Unlimited" "INFO"
     }
     
-    # 3. Disabling Fullscreen Optimizations cho Valorant
+    # 3. Disabling Fullscreen Optimizations cho Valorant neu profile yeu cau
     $compatPath = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
     if (-not (Test-Path $compatPath)) {
         New-Item -Path $compatPath -Force | Out-Null
     }
     
-    # Cac uong dan pho bien cua Valorant
-    $gamePaths = @(
-        "C:\Riot Games\VALORANT\live\ShooterGame\Binaries\Win64\VALORANT-Win64-Shipping.exe"
-    )
+    # Tim duong dan thuc te cua Valorant
+    $valExe = Get-ValorantPath
+    $gamePaths = @($valExe)
+    if ($valExe -ne "C:\Riot Games\VALORANT\live\ShooterGame\Binaries\Win64\VALORANT-Win64-Shipping.exe") {
+        $gamePaths += "C:\Riot Games\VALORANT\live\ShooterGame\Binaries\Win64\VALORANT-Win64-Shipping.exe"
+    }
     
     foreach ($gp in $gamePaths) {
         Backup-RegistryValue -Path $compatPath -ValueName $gp
         # ~ DISABLEDXMAXIMIZEDWINDOWEDMODE Disabling Optimizing toan man hinh
         Set-ItemProperty -Path $compatPath -Name $gp -Value "~ DISABLEDXMAXIMIZEDWINDOWEDMODE" -Type String -Force -ErrorAction SilentlyContinue | Out-Null
     }
-    Write-Log "a Disabling Fullscreen Optimizations cho Valorant" "SUCCESS"
+    Write-Log "a thiet lap Fullscreen Optimizations cho Valorant ($valExe)" "SUCCESS"
 }
 
 function Restore-GPU {
@@ -94,6 +96,8 @@ function Verify-GPU {
 function WriteLog-GPU {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

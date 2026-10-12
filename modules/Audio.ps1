@@ -1,4 +1,4 @@
-# modules/Audio.ps1
+﻿# modules/Audio.ps1
 # Module Optimizing am thanh (Audio Latency) cho Valorant Optimize 1.0.0
 
 function Check-Audio {
@@ -57,6 +57,8 @@ function Verify-Audio {
 function WriteLog-Audio {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

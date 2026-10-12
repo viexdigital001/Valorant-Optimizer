@@ -1,4 +1,4 @@
-# modules/Xbox.ps1
+﻿# modules/Xbox.ps1
 # Module Disabling dich vu Xbox chay nen va Game DVR cho Valorant Optimize 1.0.0
 
 function Check-Xbox {
@@ -78,6 +78,8 @@ function Verify-Xbox {
 function WriteLog-Xbox {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

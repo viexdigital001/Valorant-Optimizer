@@ -1,4 +1,4 @@
-# modules/CPU.ps1
+﻿# modules/CPU.ps1
 # Module toi uu CPU cho Valorant Optimize 1.0.0
 
 function Check-CPU {
@@ -103,6 +103,8 @@ function Verify-CPU {
 function WriteLog-CPU {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

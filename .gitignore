@@ -1,0 +1,9 @@
+# Logs and runtime data
+logs/
+backup/
+test_install/
+*.log
+
+# Editor and temporary files
+.vscode/
+*.tmp

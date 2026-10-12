@@ -1,4 +1,4 @@
-# modules/Keyboard.ps1
+﻿# modules/Keyboard.ps1
 # Module Optimizing ban phim (Keyboard) cho Valorant Optimize 1.0.0
 
 function Check-Keyboard {
@@ -79,6 +79,8 @@ function Verify-Keyboard {
 function WriteLog-Keyboard {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

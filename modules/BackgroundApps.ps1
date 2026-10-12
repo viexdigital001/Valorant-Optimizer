@@ -1,4 +1,4 @@
-# modules/BackgroundApps.ps1
+﻿# modules/BackgroundApps.ps1
 # Module Disabling ung dung UWP chay ngam (Background Apps) cho Valorant Optimize 1.0.0
 
 function Check-BackgroundApps {
@@ -59,6 +59,8 @@ function Verify-BackgroundApps {
 function WriteLog-BackgroundApps {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

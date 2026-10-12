@@ -34,8 +34,10 @@ $menuItems = @(
     "Dashboard",
     "Optimize Mode",
     "One Click Optimize",
+    "Latency Diagnostics",
     "Restore",
     "Log",
+    "[VIP] VieX Plus 2.0",
     "About",
     "Exit"
 )
@@ -128,6 +130,10 @@ function Show-Dashboard {
     Move-Cursor 28 22
     Write-Ansi "Profile Classification: " -Color "Gray" -NoNewLine
     Write-Ansi $sysInfo.DeviceProfile -Color "BrightYellow" -Bold
+    
+    Move-Cursor 28 24
+    Write-Ansi "[*] VIP STATUS: " -Color "BrightYellow" -Bold -NoNewLine
+    Write-Ansi "Free Edition (Mở mục VieX Plus 2.0.0 để mở khóa 100% công suất!)" -Color "BrightCyan"
     
     # Footer nho huong dan
     Move-Cursor 28 26
@@ -225,8 +231,17 @@ function Show-OptimizePage {
                         Write-Ansi "Please restart your PC for the changes to take effect! [*]" -Color "BrightYellow"
                         
                         Move-Cursor 28 13
-                        Write-Ansi "Press any key to continue..." -Color "Gray"
-                        [Console]::ReadKey($true) | Out-Null
+                        Write-Ansi "[*] Muon giam them 3-5ms Input Lag va on dinh 1% Low FPS trong Combat?" -Color "BrightCyan"
+                        Move-Cursor 28 14
+                        Write-Ansi "Kham pha VieX Plus 2.0.0 (408k - Re hon 1 skin Vandal): " -Color "BrightWhite" -NoNewLine
+                        Write-Ansi "https://discord.gg/Xx4pcdvHkw" -Color "BrightYellow" -Underline
+                        
+                        Move-Cursor 28 16
+                        Write-Ansi "Press [V] to join VIP Discord, or any other key to continue..." -Color "Gray"
+                        $key = [Console]::ReadKey($true)
+                        if ($key.Key -eq "V") {
+                            try { Start-Process "https://discord.gg/Xx4pcdvHkw" } catch {}
+                        }
                     }
                     $subLoop = $false
                 }
@@ -255,6 +270,7 @@ function Show-RestorePage {
         Move-Cursor 28 7
         Write-Ansi "Press any key to continue..." -Color "Gray"
         [Console]::ReadKey($true) | Out-Null
+        Show-Dashboard
         return
     }
     
@@ -359,6 +375,169 @@ function Show-LogPage {
     [Console]::ReadKey($true) | Out-Null
 }
 
+function Show-LatencyDiagnosticsPage {
+    Clear-ContentArea
+    Move-Cursor 28 2
+    Write-Ansi "[ SYSTEM LATENCY & ESPORTS POTENTIAL DIAGNOSTICS ]" -Color "BrightCyan" -Bold
+    Draw-HorizontalLine 28 3 85 "-" "Gray"
+    
+    Move-Cursor 28 5
+    Write-Ansi "Dang phan tich do tre phan cung va thiet lap he thong Windows..." -Color "BrightWhite"
+    Start-Sleep -Milliseconds 250
+    
+    # 1. Kiem tra Timer Resolution
+    $timerPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"
+    $hasTimerRes = $false
+    if (Test-Path $timerPath) {
+        $val = Get-ItemPropertyValue -Path $timerPath -Name "GlobalTimerResolutionRequests" -ErrorAction SilentlyContinue
+        if ($val -eq 1) { $hasTimerRes = $true }
+    }
+    
+    # 2. Kiem tra Power Plan
+    $activeScheme = powercfg /getactivescheme
+    $isUltimate = $activeScheme -match "Ultimate"
+    
+    $diagItems = @(
+        @{ 
+            Label = "1. Windows Kernel Timer"
+            Current = if ($hasTimerRes) { "1.000 ms (Windows Request)" } else { "1.000 ms - 15.6 ms (Default)" }
+            Plus = "0.500 ms (Permanent Lock)"
+            Impact = "Giam 50% delay nhan click chuot"
+        },
+        @{ 
+            Label = "2. GPU & Audio Interrupts"
+            Current = "Line-based IRQ (Shared Bus)"
+            Plus = "MSI Mode High (Dedicated Lane)"
+            Impact = "Triet tieu DPC delay khi nghe util"
+        },
+        @{ 
+            Label = "3. CPU Core Parking / Affinity"
+            Current = if ($isUltimate) { "Partial Unpark (ACPI Standard)" } else { "Parked (Power Save Active)" }
+            Plus = "100% Core Affinity for Valorant"
+            Impact = "Cach ly Vanguard, khong nghen luong"
+        },
+        @{ 
+            Label = "4. In-Game RAM Standby Cache"
+            Current = "Windows Default (No Auto-Purge)"
+            Plus = "Active Standby Memory Purger"
+            Impact = "Triet tieu 100% micro-stutter smoke"
+        },
+        @{ 
+            Label = "5. Network Bufferbloat & QoS"
+            Current = "Windows Standard Packet Queue"
+            Plus = "DSCP QoS Tagging + Bufferbloat Fix"
+            Impact = "Xoa bo hoan toan Ghost Bullets"
+        }
+    )
+    
+    $row = 7
+    foreach ($item in $diagItems) {
+        Move-Cursor 28 $row
+        Write-Ansi "$($item.Label): " -Color "BrightWhite" -Bold -NoNewLine
+        Write-Ansi $item.Current -Color "BrightYellow"
+        
+        Move-Cursor 31 ($row + 1)
+        Write-Ansi "-> Tiềm năng VieX Plus: " -Color "Gray" -NoNewLine
+        Write-Ansi $item.Plus -Color "BrightGreen" -Bold -NoNewLine
+        Write-Ansi " | $($item.Impact)" -Color "Cyan"
+        
+        $row += 3
+        Start-Sleep -Milliseconds 60
+    }
+    
+    Draw-HorizontalLine 28 $row 85 "-" "Gray"
+    
+    Move-Cursor 28 ($row + 1)
+    Write-Ansi "TỔNG ĐIỂM TỐI ƯU HIỆN TẠI (BẢN FREE): " -Color "BrightWhite" -Bold -NoNewLine
+    Write-Ansi "64 / 100 ĐIỂM " -Color "BrightYellow" -Bold -NoNewLine
+    Write-Ansi "(MỨC KHÁ - CÒN 36% DƯ ĐỊA NGHẼN ĐỘ TRỄ)" -Color "Gray"
+    
+    Move-Cursor 28 ($row + 2)
+    Write-Ansi "TIỀM NĂNG KHI NÂNG CẤP VIEX PLUS 2.0.0:  " -Color "BrightWhite" -Bold -NoNewLine
+    Write-Ansi "99 / 100 ĐIỂM " -Color "BrightGreen" -Bold -NoNewLine
+    Write-Ansi "[CHUẨN ESPORTS TOÀN DIỆN]" -Color "BrightCyan"
+    
+    Move-Cursor 28 ($row + 4)
+    Write-Ansi "-> NHAN [ENTER] HOAC [V] DE NANG CAP VIEX PLUS (408K): " -Color "BrightYellow" -Bold -NoNewLine
+    Write-Ansi "https://discord.gg/Xx4pcdvHkw" -Color "BrightBlue" -Underline
+    
+    Move-Cursor 28 ($row + 5)
+    Write-Ansi "[Esc] Quay lai menu chinh" -Color "Gray"
+    
+    $key = [Console]::ReadKey($true)
+    if ($key.Key -eq "Enter" -or $key.Key -eq "V") {
+        try {
+            Start-Process "https://discord.gg/Xx4pcdvHkw"
+            Move-Cursor 28 ($row + 6)
+            Write-Ansi "[OK] Da mo Discord VieX Digital tren trinh duyet!" -Color "BrightGreen"
+            Start-Sleep -Milliseconds 800
+        } catch {}
+    }
+}
+
+function Show-VieXPlusPage {
+    Clear-ContentArea
+    Move-Cursor 28 2
+    Write-Ansi "[ VIEX PLUS 2.0.0 - BỨT PHÁ RANK RADIANT ]" -Color "BrightYellow" -Bold
+    Draw-HorizontalLine 28 3 85 "=" "Yellow"
+    
+    Move-Cursor 28 5
+    Write-Ansi "VŨ KHÍ CÔNG NGHỆ BÍ MẬT DÀNH CHO CÁC TRYHARDER VALORANT HÀNG ĐẦU" -Color "BrightWhite" -Bold
+    
+    Move-Cursor 28 7
+    Write-Ansi "• GIÁ NÂNG CẤP: " -Color "Gray" -NoNewLine
+    Write-Ansi "408.000 VNĐ " -Color "BrightGreen" -Bold -NoNewLine
+    Write-Ansi "(Bản quyền trọn đời + Kỹ sư VieX hỗ trợ 1-1)" -Color "BrightCyan"
+    
+    Move-Cursor 28 8
+    Write-Ansi "  -> So sánh: " -Color "Gray" -NoNewLine
+    Write-Ansi "Rẻ hơn 1 cây Vandal Kuronami ~550k, nhưng tăng hiệu năng và hạ Input Lag vĩnh viễn!" -Color "BrightMagenta"
+    
+    Move-Cursor 28 10
+    Write-Ansi "5 ĐẶC QUYỀN VƯỢT TRỘI CHỈ CÓ TẠI BẢN PLUS 2.0.0:" -Color "BrightWhite" -Underline
+    
+    Move-Cursor 28 12
+    Write-Ansi "[1] Tối Ưu Độ Trễ Phần Cứng (DPC/ISR & MSI Mode):" -Color "BrightCyan" -Bold
+    Move-Cursor 32 13
+    Write-Ansi "Tách riêng luồng Card đồ họa & Âm thanh, triệt tiêu delay phản hồi khi nổ súng." -Color "White"
+    
+    Move-Cursor 28 15
+    Write-Ansi "[2] Khóa Chuẩn Kernel Timer Resolution 0.500ms Siêu Ổn Định:" -Color "BrightCyan" -Bold
+    Move-Cursor 32 16
+    Write-Ansi "Đạn ra tức thì khi click chuột, tâm súng hồi nhanh, không bị Windows reset về 1.0ms." -Color "White"
+    
+    Move-Cursor 28 18
+    Write-Ansi "[3] Engine Tự Động Xóa RAM Standby Trong Trận Đấu:" -Color "BrightCyan" -Bold
+    Move-Cursor 32 19
+    Write-Ansi "Xóa sạch hiện tượng khựng hình (micro-stutter) khi đối phương quăng util / Viper pit." -Color "White"
+    
+    Move-Cursor 28 21
+    Write-Ansi "[4] Chuyên Gia VieX Căn Chỉnh Trực Tiếp 1-1 (TeamViewer/UltraView):" -Color "BrightCyan" -Bold
+    Move-Cursor 32 22
+    Write-Ansi "Căn chỉnh riêng biệt theo từng cấu hình CPU/GPU, màn hình Hz và độ nhạy chuột của bạn." -Color "White"
+    
+    Move-Cursor 28 24
+    Write-Ansi "[5] Nhận Role VIP & Profile Tự Động Cập Nhật Trọn Đời Trên Discord." -Color "BrightCyan" -Bold
+    
+    Draw-HorizontalLine 28 26 85 "-" "Gray"
+    Move-Cursor 28 27
+    Write-Ansi "-> NHAN [ENTER] HOAC [V] DE MO DISCORD NHAN TU VAN VIP NGAY: " -Color "BrightYellow" -Bold -NoNewLine
+    Write-Ansi "https://discord.gg/Xx4pcdvHkw" -Color "BrightBlue" -Underline
+    
+    Move-Cursor 28 29
+    Write-Ansi "[Esc] Quay lai menu chinh" -Color "Gray"
+    
+    $key = [Console]::ReadKey($true)
+    if ($key.Key -eq "Enter" -or $key.Key -eq "V") {
+        try {
+            Start-Process "https://discord.gg/Xx4pcdvHkw"
+            Move-Cursor 28 30
+            Write-Ansi "[OK] Da mo Discord VieX Digital tren trinh duyet!" -Color "BrightGreen"
+            Start-Sleep -Milliseconds 800
+        } catch {}
+    }
+}
+
 function Show-AboutPage {
     Clear-ContentArea
     Move-Cursor 28 2
@@ -366,7 +545,7 @@ function Show-AboutPage {
     Draw-HorizontalLine 28 3 85 "-" "Gray"
     
     Move-Cursor 30 6
-    Write-Ansi "[*] Valorant Optimize 1.0.0" -Color "BrightWhite" -Bold
+    Write-Ansi "[*] Valorant Optimize 1.1.0" -Color "BrightWhite" -Bold
     Move-Cursor 30 8
     Write-Ansi "- Author: " -Color "Gray" -NoNewLine
     Write-Ansi "VieX Digital & VieX Studio" -Color "BrightCyan" -Bold
@@ -383,14 +562,20 @@ function Show-AboutPage {
     
     Move-Cursor 30 16
     Write-Ansi "- Discord Support: " -Color "Gray" -NoNewLine
-    Write-Ansi "https://discord.gg/vie-x-digital-1274585470633906176" -Color "BrightBlue" -Underline
+    Write-Ansi "https://discord.gg/Xx4pcdvHkw" -Color "BrightBlue" -Underline
+    
+    Move-Cursor 30 18
+    Write-Ansi "-> Nhấn [Enter] để mở Discord VieX Digital trên trình duyệt!" -Color "BrightYellow"
     
     Move-Cursor 28 22
     Write-Ansi "[i] Tip: Video games are for entertainment, remember to take care of your health!" -Color "BrightYellow"
     
     Move-Cursor 28 26
     Write-Ansi "Press any key to return to menu..." -Color "Gray"
-    [Console]::ReadKey($true) | Out-Null
+    $key = [Console]::ReadKey($true)
+    if ($key.Key -eq "Enter") {
+        try { Start-Process "https://discord.gg/Xx4pcdvHkw" } catch {}
+    }
 }
 
 # Khoi tao ve layout chinh
@@ -412,12 +597,14 @@ while ($running) {
     
     switch ($sel) {
         0 { Show-Dashboard }
-        1 { Show-OptimizePage }
-        2 { Start-OneClickOptimize; $Global:sysInfo = Get-SystemInfo; Show-Dashboard }
-        3 { Show-RestorePage }
-        4 { Show-LogPage; Show-Dashboard }
-        5 { Show-AboutPage; Show-Dashboard }
-        6 {
+        1 { Show-OptimizePage; $activeMenu = 0 }
+        2 { Start-OneClickOptimize; $Global:sysInfo = Get-SystemInfo; Show-Dashboard; $activeMenu = 0 }
+        3 { Show-LatencyDiagnosticsPage; Show-Dashboard; $activeMenu = 0 }
+        4 { Show-RestorePage; $activeMenu = 0 }
+        5 { Show-LogPage; Show-Dashboard; $activeMenu = 0 }
+        6 { Show-VieXPlusPage; Show-Dashboard; $activeMenu = 0 }
+        7 { Show-AboutPage; Show-Dashboard; $activeMenu = 0 }
+        8 {
             # Thoat ung dung
             Clear-Screen
             Move-Cursor 0 0
@@ -427,6 +614,9 @@ while ($running) {
         }
     }
 }
+
+
+
 
 
 

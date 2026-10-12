@@ -1,8 +1,8 @@
 # install.ps1
-# Script cai at va khoi chay cho Valorant Optimize 1.0.0
+# Script cai dat va khoi chay cho Valorant Optimize 1.1.0
 
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "   VALORANT OPTIMIZE 1.0.0 INSTALLER     " -ForegroundColor Cyan -BackgroundColor Black
+Write-Host "   VALORANT OPTIMIZE 1.1.0 INSTALLER     " -ForegroundColor Cyan -BackgroundColor Black
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host "Checking system environment..." -ForegroundColor Yellow
 
@@ -136,6 +136,8 @@ Start-Sleep -Seconds 1
 # 4. Khoi chay Main
 $cmd = "Set-Location -Path '$scriptDir'; & '$mainPath'"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $cmd
+
+
 
 
 

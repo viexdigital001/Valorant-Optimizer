@@ -1,4 +1,4 @@
-# modules/Services.ps1
+﻿# modules/Services.ps1
 # Module Optimizing cac Dich vu System (Services) cho Valorant Optimize 1.0.0
 
 function Check-Services {
@@ -36,12 +36,7 @@ function Apply-Services {
         "Spooler"             # Print Spooler (In an, tat tam thoi e giam giat. Co the bat lai neu can in)
     )
     
-    # Neu la Desktop, co the tat them Bluetooth e toi a tai nguyen
-    # (Laptop thuong dung chuot/tai nghe Bluetooth nen khong tat o ay e an toan)
-    $sysInfo = Get-SystemInfo
-    if (-not $sysInfo.IsLaptop) {
-        $servicesToDisable += "bthserv" # Bluetooth Support Service
-    }
+    # Luu y: Giu nguyen dich vu Bluetooth (bthserv) de dam bao tai nghe, chuot va tay cam khong bi ngat ket noi
     
     foreach ($srvName in $servicesToDisable) {
         $srv = Get-Service -Name $srvName -ErrorAction SilentlyContinue
@@ -66,11 +61,18 @@ function Restore-Services {
 }
 
 function Verify-Services {
+    param ($Config)
     Write-Log "Xac minh cac Services..." "INFO"
-    $srv = Get-Service -Name "RemoteRegistry" -ErrorAction SilentlyContinue
-    if ($srv) {
-        if ($srv.StartType -eq "Disabled") {
-            Write-Log "Xac minh Services Success!" "SUCCESS"
+    if ($Config -and $Config.settings.services.DisableUnused -eq $false) {
+        Write-Log "Profile hien tai khong tat service (giu nguyen mac dinh an toan)." "INFO"
+        return $true
+    }
+    # Kiem tra cac dich vu pho bien tren moi phien ban Windows (ke ca ban Home)
+    $checkList = @("DiagTrack", "Spooler", "RemoteRegistry", "MapsBroker")
+    foreach ($name in $checkList) {
+        $srv = Get-Service -Name $name -ErrorAction SilentlyContinue
+        if ($srv -and $srv.StartType -eq "Disabled") {
+            Write-Log "Xac minh Services Success ($name da bi tat)!" "SUCCESS"
             return $true
         }
     }
@@ -80,6 +82,8 @@ function Verify-Services {
 function WriteLog-Services {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

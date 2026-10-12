@@ -1,4 +1,4 @@
-# core/Restore.ps1
+﻿# core/Restore.ps1
 # ong co hoan tra (Restore) Configuring System cho Valorant Optimize 1.0.0
 
 function Get-BackupList {
@@ -29,28 +29,33 @@ function Restore-Snapshot {
         try {
             $regBackup = Get-Content $regFile -Raw | ConvertFrom-Json
             foreach ($item in $regBackup) {
-                # am bao uong dan ton tai
-                if (-not (Test-Path $item.Path)) {
-                    if ($item.Exists) {
-                        New-Item -Path $item.Path -Force | Out-Null
+                try {
+                    # am bao uong dan ton tai
+                    if (-not (Test-Path $item.Path)) {
+                        if ($item.Exists) {
+                            New-Item -Path $item.Path -Force | Out-Null
+                        }
                     }
-                }
-                
-                if ($item.Exists) {
-                    # Tra lai gia tri cu
-                    # Mot so gia tri dang Hex/DWord/QWord nap tu JSON co the can ep kieu
-                    $val = $item.Value
-                    if ($item.Type -eq "DWord") { $val = [int]$item.Value }
-                    elseif ($item.Type -eq "QWord") { $val = [long]$item.Value }
                     
-                    Set-ItemProperty -Path $item.Path -Name $item.ValueName -Value $val -Type $item.Type -Force -ErrorAction SilentlyContinue | Out-Null
-                    Write-Log "a Restore Registry: $($item.Path) \ $($item.ValueName) = $val" "DEBUG"
-                } else {
-                    # Neu luc truoc khong ton tai -> Xoa no i
-                    if (Test-Path $item.Path) {
-                        Remove-ItemProperty -Path $item.Path -Name $item.ValueName -Force -ErrorAction SilentlyContinue | Out-Null
-                        Write-Log "a xoa Registry tao them: $($item.Path) \ $($item.ValueName)" "DEBUG"
+                    if ($item.Exists) {
+                        # Tra lai gia tri cu
+                        # DWord can ep kieu [uint32] e ho tro gia tri lon 0xFFFFFFFF (4294967295)
+                        $val = $item.Value
+                        if ($item.Type -eq "DWord") { $val = [uint32]$item.Value }
+                        elseif ($item.Type -eq "QWord") { $val = [long]$item.Value }
+                        elseif ($item.Type -eq "Binary" -and $val -ne $null) { $val = [byte[]]$item.Value }
+                        
+                        Set-ItemProperty -Path $item.Path -Name $item.ValueName -Value $val -Type $item.Type -Force -ErrorAction SilentlyContinue | Out-Null
+                        Write-Log "a Restore Registry: $($item.Path) \ $($item.ValueName) = $val" "DEBUG"
+                    } else {
+                        # Neu luc truoc khong ton tai -> Xoa no i
+                        if (Test-Path $item.Path) {
+                            Remove-ItemProperty -Path $item.Path -Name $item.ValueName -Force -ErrorAction SilentlyContinue | Out-Null
+                            Write-Log "a xoa Registry tao them: $($item.Path) \ $($item.ValueName)" "DEBUG"
+                        }
                     }
+                } catch {
+                    Write-Log "ERROR khi phuc hoi Registry key $($item.Path) \ $($item.ValueName): $_" "WARNING"
                 }
             }
             Write-Log "a Restore xong Registry Success." "SUCCESS"
@@ -109,9 +114,17 @@ function Restore-Snapshot {
         }
     }
     
+    # 4. Restore BCD Timer settings
+    try {
+        bcdedit /deletevalue disabledynamictick 2>&1 | Out-Null
+        Write-Log "Da hoan tra thiet lap Dynamic Tick trong BCD ve mac dinh." "INFO"
+    } catch {}
+    
     Write-Log "Restore Snapshot Completed Success!" "SUCCESS"
     return $true
 }
+
+
 
 
 

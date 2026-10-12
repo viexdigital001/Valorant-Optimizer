@@ -1,4 +1,4 @@
-# core/OptimizeEngine.ps1
+﻿# core/OptimizeEngine.ps1
 # Bo may Optimizing thong minh One Click cho Valorant Optimize 1.0.0
 
 function Start-OneClickOptimize {
@@ -129,7 +129,7 @@ function Start-OneClickOptimize {
                 # Xac minh
                 $verified = $true
                 if (Get-Command $mod.Verify -ErrorAction SilentlyContinue) {
-                    $verified = Invoke-Expression $mod.Verify
+                    $verified = Invoke-Expression "$($mod.Verify) -Config `$configObject"
                 }
                 
                 if ($verified) {
@@ -176,24 +176,47 @@ function Start-OneClickOptimize {
     Move-Cursor 28 13
     Write-Ansi "Chuc ae co nhung pha ACE that chay, giu aim dinh nhu keo 502 nha! " -Color "BrightYellow"
     
-    # Banner quang cao premium
+    # Banner phễu chuyển đổi VieX Plus 2.0.0 theo tâm lý học hành vi
+    Draw-HorizontalLine 28 15 85 "=" "Yellow"
     Move-Cursor 28 16
-    Write-Ansi "" -Color "Gray"
-    Move-Cursor 28 17
-    Write-Ansi " MUON MAY CON MUOT HON NUA? TIM HIEU PHIEN BAN NANG CAP:" -Color "BrightRed" -Bold
-    Move-Cursor 28 18
-    Write-Ansi "   VieXF Ultimate" -Color "BrightCyan" -Bold -NoNewLine
-    Write-Ansi " - Optimizing triet e, cap nhat tweak thuong xuyen." -Color "BrightWhite"
-    Move-Cursor 28 20
-    Write-Ansi "-> Discord: " -NoNewLine
-    Write-Ansi "https://discord.com/channels/1274585470633906176/1416609764779098162" -Color "BrightBlue" -Underline
-    Move-Cursor 28 21
-    Write-Ansi "" -Color "Gray"
+    Write-Ansi "[⭐] BỨT PHÁ RANK RADIANT VỚI PHIÊN BẢN CAO CẤP: " -Color "BrightYellow" -Bold -NoNewLine
+    Write-Ansi "VIEX PLUS 2.0.0" -Color "BrightGreen" -Bold
     
-    Move-Cursor 28 23
-    Write-Ansi "Press any key to quay lai menu..." -Color "Gray"
-    [Console]::ReadKey($true) | Out-Null
+    Move-Cursor 28 17
+    Write-Ansi "• Giá nâng cấp: " -Color "Gray" -NoNewLine
+    Write-Ansi "408.000 VNĐ " -Color "BrightGreen" -Bold -NoNewLine
+    Write-Ansi "(Rẻ hơn 1 skin Vandal Kuronami ~550k nhưng tăng hiệu năng vĩnh viễn!)" -Color "BrightCyan"
+    
+    Move-Cursor 28 19
+    Write-Ansi "Tại sao Tryharder cần VieX Plus 2.0.0 trong các round đấu 12-12 căng thẳng?" -Color "BrightWhite" -Bold
+    Move-Cursor 30 20
+    Write-Ansi "[+] Khóa Timer Resolution 0.500ms siêu nhạy: Đạn ra tức thì khi click chuột" -Color "White"
+    Move-Cursor 30 21
+    Write-Ansi "[+] MSI Mode Hardware Latency: Triệt tiêu DPC delay âm thanh & đồ họa" -Color "White"
+    Move-Cursor 30 22
+    Write-Ansi "[+] Auto Standby Memory Purger: Triệt tiêu giật 1% Low FPS giữa làn khói Viper" -Color "White"
+    Move-Cursor 30 23
+    Write-Ansi "[+] Kỹ sư VieX can thiệp căn chỉnh 1-1 qua TeamViewer theo từng CPU/GPU/Màn hình" -Color "BrightCyan"
+    
+    Draw-HorizontalLine 28 25 85 "-" "Gray"
+    Move-Cursor 28 26
+    Write-Ansi "-> NHAN PHIM [V] DE MO DISCORD VIP (https://discord.gg/Xx4pcdvHkw)" -Color "BrightYellow" -Bold
+    Move-Cursor 28 27
+    Write-Ansi "   (Hoac nhan phim bat ky khac de quay lai Menu chinh)..." -Color "Gray"
+    
+    $key = [Console]::ReadKey($true)
+    if ($key.Key -eq "V" -or $key.Key -eq "Enter") {
+        try {
+            Start-Process "https://discord.gg/Xx4pcdvHkw"
+            Move-Cursor 28 28
+            Write-Ansi "[OK] Da mo Discord VieX Digital tren trinh duyet!" -Color "BrightGreen"
+            Start-Sleep -Milliseconds 800
+        } catch {}
+    }
 }
+
+
+
 
 
 

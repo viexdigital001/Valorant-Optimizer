@@ -1,4 +1,4 @@
-# modules/Input.ps1
+﻿# modules/Input.ps1
 # Module Optimizing thoi gian phan hoi au vao (Input Response) cho Valorant Optimize 1.0.0
 
 function Check-Input {
@@ -65,6 +65,8 @@ function Verify-Input {
 function WriteLog-Input {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 

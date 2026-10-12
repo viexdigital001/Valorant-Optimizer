@@ -1,9 +1,9 @@
-{
+﻿{
   "profile": "Extreme",
   "description": "Chế độ tối ưu kịch sàn! Dành toàn bộ tài nguyên cho Valorant, tắt hầu hết tiến trình nền và dịch vụ không cần thiết.",
   "settings": {
     "cpu": {
-      "Win32PrioritySeparation": 40,
+      "Win32PrioritySeparation": 38,
       "Priority": "High",
       "IoPriority": "High"
     },
@@ -13,7 +13,7 @@
       "FullscreenOptimizations": 0
     },
     "ram": {
-      "LargeSystemCache": 1,
+      "LargeSystemCache": 0,
       "DisablePagingExecutive": 1,
       "SysMainStartup": "Disabled"
     },

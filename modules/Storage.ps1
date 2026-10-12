@@ -1,4 +1,4 @@
-# modules/Storage.ps1
+﻿# modules/Storage.ps1
 # Module toi uu luu tru (Storage/Disk) cho Valorant Optimize 1.0.0
 
 function Check-Storage {
@@ -89,6 +89,8 @@ function Verify-Storage {
 function WriteLog-Storage {
     # Tich hop truc tiep qua Logger
 }
+
+
 
 
 
