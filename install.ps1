@@ -1,4 +1,4 @@
-# install.ps1
+﻿# install.ps1
 # Script cai dat va khoi chay cho Valorant Optimize 1.1.0
 
 Write-Host "=========================================" -ForegroundColor Cyan

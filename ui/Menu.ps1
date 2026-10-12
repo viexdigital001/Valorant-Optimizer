@@ -54,7 +54,12 @@ function Get-MenuSelection {
     
     while ($running) {
         # oi phim bam cua nguoi dung
-        $key = [Console]::ReadKey($true)
+        try {
+            $key = [Console]::ReadKey($true)
+        } catch {
+            Start-Sleep -Milliseconds 100
+            continue
+        }
         
         switch ($key.Key) {
             "UpArrow" {
@@ -103,11 +108,15 @@ function Get-Confirmation {
     Write-Ansi "$PromptMessage [Y/N]: " -Color "BrightYellow" -NoNewLine
     
     while ($true) {
-        $key = [Console]::ReadKey($true)
-        if ($key.KeyChar -eq 'y' -or $key.KeyChar -eq 'Y') {
-            return $true
-        }
-        if ($key.KeyChar -eq 'n' -or $key.KeyChar -eq 'N') {
+        try {
+            $key = [Console]::ReadKey($true)
+            if ($key.KeyChar -eq 'y' -or $key.KeyChar -eq 'Y') {
+                return $true
+            }
+            if ($key.KeyChar -eq 'n' -or $key.KeyChar -eq 'N') {
+                return $false
+            }
+        } catch {
             return $false
         }
     }

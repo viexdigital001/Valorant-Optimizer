@@ -1,5 +1,20 @@
-# main.ps1
-# iem bat au chinh (Main Entrypoint) cua ung dung Valorant Optimize 1.0.0
+﻿# main.ps1
+# Main Entrypoint cho Valorant Optimize v1.1.0
+
+# 0. Xac dinh duong dan tuyet doi va thu muc lam viec
+$scriptPath = $PSCommandPath
+if (-not $scriptPath) {
+    if ($MyInvocation.MyCommand.Path) {
+        $scriptPath = $MyInvocation.MyCommand.Path
+    } elseif ($MyInvocation.MyCommand.Definition) {
+        $scriptPath = $MyInvocation.MyCommand.Definition
+    } else {
+        $scriptPath = Join-Path $PWD.Path "main.ps1"
+    }
+}
+$PSScriptRoot = Split-Path -Parent $scriptPath
+if (-not $PSScriptRoot) { $PSScriptRoot = $PWD.Path }
+Set-Location -Path $PSScriptRoot
 
 # 1. Kiem tra quyen Administrator
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
@@ -7,24 +22,20 @@ $principal = New-Object Security.Principal.WindowsPrincipal($identity)
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "[!] Automatically requesting Administrator privileges..." -ForegroundColor Yellow
     try {
-        if ($PSCommandPath) {
-            Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-        } else {
-            Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSScriptRoot\main.ps1`"" -Verb RunAs
-        }
+        Start-Process powershell.exe -WorkingDirectory "$PSScriptRoot" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`"" -Verb RunAs
         Exit
     } catch {
         Write-Host "[X] FATAL ERROR: Administrator privileges not granted!" -ForegroundColor Red
         Write-Host "Press any key to exit..." -ForegroundColor Gray
-        Read-Host | Out-Null
+        try { [Console]::ReadKey($true) | Out-Null } catch { Read-Host }
         Exit
     }
 }
 
-# 2. Nap Loader va khoi tao du an
-$PSScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
-. (Join-Path $PSScriptRoot "core\Loader.ps1")
-Initialize-Project
+try {
+    # 2. Nap Loader va khoi tao du an
+    . (Join-Path $PSScriptRoot "core\Loader.ps1")
+    Initialize-Project
 
 # 3. Man hinh mo au (Loading & Logo)
 Draw-StartupLogo
@@ -613,6 +624,16 @@ while ($running) {
             $running = $false
         }
     }
+}
+} catch {
+    Write-Host ""
+    Write-Host "==========================================================" -ForegroundColor Red
+    Write-Host "[X] UNHANDLED EXCEPTION IN VALORANT OPTIMIZE:" -ForegroundColor Red
+    Write-Host "==========================================================" -ForegroundColor Red
+    Write-Host $_.Exception.ToString() -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "Press any key to exit..." -ForegroundColor Gray
+    try { [Console]::ReadKey($true) | Out-Null } catch { Read-Host }
 }
 
 

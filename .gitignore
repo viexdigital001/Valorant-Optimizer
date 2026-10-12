@@ -7,3 +7,9 @@ test_install/
 # Editor and temporary files
 .vscode/
 *.tmp
+
+# Antigravity & Agent tools (Internal only - Never deploy)
+.agents/
+*ANTIGRAVITY*
+*antigravity*
+setup_antigravity_py*

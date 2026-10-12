@@ -8,21 +8,21 @@ function Set-ConsoleSize {
         [int]$Height = 35
     )
     
-    # An con tro nhap nhay e o ngua mat
-    [Console]::CursorVisible = $false
+    try {
+        [Console]::CursorVisible = $false
+    } catch {}
     
     try {
-        # at kich thuoc buffer truoc, kich thuoc window sau e tranh crash
-        if ($Host.UI.RawUI.BufferSize.Width -lt $Width -or $Host.UI.RawUI.BufferSize.Height -lt $Height) {
-            $bufferSize = New-Object System.Management.Automation.Host.Size($Width, 2000)
-            $Host.UI.RawUI.BufferSize = $bufferSize
+        $rawUI = $Host.UI.RawUI
+        if ($rawUI) {
+            $curBuf = $rawUI.BufferSize
+            $newBufWidth = [Math]::Max($curBuf.Width, $Width)
+            $newBufHeight = [Math]::Max($curBuf.Height, 2000)
+            $rawUI.BufferSize = New-Object System.Management.Automation.Host.Size($newBufWidth, $newBufHeight)
+            
+            $rawUI.WindowSize = New-Object System.Management.Automation.Host.Size($Width, $Height)
+            $rawUI.BufferSize = New-Object System.Management.Automation.Host.Size($Width, $Height)
         }
-        $windowSize = New-Object System.Management.Automation.Host.Size($Width, $Height)
-        $Host.UI.RawUI.WindowSize = $windowSize
-        
-        # at lai buffer bang ung window e bo thanh cuon ben phai
-        $bufferSize = New-Object System.Management.Automation.Host.Size($Width, $Height)
-        $Host.UI.RawUI.BufferSize = $bufferSize
     } catch {
         # Bo qua neu moi truong khong cho phep resize (VD: VSCode terminal)
     }
@@ -34,12 +34,24 @@ function Move-Cursor {
         [int]$Col,
         [int]$Row
     )
-    [Console]::SetCursorPosition($Col, $Row)
+    try {
+        $maxCol = [Console]::BufferWidth - 1
+        $maxRow = [Console]::BufferHeight - 1
+        if ($maxCol -gt 0 -and $Col -gt $maxCol) { $Col = $maxCol }
+        if ($maxRow -gt 0 -and $Row -gt $maxRow) { $Row = $maxRow }
+        if ($Col -lt 0) { $Col = 0 }
+        if ($Row -lt 0) { $Row = 0 }
+        [Console]::SetCursorPosition($Col, $Row)
+    } catch {}
 }
 
 # Xoa man hinh
 function Clear-Screen {
-    [Console]::Clear()
+    try {
+        [Console]::Clear()
+    } catch {
+        Clear-Host
+    }
 }
 
 # Ve uong ke ngang
@@ -182,11 +194,15 @@ function Draw-Layout {
 
 # Xuat thong tin len vung content
 function Clear-ContentArea {
-    for ($i = 1; $i -lt 33; $i++) {
-        Move-Cursor 26 $i
-        # Xoa sach dong tu cot 26 en 119
-        Write-Ansi (" " * 93) -NoNewLine
-    }
+    try {
+        $bufWidth = [Console]::BufferWidth
+        $contentWidth = [Math]::Max(10, [Math]::Min(93, $bufWidth - 27))
+        $spaces = " " * $contentWidth
+        for ($i = 1; $i -lt 33; $i++) {
+            Move-Cursor 26 $i
+            Write-Ansi $spaces -NoNewLine
+        }
+    } catch {}
 }
 
 

@@ -1,4 +1,4 @@
-# core/Backup.ps1
+﻿# core/Backup.ps1
 # ong co sao luu snapshot thiet lap cho Valorant Optimize 1.0.0
 
 $Global:BackupSessionActive = $false
