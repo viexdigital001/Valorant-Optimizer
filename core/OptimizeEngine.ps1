@@ -176,7 +176,7 @@ function Start-OneClickOptimize {
     Move-Cursor 28 13
     Write-Ansi "Chuc ae co nhung pha ACE that chay, giu aim dinh nhu keo 502 nha! " -Color "BrightYellow"
     
-    # Banner phễu chuyển đổi VieX Plus 2.0.0 theo tâm lý học hành vi
+    # Banner gioi thieu phien ban cao cap VieX Plus 2.0.0
     Draw-HorizontalLine 28 15 85 "=" "Yellow"
     Move-Cursor 28 16
     Write-Ansi "[⭐] BỨT PHÁ RANK RADIANT VỚI PHIÊN BẢN CAO CẤP: " -Color "BrightYellow" -Bold -NoNewLine
