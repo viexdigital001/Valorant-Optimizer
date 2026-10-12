@@ -184,8 +184,8 @@ function Start-OneClickOptimize {
     
     Move-Cursor 28 17
     Write-Ansi "• Giá nâng cấp: " -Color "Gray" -NoNewLine
-    Write-Ansi "408.000 VNĐ " -Color "BrightGreen" -Bold -NoNewLine
-    Write-Ansi "(Rẻ hơn 1 skin Vandal Kuronami ~550k nhưng tăng hiệu năng vĩnh viễn!)" -Color "BrightCyan"
+    Write-Ansi "408.000 VNĐ / 31 ngày " -Color "BrightGreen" -Bold -NoNewLine
+    Write-Ansi "(Rẻ hơn skin Vandal, hạ delay cực đỉnh)" -Color "BrightCyan"
     
     Move-Cursor 28 19
     Write-Ansi "Tại sao Tryharder cần VieX Plus 2.0.0 trong các round đấu 12-12 căng thẳng?" -Color "BrightWhite" -Bold

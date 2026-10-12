@@ -244,7 +244,7 @@ function Show-OptimizePage {
                         Move-Cursor 28 13
                         Write-Ansi "[*] Muon giam them 3-5ms Input Lag va on dinh 1% Low FPS trong Combat?" -Color "BrightCyan"
                         Move-Cursor 28 14
-                        Write-Ansi "Kham pha VieX Plus 2.0.0 (408k - Re hon 1 skin Vandal): " -Color "BrightWhite" -NoNewLine
+                        Write-Ansi "Kham pha VieX Plus 2.0.0 (408k/31 ngay): " -Color "BrightWhite" -NoNewLine
                         Write-Ansi "https://discord.gg/Xx4pcdvHkw" -Color "BrightYellow" -Underline
                         
                         Move-Cursor 28 16
@@ -469,7 +469,7 @@ function Show-LatencyDiagnosticsPage {
     Write-Ansi "[CHUẨN ESPORTS TOÀN DIỆN]" -Color "BrightCyan"
     
     Move-Cursor 28 ($row + 4)
-    Write-Ansi "-> NHAN [ENTER] HOAC [V] DE NANG CAP VIEX PLUS (408K): " -Color "BrightYellow" -Bold -NoNewLine
+    Write-Ansi "-> NHAN [V] NANG CAP VIEX PLUS (408K/31 NGAY): " -Color "BrightYellow" -Bold -NoNewLine
     Write-Ansi "https://discord.gg/Xx4pcdvHkw" -Color "BrightBlue" -Underline
     
     Move-Cursor 28 ($row + 5)
@@ -497,12 +497,12 @@ function Show-VieXPlusPage {
     
     Move-Cursor 28 7
     Write-Ansi "• GIÁ NÂNG CẤP: " -Color "Gray" -NoNewLine
-    Write-Ansi "408.000 VNĐ " -Color "BrightGreen" -Bold -NoNewLine
-    Write-Ansi "(Bản quyền trọn đời + Kỹ sư VieX hỗ trợ 1-1)" -Color "BrightCyan"
+    Write-Ansi "408.000 VNĐ / 31 ngày " -Color "BrightGreen" -Bold -NoNewLine
+    Write-Ansi "(Kỹ sư VieX hỗ trợ 1-1)" -Color "BrightCyan"
     
     Move-Cursor 28 8
     Write-Ansi "  -> So sánh: " -Color "Gray" -NoNewLine
-    Write-Ansi "Rẻ hơn 1 cây Vandal Kuronami ~550k, nhưng tăng hiệu năng và hạ Input Lag vĩnh viễn!" -Color "BrightMagenta"
+    Write-Ansi "Rẻ hơn skin Vandal (~550k), hạ delay & đạn ra cực dính!" -Color "BrightMagenta"
     
     Move-Cursor 28 10
     Write-Ansi "5 ĐẶC QUYỀN VƯỢT TRỘI CHỈ CÓ TẠI BẢN PLUS 2.0.0:" -Color "BrightWhite" -Underline
