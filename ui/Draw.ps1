@@ -63,6 +63,7 @@ function Draw-HorizontalLine {
         [string]$Char = "-",
         [string]$Color = "Gray"
     )
+    if ($Length -le 0 -or [string]::IsNullOrEmpty($Char)) { return }
     Move-Cursor $Col $Row
     $line = $Char * $Length
     Write-Ansi $line -Color $Color -NoNewLine
@@ -79,6 +80,8 @@ function Draw-Box {
         [string]$Color = "Cyan"
     )
     
+    if ($Width -lt 2 -or $Height -lt 2) { return }
+    
     $topLeft = "+"
     $topRight = "+"
     $bottomLeft = "+"
@@ -86,12 +89,18 @@ function Draw-Box {
     $horizontal = "-"
     $vertical = "|"
     
-    # Ve goc tren va tieu e
+    # Ve goc tren va tieu de
     Move-Cursor $Col $Row
-    if ($Title -ne "") {
+    if (-not [string]::IsNullOrEmpty($Title)) {
+        $availableSpace = $Width - 2
         $titleStr = " $Title "
-        $leftLength = [Math]::Floor(($Width - $titleStr.Length - 2) / 2)
-        $rightLength = $Width - $titleStr.Length - 2 - $leftLength
+        if ($titleStr.Length -gt $availableSpace) {
+            $maxTitleChars = [Math]::Max(1, $availableSpace - 5)
+            $truncated = if ($Title.Length -gt $maxTitleChars) { $Title.Substring(0, $maxTitleChars) + "..." } else { $Title }
+            $titleStr = " $truncated "
+        }
+        $leftLength = [Math]::Max(0, [int][Math]::Floor(($availableSpace - $titleStr.Length) / 2))
+        $rightLength = [Math]::Max(0, $availableSpace - $titleStr.Length - $leftLength)
         $headerLine = $topLeft + ($horizontal * $leftLength) + (Get-AnsiStr $titleStr -Color "BrightWhite") + ($horizontal * $rightLength) + $topRight
         Write-Ansi $headerLine -Color $Color -NoNewLine
     } else {

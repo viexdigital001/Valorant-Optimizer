@@ -16,12 +16,16 @@ function Initialize-Logger {
 
 function Write-Log {
     param (
-        [Parameter(Mandatory=$true)]
-        [string]$Message,
-        [Parameter(Mandatory=$false)]
+        [Parameter(Position=0, Mandatory=$false)]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [string]$Message = "",
+        [Parameter(Position=1, Mandatory=$false)]
         [ValidateSet("INFO", "SUCCESS", "WARNING", "ERROR", "DEBUG")]
         [string]$Level = "INFO"
     )
+
+    if ($null -eq $Message) { $Message = "" }
 
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $logLine = "[$timestamp] [$Level] $Message"

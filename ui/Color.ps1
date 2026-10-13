@@ -43,8 +43,10 @@ $Global:Colors = @{
 # Ham ghi van ban mau ra man hinh
 function Write-Ansi {
     param (
-        [Parameter(Position=0, Mandatory=$true)]
-        [string]$Text,
+        [Parameter(Position=0, Mandatory=$false)]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [string]$Text = "",
         [Parameter(Mandatory=$false)]
         [string]$Color = "White",
         [Parameter(Mandatory=$false)]
@@ -57,17 +59,25 @@ function Write-Ansi {
         [switch]$Underline
     )
     
+    if ([string]::IsNullOrEmpty($Text)) {
+        if (-not $NoNewLine) {
+            Write-Host ""
+        }
+        return
+    }
+    
     $colorCode = ""
     if ($Bold) { $colorCode += $Global:Colors['Bold'] }
     if ($Underline) { $colorCode += $Global:Colors['Underline'] }
-    if ($Global:Colors.ContainsKey($Color)) {
+    if ($Global:Colors -and $Global:Colors.ContainsKey($Color)) {
         $colorCode += $Global:Colors[$Color]
     }
-    if ($BGColor -and $Global:Colors.ContainsKey($BGColor)) {
+    if ($BGColor -and $Global:Colors -and $Global:Colors.ContainsKey($BGColor)) {
         $colorCode += $Global:Colors[$BGColor]
     }
     
-    $outputText = "${colorCode}${Text}$($Global:Colors['Reset'])"
+    $resetCode = if ($Global:Colors -and $Global:Colors.ContainsKey('Reset')) { $Global:Colors['Reset'] } else { "" }
+    $outputText = "${colorCode}${Text}${resetCode}"
     
     if ($NoNewLine) {
         Write-Host $outputText -NoNewline
@@ -79,8 +89,10 @@ function Write-Ansi {
 # Tra ve chuoi mau thay vi in ra truc tiep (tien cho ve khung phuc tap)
 function Get-AnsiStr {
     param (
-        [Parameter(Position=0, Mandatory=$true)]
-        [string]$Text,
+        [Parameter(Position=0, Mandatory=$false)]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [string]$Text = "",
         [Parameter(Mandatory=$false)]
         [string]$Color = "White",
         [Parameter(Mandatory=$false)]
@@ -91,17 +103,22 @@ function Get-AnsiStr {
         [switch]$Underline
     )
     
+    if ([string]::IsNullOrEmpty($Text)) {
+        return ""
+    }
+    
     $colorCode = ""
     if ($Bold) { $colorCode += $Global:Colors['Bold'] }
     if ($Underline) { $colorCode += $Global:Colors['Underline'] }
-    if ($Global:Colors.ContainsKey($Color)) {
+    if ($Global:Colors -and $Global:Colors.ContainsKey($Color)) {
         $colorCode += $Global:Colors[$Color]
     }
-    if ($BGColor -and $Global:Colors.ContainsKey($BGColor)) {
+    if ($BGColor -and $Global:Colors -and $Global:Colors.ContainsKey($BGColor)) {
         $colorCode += $Global:Colors[$BGColor]
     }
     
-    return "${colorCode}${Text}$($Global:Colors['Reset'])"
+    $resetCode = if ($Global:Colors -and $Global:Colors.ContainsKey('Reset')) { $Global:Colors['Reset'] } else { "" }
+    return "${colorCode}${Text}${resetCode}"
 }
 
 

@@ -3,11 +3,17 @@
 
 function Draw-SidebarMenu {
     param (
-        [Parameter(Mandatory=$true)]
-        [array]$Items,
-        [Parameter(Mandatory=$true)]
-        [int]$SelectedIndex
+        [Parameter(Position=0, Mandatory=$false)]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [array]$Items = @(),
+        [Parameter(Position=1, Mandatory=$false)]
+        [int]$SelectedIndex = 0
     )
+    
+    if (-not $Items -or $Items.Count -eq 0) { return }
+    if ($SelectedIndex -lt 0) { $SelectedIndex = 0 }
+    if ($SelectedIndex -ge $Items.Count) { $SelectedIndex = $Items.Count - 1 }
     
     $startRow = 4
     $col = 3
@@ -15,8 +21,7 @@ function Draw-SidebarMenu {
     for ($i = 0; $i -lt $Items.Count; $i++) {
         Move-Cursor $col ($startRow + $i)
         
-        $itemText = $Items[$i]
-        
+        $itemText = if ($null -ne $Items[$i]) { [string]$Items[$i] } else { "" }
         $isVIP = $itemText -match "\[VIP\]|VieX Plus"
         
         if ($i -eq $SelectedIndex) {
@@ -24,14 +29,18 @@ function Draw-SidebarMenu {
             $arrowColor = if ($isVIP) { "BrightYellow" } else { "BrightCyan" }
             $textColor = if ($isVIP) { "BrightGreen" } else { "BrightCyan" }
             Write-Ansi "> " -Color $arrowColor -NoNewLine
-            Write-Ansi $itemText -Color $textColor -Bold -NoNewLine
+            if ($itemText -ne "") {
+                Write-Ansi $itemText -Color $textColor -Bold -NoNewLine
+            }
             $padding = 20 - $itemText.Length
             if ($padding -gt 0) { Write-Host (" " * $padding) -NoNewline }
         } else {
             # Muc thuong: Neu la VIP thi to vang noi bat, con lai mau trang
             $textColor = if ($isVIP) { "BrightYellow" } else { "White" }
             Write-Ansi "  " -NoNewLine
-            Write-Ansi $itemText -Color $textColor -NoNewLine
+            if ($itemText -ne "") {
+                Write-Ansi $itemText -Color $textColor -NoNewLine
+            }
             $padding = 20 - $itemText.Length
             if ($padding -gt 0) { Write-Host (" " * $padding) -NoNewline }
         }
@@ -40,13 +49,16 @@ function Draw-SidebarMenu {
 
 function Get-MenuSelection {
     param (
-        [Parameter(Mandatory=$true)]
-        [array]$Items,
-        [Parameter(Mandatory=$false)]
+        [Parameter(Position=0, Mandatory=$false)]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [array]$Items = @(),
+        [Parameter(Position=1, Mandatory=$false)]
         [int]$DefaultIndex = 0
     )
     
-    $selectedIndex = $DefaultIndex
+    if (-not $Items -or $Items.Count -eq 0) { return -1 }
+    $selectedIndex = [Math]::Max(0, [Math]::Min($Items.Count - 1, $DefaultIndex))
     $running = $true
     
     # Ve menu lan au tien
@@ -95,9 +107,13 @@ function Get-MenuSelection {
 # Ham hien thi prompt xac nhan Y/N Gen Z
 function Get-Confirmation {
     param (
-        [Parameter(Mandatory=$true)]
-        [string]$PromptMessage,
+        [Parameter(Position=0, Mandatory=$false)]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [string]$PromptMessage = "Are you sure?",
+        [Parameter(Mandatory=$false)]
         [int]$Col = 28,
+        [Parameter(Mandatory=$false)]
         [int]$Row = 20
     )
     

@@ -9,7 +9,14 @@ test_install/
 *.tmp
 
 # Antigravity & Agent tools (Internal only - Never deploy)
+.agents
 .agents/
+.gemini
+.gemini/
 *ANTIGRAVITY*
 *antigravity*
-setup_antigravity_py*
+*anti_gravity*
+*AntiGravity*
+setup_antigravity*
+*.agent
+*.agents

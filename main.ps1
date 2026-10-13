@@ -220,10 +220,10 @@ function Show-OptimizePage {
                         $successCount = 0
                         $modules = @("CPU", "GPU", "RAM", "Storage", "PowerPlan", "Timer", "MMCSS", "Services", "Network", "Mouse", "Keyboard", "Input", "Audio", "Security", "Telemetry", "Xbox", "GameMode", "GameStart", "BackgroundApps", "Visual", "Process", "Cleanup")
                         
-                        $p = 0
-                        foreach ($mName in $modules) {
-                            $p += 4
-                            Draw-ProgressBar 28 7 $p "Configuring $mName..."
+                        for ($mIdx = 0; $mIdx -lt $modules.Count; $mIdx++) {
+                            $mName = $modules[$mIdx]
+                            $p = [int](($mIdx + 1) / $modules.Count * 100)
+                            Draw-ProgressBar 28 7 $p "Dang toi uu module: $mName..."
                             $applyFunc = "Apply-$mName"
                             if (Get-Command $applyFunc -ErrorAction SilentlyContinue) {
                                 try {
@@ -361,6 +361,10 @@ function Show-LogPage {
         $row = 5
         foreach ($line in $logs) {
             Move-Cursor 28 $row
+            if ([string]::IsNullOrWhiteSpace($line)) {
+                $row++
+                continue
+            }
             # Cat bot dong dai
             $trimmed = if ($line.Length -gt 88) { $line.Substring(0, 85) + "..." } else { $line }
             

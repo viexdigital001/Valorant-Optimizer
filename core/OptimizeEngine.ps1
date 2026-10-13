@@ -30,9 +30,11 @@ function Start-OneClickOptimize {
     $row = 7
     foreach ($item in $itemsToCheck) {
         Move-Cursor 28 $row
-        $dots = "." * (30 - $item.Label.Length)
+        $dotCount = [Math]::Max(1, 30 - $item.Label.Length)
+        $dots = "." * $dotCount
         Write-Ansi "$($item.Label) $dots " -Color "Gray" -NoNewLine
-        Write-Ansi $item.Value -Color "BrightCyan"
+        $valText = if ($null -ne $item.Value) { "$($item.Value)" } else { "N/A" }
+        Write-Ansi $valText -Color "BrightCyan"
         $row++
         Start-Sleep -Milliseconds 100
     }
@@ -79,11 +81,14 @@ function Start-OneClickOptimize {
     Write-Ansi "[*] TIEN TRINH Optimizing System" -Color "BrightCyan" -Bold
     Draw-HorizontalLine 28 3 85 "-" "Gray"
     
-    # Bat au sao luu
+    # Bat dau sao luu
     Move-Cursor 28 5
-    Write-Ansi "Currently khoi tao Backup snapshot snapshot..." -Color "BrightWhite"
+    Write-Ansi "Dang khoi tao Backup snapshot..." -Color "BrightWhite"
     Start-BackupSession
     Start-Sleep -Milliseconds 500
+    
+    Move-Cursor 28 5
+    Write-Ansi "Dang tien hanh toi uu hoa cac module he thong...               " -Color "BrightWhite"
     
     # Danh sach cac module chay
     $modules = @(
@@ -119,7 +124,7 @@ function Start-OneClickOptimize {
         $percent = [int](($idx + 1) / $modules.Count * 100)
         
         # Ve thanh tien trinh
-        Draw-ProgressBar 28 6 $percent "Currently Configuring module: $($mod.Name)..."
+        Draw-ProgressBar 28 6 $percent "Dang toi uu module: $($mod.Name)..."
         
         # Chay ham apply tuong ung
         if (Get-Command $mod.Func -ErrorAction SilentlyContinue) {
